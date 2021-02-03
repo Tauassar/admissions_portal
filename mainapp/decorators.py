@@ -16,7 +16,7 @@ def check_permissions(allowed_pos=[]):
         def wrapper_func(request, *args, **kwargs):
             
             profile = ProfileModel.objects.get(user = request.user)
-            if profile.position in allowed_pos:
+            if (profile.position in allowed_pos) or request.user.is_superuser:
                 return view_func(request, *args, **kwargs)
             else:
                 return HttpResponse('You are not authorized to view this page')
