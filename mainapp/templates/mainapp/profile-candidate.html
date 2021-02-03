@@ -2,114 +2,62 @@
 {% load static %}
 {% block content %}
 
-<main>
+
   <div class="candidate-info">
-    <h1>Candidate Candidate</h2>
+    <h1>{{candidate.first_name}} {{candidate.last_name}}</h2>
     <div>
       <img src="{% static 'img/user-avatar.png' %}" alt="user photo">
     </div>
   </div>
-    <div class="candidate-results">
-        <div id="interview-eval" class="evaluation">
-            <fieldset>
-            <legend>Application Evaluation</legend>
-            <p>
-                <label>GPA</label>
-                <select id = "myList">
-                <option disabled selected>Rank 1-5</option>
-                  <option value = "1">1</option>
-                  <option value = "2">2</option>
-                  <option value = "3">3</option>
-                  <option value = "4">4</option>
-                  <option value = "5">5</option>
-                </select>
-            </p>
-            <p>
-              <label>School Rating</label>
-              <select id = "myList">
-                <option disabled selected>Rank 1-5</option>
-                <option value = "1">1</option>
-                <option value = "2">2</option>
-                <option value = "3">3</option>
-                <option value = "4">4</option>
-                <option value = "5">5</option>
-              </select>
-            </p>
-            <p>
-            <label>Recommendations</label>
-            <select id = "myList">
-              <option disabled selected>Rank 1-5</option>
-              <option value = "1">1</option>
-              <option value = "2">2</option>
-              <option value = "3">3</option>
-              <option value = "4">4</option>
-              <option value = "5">5</option>
-            </select>
-          </p>
-          <p>
-          <label>Educational Background</label>
-          <select id = "myList">
-            <option disabled selected>Rank 1-5</option>
-            <option value = "1">1</option>
-            <option value = "2">2</option>
-            <option value = "3">3</option>
-            <option value = "4">4</option>
-            <option value = "5">5</option>
-          </select>
-        </p>
-          </fieldset>
-        </div>
-        <div id="application-eval" class="evaluation">
+  <div class="candidate-results">
+    <form action = "" method = "POST">
+      <div id="interview-eval" class="evaluation">
           <fieldset>
-            <legend>Interview Evaluation</legend>
-            <p>
-                <label>Understanding of Major Domain</label>
-                <select id = "myList">
-                <option disabled selected>Rank 1-5</option>
-                  <option value = "1">1</option>
-                  <option value = "2">2</option>
-                  <option value = "3">3</option>
-                  <option value = "4">4</option>
-                  <option value = "5">5</option>
-                </select>
-            </p>
-            <p>
-              <label>Research Interest and Motivation</label>
-              <select id = "myList">
-                <option disabled selected>Rank 1-5</option>
-                <option value = "1">1</option>
-                <option value = "2">2</option>
-                <option value = "3">3</option>
-                <option value = "4">4</option>
-                <option value = "5">5</option>
-              </select>
-            </p>
-            <p>
-            <label>Professional Work Experience/Career Goals</label>
-            <select id = "myList">
-              <option disabled selected>Rank 1-5</option>
-              <option value = "1">1</option>
-              <option value = "2">2</option>
-              <option value = "3">3</option>
-              <option value = "4">4</option>
-              <option value = "5">5</option>
-            </select>
+            {% csrf_token %}
+            
+          <legend>Application Evaluation</legend>
+
+          <p>
+              <label>GPA</label>
+              {{form.gpa}}
           </p>
           <p>
-          <label>Command of English</label>
-          <select id = "myList">
-            <option disabled selected>Rank 1-5</option>
-            <option value = "1">1</option>
-            <option value = "2">2</option>
-            <option value = "3">3</option>
-            <option value = "4">4</option>
-            <option value = "5">5</option>
-          </select>
+          <label>Recommendations</label>
+              {{form.recommendations}}
         </p>
-          </fieldset>
-        </div>
-        <input type="submit" class="button-profile" value="Submit">
-    </div>
+        <p>
+        <label>Educational Background</label>
+              {{form.educational_backgorund}}
+
+
+      </p>
+        </fieldset>
+
+      </div>
+      <div id="application-eval" class="evaluation">
+        <fieldset>
+          <legend>Interview Evaluation</legend>
+          <p>
+              <label>Understanding of Major Domain</label>
+              {{form.understanding_of_major}}
+          </p>
+          <p>
+            <label>Research Interest and Motivation</label>
+              {{form.research_interest_and_motivation}}
+          </p>
+          <p>
+          <label>Professional Work Experience/Career Goals</label>
+              {{form.experience_and_goals}}
+        </p>
+        <p>
+        <label>Command of English</label>
+              {{form.english_level}}
+      </p>
+        </fieldset>
+      </div>
+      <input type="submit" class="button-profile" name="Submit">
+    </form>
+  </div>
 </main>
 
 {% endblock %}

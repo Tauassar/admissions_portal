@@ -1,0 +1,22 @@
+
+{% extends 'mainapp/base.html' %}
+{% load static %}
+{% block content %}
+      <main>
+      <fieldset>
+          <div>
+              <h1>Create New Candidate Profile</h1>
+              <form action = "" method = "POST">
+              {% csrf_token %}
+                  <label>Enter Candidate's Name: {{form.first_name}} </label>
+                  <label>Enter Candidate's Surname: {{form.last_name}}</label>
+                  <label>Enter Candidate's GPA (0.00-4.00): {{form.gpa}}</label>
+                  <label>Enter Candidate's University: {{form.school_rating}}</label>
+                  <label>Enter Candidate's Reccomendations: {{form.recommendations}}</label>
+                  <label>Upload Candidate's Educational background: {{form.educational_backgorund}}</label>
+              <input type="submit" class="button-create" value="Create New Candidate">
+              </form>
+          </div>
+          </fieldset>
+      </main>
+{% endblock %}

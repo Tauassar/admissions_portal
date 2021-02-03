@@ -1,5 +1,14 @@
 {% extends 'mainapp/base.html' %}
 {% load static %}
 {% block content %}
-    <p>info</p>
+ <main>
+    {% for publication in publications%}
+        <div class="info-container" id="gen-info">
+            <h1>{{publication.title}}</h1>
+            <div class="info-container">
+                <p>{{publication.text}}</p>
+            </div>
+        </div>
+    {% endfor %}
+    </main>
 {% endblock %}

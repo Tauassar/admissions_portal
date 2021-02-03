@@ -1,9 +1,14 @@
-<div class="container">
-  <nav>
-    <ul>
-      <li><a href="{% url 'dashboard'%}">Home</a></li>
-      <li><a href="{% url 'contacts'%}">Contacts</a></li>
-      <li><a href="{% url 'info'%}">Information</a></li>
-    </ul>
-  </nav>
-</div>
+
+<header>
+        <div class="container">
+          <nav>
+            <ul>
+              <li><a href="{% url 'dashboard'%}">Home</a></li>
+              <li><a href="{% url 'contacts'%}">Contacts</a></li>
+              <li><a href="{% url 'info'%}">Information</a></li>
+              <li><a href="{% url 'personal'%}">Profile</a></li>
+              <li><a href="{% url 'logout'%}"> {{request.user}} Logout</a></li>
+            </ul>
+          </nav>
+        </div>
+      </header>

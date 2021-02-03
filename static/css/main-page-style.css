@@ -66,3 +66,40 @@ nav a::before {
 nav a:hover::before {
   width: 100%;
 }
+
+.main-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+#candidates {
+    display: flex;
+    flex-direction: column;
+    width: 65%;
+}
+
+#events {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+}
+img {
+    height: 50px;
+    width: 50px;
+    margin-right: 20px;
+}
+
+
+.candidate-eval, .event-aside {
+    border: 4px inset rgba(108,99,255,0.4766281512605042);
+    margin: 20px;
+    padding: 5px;
+    align-items: center;
+    display: flex;
+    justify-content: space-around;
+}
+
+h3 {
+    text-align: center;
+}

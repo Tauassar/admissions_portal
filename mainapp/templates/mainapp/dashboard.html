@@ -1,7 +1,35 @@
 {% extends 'mainapp/base.html' %}
 {% load static %}
 {% block content %}
-    <p>dashboard {{request.user}} </p>
+    <main>
+          <div class="main-container">
+            <div id="candidates">
+                <h3>List of candidates</h3>
+            
+            {% for candidate in candidates %}
 
-    <a href="{%url 'personal'%}"> Personal </p>
+            <a href = "{% url 'candidate' candidate.candidate_id %}">
+                <div class="candidate-eval">
+                    <img src="{%static 'img/user-avatar.png'%}" alt="candidate avatar">
+                    <p>{{candidate.first_name}} {{candidate.last_name}}</p>
+                    <p>{{candidate.uuid}}</p>
+                    <p id="status">Status</p>
+                    <i class="fas fa-circle"></i>
+                </div>
+            </a>
+
+            {% endfor %}
+            
+            
+            </div>
+            <div id="events">
+                <h3>History</h3>
+                
+                <div class="event-aside">
+                    <p>Something happened</p>
+                </div>
+                
+            </div>
+          </div>
+      </main>
 {% endblock %}
