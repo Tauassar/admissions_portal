@@ -1,0 +1,128 @@
+@import url("https://fonts.googleapis.com/css?family=Work+Sans:400,600");
+body {
+  margin: 0;
+  background: linear-gradient(45deg, rgba(108,99,255,0.4766281512605042) 8%, rgba(109,189,181,0.5) 89%);
+  font-family: "Work Sans", sans-serif;
+  font-weight: 800;
+}
+
+.container {
+  width: 80%;
+  margin: 0 auto;
+}
+
+header {
+  background:  rgba(108,99,255,0.4766281512605042) 8%;
+}
+
+header::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+nav {
+  float: right;
+}
+
+nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+nav li {
+  display: inline-block;
+  margin-left: 70px;
+  padding-top: 23px;
+
+  position: relative;
+}
+
+nav a {
+  color: #444;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+nav a:hover {
+  color: #000;
+}
+
+nav a::before {
+  content: "";
+  display: block;
+  height: 5px;
+  background-color: #444;
+
+  position: absolute;
+  top: 0;
+  width: 0%;
+
+  transition: all ease-in-out 250ms;
+}
+
+nav a:hover::before {
+  width: 100%;
+}
+
+img {
+  width: 200px;
+  height: 200px;
+}
+
+.candidate-info {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 20px;
+}
+
+.candidate-results {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+#interview-eval {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ul-container {
+  display: inline-block;
+}
+
+.score {
+  padding: 10px;
+    list-style-type: none;
+}
+
+fieldset {
+  margin: 20px;
+}
+
+.button-profile{
+  display: block;
+  width: 20%;
+  height: 50px;
+  border-radius: 25px;
+  margin: 1rem 0;
+  font-size: 1.2rem;
+  outline: none;
+  border: none;
+  background-image: linear-gradient(to right, #6dbdb5, #6c63ff, #6dbdb5);
+  cursor: pointer;
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  background-size: 200%;
+  transition: 0.5s;
+  text-transform: uppercase;
+  background-size: 200%;
+}
+
+.button-profile:hover{
+  background-position: right;
+}

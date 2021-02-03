@@ -21,11 +21,6 @@ header::after {
   clear: both;
 }
 
-.logo {
-  float: left;
-  padding: 10px 0;
-}
-
 nav {
   float: right;
 }
@@ -70,40 +65,4 @@ nav a::before {
 
 nav a:hover::before {
   width: 100%;
-}
-
-img {
-  width: 100px;
-  height: 100px;
-}
-
-.candidate-info {
-  display: flex;
-  justify-content: space-evenly;
-}
-
-.candidate-results {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 20px;
-}
-
-#interview-eval {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.ul-container {
-  display: inline-block;
-}
-
-.score {
-  padding: 10px;
-    list-style-type: none;
-}
-
-fieldset {
-  margin: 20px;
 }
