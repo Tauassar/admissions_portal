@@ -1,0 +1,24 @@
+
+{% load static %}
+
+<div id="candidates">
+    <h3>List of candidates</h3>
+    
+    <a href = ' {%url "create_candidate" %} '><h3>Add new candidate</h3></a>
+
+{% for candidate in candidates %}
+
+<a href = "{% url 'observe_candidate' candidate.candidate_id %}">
+    <div class="candidate-eval">
+        <img src="{%static 'img/user-avatar.png'%}" alt="candidate avatar">
+        <p>{{candidate.first_name}} {{candidate.last_name}}</p>
+        <p>{{candidate.uuid}}</p>
+        <p id="status">Status</p>
+        <i class="fas fa-circle "></i>
+    </div>
+</a>
+
+{% endfor %}
+
+
+</div>

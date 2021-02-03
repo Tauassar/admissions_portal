@@ -1,0 +1,22 @@
+
+{% load static %}
+
+<div id="candidates">
+    <h3>List of evaluations</h3>
+
+{% for instance in evaluations %}
+
+<a href = "{% url 'approve_evaluation' instance.evaluation_id %}">
+    <div class="candidate-eval">
+        <img src="{%static 'img/user-avatar.png'%}" alt="candidate avatar">
+        <p>{{instance.candidate.first_name}} {{instance.candidate.last_name}}</p>
+        <h5>Evaluator: {{instance.evaluator.user.first_name}} {{instance.evaluator.user.last_name}}</h5>
+        <p id="status">Status</p>
+        <i class="fas fa-circle "></i>
+    </div>
+</a>
+
+{% endfor %}
+
+
+</div>

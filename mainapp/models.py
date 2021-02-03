@@ -52,11 +52,17 @@ class EvaluationModel(models.Model):
         (4, '4'),
         (5, '5'),
     ]
+    STATUS = [
+        ('Not evaluated', 'Not evaluated'),
+        ('In progress', 'In progress'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    ]
     evaluation_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) 
     evaluator = models.ForeignKey(ProfileModel, on_delete = models.CASCADE)
     candidate = models.ForeignKey(CandidateModel, on_delete=models.CASCADE, default=None)
 
-    gpa = models.IntegerField(default=0, choices=choices,null = True)
+    gpa = models.IntegerField(choices=choices,null = True)
     school_rating = models.IntegerField(choices=choices,null = True),
     recommendations = models.IntegerField(choices=choices,null = True)
     educational_backgorund = models.IntegerField(choices=choices,null = True)
@@ -66,7 +72,7 @@ class EvaluationModel(models.Model):
     experience_and_goals = models.IntegerField(choices=choices,null = True)
     english_level = models.IntegerField(choices=choices,null = True)
     
-    status = models.CharField(max_length=10)
+    status = models.CharField(max_length =20, choices=STATUS,default='Not evaluated')
 
     approved_by_secretary = models.BooleanField(default= False)
 

@@ -21,10 +21,6 @@
               {{evaluation.gpa}}
           </p>
           <p>
-            <label>School Rating</label>
-              {{evaluation.school_rating}}
-          </p>
-          <p>
           <label>Recommendations</label>
               {{evaluation.recommendations}}
         </p>
@@ -61,7 +57,7 @@
     <form action = "" method = "POST">
     {% csrf_token %}
     <p>
-        <label>Approved by school secretary</label>
+        <label>Approve</label>
               {{form.approved_by_secretary}}
       </p>
       <input type="submit" class="button-profile" name="Submit">

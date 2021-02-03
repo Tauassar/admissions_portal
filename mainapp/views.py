@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-from . import models
+from .models import ProfileModel, CandidateModel,EvaluationModel,InformationModel
 from .forms import CandidateEvaluateForm, AddCandidateForm, ApprovementForm
 from .decorators import auth_check,check_permissions
 
@@ -14,17 +14,23 @@ secretary=3
 
 @login_required(login_url = 'login')
 def dashboardView(request):
-    candidates = models.CandidateModel.objects.all()
-    context={'candidates':candidates}
+    candidates = CandidateModel.objects.all()
+    profile = ProfileModel.objects.get(user = request.user)
+    evaluations = EvaluationModel.objects.all()
+    context={
+        'candidates':candidates,
+        'position':profile.position,
+        'evaluations':evaluations
+    }
     return render(request, 'mainapp/dashboard.html', context)
 
 @login_required(login_url = 'login')
 @check_permissions(allowed_pos=[committie,chair])
-def candidateView(request,uuid):
+def candidateEvaluateView(request,uuid):
 
-    evaluator = models.ProfileModel.objects.get(user = request.user)
-    candidate = models.CandidateModel.objects.get(candidate_id = uuid)
-    evaluation = models.EvaluationModel.objects.get(evaluator = evaluator, candidate=candidate)
+    evaluator = ProfileModel.objects.get(user = request.user)
+    candidate = CandidateModel.objects.get(candidate_id = uuid)
+    evaluation = EvaluationModel.objects.get(evaluator = evaluator, candidate=candidate)
     form = CandidateEvaluateForm(instance=evaluation)
     if request.method == "POST":
         form = CandidateEvaluateForm(request.POST,instance=evaluation)
@@ -38,10 +44,19 @@ def candidateView(request,uuid):
 
 
 @login_required(login_url = 'login')
+@check_permissions(allowed_pos=[adm_dep])
+def observeCandidateView(request,uuid):
+
+    candidate = CandidateModel.objects.get(candidate_id = uuid)
+    context = {'candidate':candidate}
+    return render(request, 'mainapp/view_candidate.html', context)
+
+
+@login_required(login_url = 'login')
 @check_permissions(allowed_pos=[secretary])
 def approveEvalView(request,uuid):
 
-    evaluation = models.EvaluationModel.objects.get(evaluation_id = uuid)
+    evaluation = EvaluationModel.objects.get(evaluation_id = uuid)
     form = ApprovementForm(instance=evaluation)
     context = {'evaluation':evaluation}
     if request.method == "POST":
@@ -65,17 +80,17 @@ def createCandidateView(request):
         form = AddCandidateForm(request.POST)
         if form.is_valid():
             candidate = form.save()
-            #candidate = models.CandidateModel.objects.get(candidate_id = request.POST.uuid)
-            evaluators_committie = models.ProfileModel.objects.filter(position = 1)
+            #candidate = CandidateModel.objects.get(candidate_id = request.POST.uuid)
+            evaluators_committie = ProfileModel.objects.filter(position = 1)
             
-            evaluators_chair = models.ProfileModel.objects.filter(position = 2)
+            evaluators_chair = ProfileModel.objects.filter(position = 2)
             for person in evaluators_committie:
-                 models.EvaluationModel.objects.create(
+                 EvaluationModel.objects.create(
                     evaluator = person,
                     candidate = candidate
                 )
             for person in evaluators_chair:
-                 models.EvaluationModel.objects.create(
+                 EvaluationModel.objects.create(
                     evaluator = person,
                     candidate = candidate
                 )
@@ -83,20 +98,20 @@ def createCandidateView(request):
             return redirect('dashboard')
     context = {'form':form}
 
-    return render(request, 'mainapp/admission-dept-page.html', context)
+    return render(request, 'mainapp/create_candidate.html', context)
 
 @login_required(login_url = 'login')
 def infoView(request):
-    publications = models.InformationModel.objects.all()
+    publications = InformationModel.objects.all()
     context= {'publications':publications}
     return render(request, 'mainapp/info.html', context)
 
 @login_required(login_url = 'login')
 def contactsView(request):
-    dept_members = models.ProfileModel.objects.filter(position = 0)
-    committie = models.ProfileModel.objects.filter(position = 1)
-    chairs = models.ProfileModel.objects.filter(position = 2)
-    secretaries = models.ProfileModel.objects.filter(position = 3)
+    dept_members = ProfileModel.objects.filter(position = 0)
+    committie = ProfileModel.objects.filter(position = 1)
+    chairs = ProfileModel.objects.filter(position = 2)
+    secretaries = ProfileModel.objects.filter(position = 3)
     context ={
         'dept_members':dept_members,
         'committie':committie,
