@@ -5,6 +5,12 @@ from django.contrib.auth.decorators import login_required
 
 from . import models
 from .forms import CandidateEvaluateForm, AddCandidateForm, ApprovementForm
+from .decorators import auth_check,check_permissions
+
+adm_dep = 0
+committie = 1
+chair = 2
+secretary=3
 
 @login_required(login_url = 'login')
 def dashboardView(request):
@@ -13,6 +19,7 @@ def dashboardView(request):
     return render(request, 'mainapp/dashboard.html', context)
 
 @login_required(login_url = 'login')
+@check_permissions(allowed_pos=[committie,chair])
 def candidateView(request,uuid):
 
     evaluator = models.ProfileModel.objects.get(user = request.user)
@@ -31,6 +38,7 @@ def candidateView(request,uuid):
 
 
 @login_required(login_url = 'login')
+@check_permissions(allowed_pos=[secretary])
 def approveEvalView(request,uuid):
 
     evaluation = models.EvaluationModel.objects.get(evaluation_id = uuid)
@@ -49,6 +57,7 @@ def approveEvalView(request,uuid):
 
 
 @login_required(login_url = 'login')
+@check_permissions(allowed_pos=[adm_dep])
 def createCandidateView(request):
     
     form = AddCandidateForm()
@@ -57,14 +66,19 @@ def createCandidateView(request):
         if form.is_valid():
             candidate = form.save()
             #candidate = models.CandidateModel.objects.get(candidate_id = request.POST.uuid)
-            comitie_members = models.ProfileModel.objects.filter(position = 1)
-            for person in comitie_members:
-                    
+            evaluators_committie = models.ProfileModel.objects.filter(position = 1)
+            
+            evaluators_chair = models.ProfileModel.objects.filter(position = 2)
+            for person in evaluators_committie:
                  models.EvaluationModel.objects.create(
                     evaluator = person,
                     candidate = candidate
                 )
-
+            for person in evaluators_chair:
+                 models.EvaluationModel.objects.create(
+                    evaluator = person,
+                    candidate = candidate
+                )
 
             return redirect('dashboard')
     context = {'form':form}
@@ -100,29 +114,26 @@ def personalView(request):
     context ={'position':position[request.user.profilemodel.position]}
     return render(request, 'mainapp/personal.html', context)
 
-
+@auth_check
 def loginView(request):
-    if request.user.is_authenticated:
-        return redirect('dashboard')
-    else:
-        context = {}
+    context = {}
 
-        if request.method=="POST":
-            username = request.POST.get('username')
-            password = request.POST.get('password')
+    if request.method=="POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-            user = authenticate(request, username = username, password = password)
+        user = authenticate(request, username = username, password = password)
 
-            if user is not None:
-                login(request, user)
-                return redirect('dashboard')
+        if user is not None:
+            login(request, user)
+            return redirect('dashboard')
 
-            else:
-                messages.error(request, "Data is invalid")
-                return render(request, 'mainapp/login.html', context)
+        else:
+            messages.error(request, "Data is invalid")
+            return render(request, 'mainapp/login.html', context)
 
 
-        return render(request, 'mainapp/login.html', context)
+    return render(request, 'mainapp/login.html', context)
     
 
 
