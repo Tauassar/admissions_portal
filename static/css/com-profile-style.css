@@ -73,7 +73,7 @@ main {
 }
 
 .member-container, .member-password{
-    border: 4px inset rgba(108,99,255,0.4766281512605042);
+    border-top: 4px inset rgba(108,99,255,0.4766281512605042);
     margin: 20px;
     display: flex;
     flex-direction: column;
