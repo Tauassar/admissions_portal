@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 
 from .models import ProfileModel, CandidateModel,EvaluationModel,InformationModel
 from .forms import CandidateEvaluateForm, AddCandidateForm, ApprovementForm
@@ -126,7 +128,23 @@ def personalView(request):
         'Admission department','Admission committie member',
         'Chair of the admission committie','School Secretary'
     ]
-    context ={'position':position[request.user.profilemodel.position]}
+
+
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('personal')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    context ={
+        'position':position[request.user.profilemodel.position],
+        'form': form
+        }
     return render(request, 'mainapp/personal.html', context)
 
 @auth_check
