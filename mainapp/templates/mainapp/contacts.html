@@ -1,14 +1,14 @@
 {% extends 'mainapp/base.html' %}
 {% load static %}
 {% block content %}
-<main>
+<main id="contacts-page">
           <div class="contacts-container">
               <h1 class="contact-info-chair">Chair of Admission Committee</h1>
 
               {%for person in chairs%}
                 <img src="{%static 'img/user-avatar.png'%}" alt="admission committee chair photo" class="contact-info-chair">
                 <h2 class="contact-info-chair">{{person.user.first_name}} {{person.user.last_name}}</h2>
-                <a href="tel:{{person.phone_number}}<" class="contact-info-chair">{{person.phone_number}}</a>
+                <a href="tel:{{person.phone_number}}<" class="contact-info-chair tel-num">{{person.phone_number}}</a>
               {% endfor %}
 
           </div>
@@ -17,9 +17,9 @@
               <div class="contact-info-container">
                 {%for person in dept_members%}
                   <div >
-                  <img src="{%static 'img/user-avatar.png'%}" alt="admission committee chair photo" class="contact-info-chair">
-                  <h2 class="contact-info-chair">{{person.user.first_name}} {{person.user.last_name}}</h2>
-                  <a href="tel:{{person.phone_number}}<" class="contact-info-chair">{{person.phone_number}}</a>
+                  <img src="{%static 'img/user-avatar.png'%}" alt="admission committee chair photo" class="contact-info-admission">
+                  <h2 class="contact-info-admission">{{person.user.first_name}} {{person.user.last_name}}</h2>
+                  <a href="tel:{{person.phone_number}}<" class="contact-info-admission tel-num">{{person.phone_number}}</a>
                   </div >
                 {% endfor %}
               </div>
@@ -29,9 +29,9 @@
               <div class="contact-info-container">
                   {%for person in committie%}
                   <div >
-                    <img src="{%static 'img/user-avatar.png'%}" alt="admission committee chair photo" class="contact-info-chair">
-                    <h2 class="contact-info-chair">{{person.user.first_name}} {{person.user.last_name}}</h2>
-                    <a href="tel:{{person.phone_number}}<" class="contact-info-chair">{{person.phone_number}}</a>
+                    <img src="{%static 'img/user-avatar.png'%}" alt="admission committee chair photo" class="contact-info-committee">
+                    <h2 class="contact-info-committee">{{person.user.first_name}} {{person.user.last_name}}</h2>
+                    <a href="tel:{{person.phone_number}}<" class="contact-info-committee tel-num">{{person.phone_number}}</a>
                   </div>
                   {% endfor %}
               </div>
