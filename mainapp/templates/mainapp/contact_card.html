@@ -1,5 +1,12 @@
 {% load static %}
-<a href = "{% url 'profile' person.staff_id %}">
+
+{%if request.user == user.user%}
+    <a href = "{% url 'personal' %}">
+{%else%}
+    <a href = "{% url 'profile' person.staff_id %}">
+{%endif%}
+
+
 <div >
     <img src="{%static 'img/user-avatar.png'%}" alt="admission committee chair photo" class="contact-info-chair">
     <h2 class="contact-info-chair">{{person.user.first_name}} {{person.user.last_name}}</h2>

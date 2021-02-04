@@ -21,7 +21,7 @@
             <p>Email: <a href="mailto:{{user.user.email}}" class="contact-info-member">{{user.user.email}}</a></p>
         </div>
 
-        {%if request.user == user.user%}
+        {%if form in not Null%}
             <div class="member-password">
                 <h2>Change Password</h2>
                     <div>
