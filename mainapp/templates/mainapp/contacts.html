@@ -1,14 +1,12 @@
 {% extends 'mainapp/base.html' %}
-{% load static %}
+
 {% block content %}
 <main>
           <div class="contacts-container">
               <h1 class="contact-info-chair">Chair of Admission Committee</h1>
 
               {%for person in chairs%}
-                <img src="{%static 'img/user-avatar.png'%}" alt="admission committee chair photo" class="contact-info-chair">
-                <h2 class="contact-info-chair">{{person.user.first_name}} {{person.user.last_name}}</h2>
-                <a href="tel:{{person.phone_number}}<" class="contact-info-chair">{{person.phone_number}}</a>
+                {% include "mainapp/contact_card.html" with person=person %} 
               {% endfor %}
 
           </div>
@@ -16,11 +14,7 @@
               <h1>Admission Department</h1>
               <div class="contact-info-container">
                 {%for person in dept_members%}
-                  <div >
-                  <img src="{%static 'img/user-avatar.png'%}" alt="admission committee chair photo" class="contact-info-chair">
-                  <h2 class="contact-info-chair">{{person.user.first_name}} {{person.user.last_name}}</h2>
-                  <a href="tel:{{person.phone_number}}<" class="contact-info-chair">{{person.phone_number}}</a>
-                  </div >
+                  {% include "mainapp/contact_card.html" with person=person %} 
                 {% endfor %}
               </div>
           </div>
@@ -28,11 +22,7 @@
               <h1>Members of Admission Committee</h1>
               <div class="contact-info-container">
                   {%for person in committie%}
-                  <div >
-                    <img src="{%static 'img/user-avatar.png'%}" alt="admission committee chair photo" class="contact-info-chair">
-                    <h2 class="contact-info-chair">{{person.user.first_name}} {{person.user.last_name}}</h2>
-                    <a href="tel:{{person.phone_number}}<" class="contact-info-chair">{{person.phone_number}}</a>
-                  </div>
+                    {% include "mainapp/contact_card.html" with person=person %} 
                   {% endfor %}
               </div>
           </div>

@@ -4,8 +4,8 @@
       <main>
         <div class="member-info">
             <div>
-                <h1>{{request.user.first_name}} {{request.user.last_name}}</h1>
-                    <h3>Associate Professor</h3>
+                <h1>{{user.user.first_name}} {{user.user.last_name}}</h1>
+                    <h4>{{position}}</h4>
             </div>
             <div>
               <img src="{% static 'img/user-avatar.png'%}" alt="member photo">
@@ -13,30 +13,31 @@
         </div>
         <div class="member-container">
             <h2>General Information</h2>
-            <p>Position: {{position}}</p>
-            <p>Department: {{request.user.profilemodel.department}}</p>
-            <p>School: {{request.user.profilemodel.school}}</p>
+            <p>Department: {{user.department}}</p>
+            <p>School: {{user.school}}</p>
             <hr>
             <h2>Contact Information:</h2>
-            <p>Telephone number: <a href="tel:{{request.user.profilemodel.phone_number}}" class="contact-info-member">{{request.user.profilemodel.phone_number}}</a></p>
-            <p>Email: <a href="mailto:{{request.user.email}}" class="contact-info-member">{{request.user.email}}</a></p>
+            <p>Telephone number: <a href="tel:{{user.phone_number}}" class="contact-info-member">{{user.phone_number}}</a></p>
+            <p>Email: <a href="mailto:{{user.user.email}}" class="contact-info-member">{{user.user.email}}</a></p>
         </div>
-        <div class="member-password">
 
-            <h2>Change Password</h2>
-                <div>
-                    <form id="password-form" action="" method="POST">
-                    {% csrf_token %}
+        {%if request.user == user.user%}
+            <div class="member-password">
+                <h2>Change Password</h2>
+                    <div>
+                        <form id="password-form" action="" method="POST">
+                        {% csrf_token %}
 
-                    {{form.as_p}}
+                        {{form.as_p}}
 
-                    {%for message in messages%}
-                        <p> {{message}}<p>
-                    {% endfor %}
+                        {%for message in messages%}
+                            <p> {{message}}<p>
+                        {% endfor %}
 
-                    <input type="submit" class="button-password" value="Change password">
-                    </form>
-                </div>
-        </div>
+                        <input type="submit" class="button-password" value="Change password">
+                        </form>
+                    </div>
+            </div>
+        {%endif%}
       </main>
 {% endblock %}

@@ -129,7 +129,6 @@ def personalView(request):
         'Admission department','Admission committie member',
         'Chair of the admission committie','School Secretary'
     ]
-
     if request.method == 'POST':
         print("\n\n\nPOST INIT")
         form = PasswordChangeForm(request.user, request.POST)
@@ -146,9 +145,25 @@ def personalView(request):
         form = PasswordChangeForm(request.user)
     context ={
         'position':position[request.user.profilemodel.position],
-        'form': form
+        'form': form,
+        'user':request.user.profilemodel
         }
     return render(request, 'mainapp/personal.html', context)
+
+
+@login_required(login_url = 'login')
+def profileView(request, uiid):
+    position = [
+        'Admission department','Admission committie member',
+        'Chair of the admission committie','School Secretary'
+    ]
+    user = ProfileModel.objects.get(staff_id = uiid)
+    context ={
+        'position':position[request.user.profilemodel.position],
+        'user': user
+        }
+    return render(request, 'mainapp/personal.html', context)
+
 
 @auth_check
 def loginView(request):
