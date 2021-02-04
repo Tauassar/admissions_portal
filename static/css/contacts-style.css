@@ -1,5 +1,5 @@
 
-main {
+#contacts-page {
     display: flex;
     flex-direction: column;
 }
@@ -12,7 +12,7 @@ main {
     padding: 5px;
 }
 
-img {
+img.contact-info-admission, img.contact-info-committee, img.contact-info-chair{
     width: 100px;
     height: 100px;
 }
@@ -28,12 +28,15 @@ img {
     flex-wrap: wrap;
 }
 
-a {
-  text-decoration: none;
-  color: rgb(255, 0, 0);
-}
-
-a:hover {
-  color: #6c63ff;
-  transition: .3s;
-}
+a.tel-num{
+    text-decoration: none;
+    color: whitesmoke;
+  }
+  
+  a.tel-num:hover {
+    color: #6c63ff;
+    transition: .3s;
+  }
+  
+  
+  
