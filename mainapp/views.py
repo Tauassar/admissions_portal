@@ -1,3 +1,4 @@
+import time
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -129,15 +130,17 @@ def personalView(request):
         'Chair of the admission committie','School Secretary'
     ]
 
-
     if request.method == 'POST':
+        print("\n\n\nPOST INIT")
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
+            print("\n\n\nPass changed")
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Your password was successfully updated!')
             return redirect('personal')
         else:
+            print("\n\n\nError")
             messages.error(request, 'Please correct the error below.')
     else:
         form = PasswordChangeForm(request.user)

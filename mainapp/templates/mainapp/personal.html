@@ -22,13 +22,18 @@
             <p>Email: <a href="mailto:{{request.user.email}}" class="contact-info-member">{{request.user.email}}</a></p>
         </div>
         <div class="member-password">
+
             <h2>Change Password</h2>
                 <div>
-                    <form id="password-form">
-                    <p>Enter old password: <input type="password" class="input-lg form-control" name="password1" id="password-old" placeholder="Old Password" autocomplete="off"></p>
-                </div>
-                <div>
-                    <p>Enter new password: <input type="password" class="input-lg form-control" name="password2" id="password-new" placeholder="New Password" autocomplete="off"></p>
+                    <form id="password-form" action="" method="POST">
+                    {% csrf_token %}
+
+                    {{form.as_p}}
+
+                    {%for message in messages%}
+                        <p> {{message}}<p>
+                    {% endfor %}
+
                     <input type="submit" class="button-password" value="Change password">
                     </form>
                 </div>
