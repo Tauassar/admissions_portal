@@ -4,6 +4,9 @@
           <nav>
             <ul>
               <li><a href="{% url 'dashboard'%}">Home</a></li>
+              {%if position == 2%}
+              <li><a href="{% url 'set_threshold'%}">Statistics</a></li>
+              {%endif%}
               <li><a href="{% url 'contacts'%}">Contacts</a></li>
               <li><a href="{% url 'info'%}">Information</a></li>
               <li><a href="{% url 'personal'%}">Profile</a></li>

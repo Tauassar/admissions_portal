@@ -1,4 +1,6 @@
 import time
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -6,24 +8,39 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
-from .models import ProfileModel, CandidateModel,EvaluationModel,InformationModel
-from .forms import CandidateEvaluateForm, AddCandidateForm, ApprovementForm
+from .models import ProfileModel, CandidateModel,CandidateEvaluationModel,InformationModel,AdmissionYearModel
+from .forms import CandidateEvaluateForm, AddCandidateForm, ApprovementForm, AdmissionRoundForm
 from .decorators import auth_check,check_permissions
 
 adm_dep = 0
 committie = 1
 chair = 2
 secretary=3
+def getCurrentAdmissionsYearAndRound():
+    try:
+        admission_year = AdmissionYearModel.objects.get(active=True)
+        admission_round = admission_year.admissionroundmodel_set.get(finished=False)
+    except ObjectDoesNotExist:
+        admission_year = None
+        admission_round = None
+    return [admission_year, admission_round]
+    
 
 @login_required(login_url = 'login')
 def dashboardView(request):
-    candidates = CandidateModel.objects.all()
-    profile = ProfileModel.objects.get(user = request.user)
-    evaluations = EvaluationModel.objects.all()
+    admission_year, admission_round = getCurrentAdmissionsYearAndRound()
+    
+    try:
+        candidates = admission_round.candidatemodel_set.all()
+        profile = ProfileModel.objects.get(user = request.user)
+        evaluations = CandidateEvaluationModel.objects.all()
+    except (ObjectDoesNotExist, AttributeError):
+        return render(request, 'mainapp/dashboard.html')
+
     context={
         'candidates':candidates,
         'position':profile.position,
-        'evaluations':evaluations
+        'evaluations':evaluations,
     }
     return render(request, 'mainapp/dashboard.html', context)
 
@@ -33,7 +50,7 @@ def candidateEvaluateView(request,uuid):
 
     evaluator = ProfileModel.objects.get(user = request.user)
     candidate = CandidateModel.objects.get(candidate_id = uuid)
-    evaluation = EvaluationModel.objects.get(evaluator = evaluator, candidate=candidate)
+    evaluation = CandidateEvaluationModel.objects.get(evaluator = evaluator, candidate=candidate)
     form = CandidateEvaluateForm(instance=evaluation)
     if request.method == "POST":
         form = CandidateEvaluateForm(request.POST,instance=evaluation)
@@ -59,7 +76,7 @@ def observeCandidateView(request,uuid):
 @check_permissions(allowed_pos=[secretary])
 def approveEvalView(request,uuid):
 
-    evaluation = EvaluationModel.objects.get(evaluation_id = uuid)
+    evaluation = CandidateEvaluationModel.objects.get(evaluation_id = uuid)
     form = ApprovementForm(instance=evaluation)
     context = {'evaluation':evaluation}
     if request.method == "POST":
@@ -77,30 +94,16 @@ def approveEvalView(request,uuid):
 @login_required(login_url = 'login')
 @check_permissions(allowed_pos=[adm_dep])
 def createCandidateView(request):
-    
+    admission_year = AdmissionYearModel.objects.get(active=True)
+    admission_round = admission_year.admissionroundmodel_set.filter(finished=False)
     form = AddCandidateForm()
     if request.method == "POST":
         form = AddCandidateForm(request.POST)
         if form.is_valid():
-            candidate = form.save()
-            #candidate = CandidateModel.objects.get(candidate_id = request.POST.uuid)
-            evaluators_committie = ProfileModel.objects.filter(position = 1)
-            
-            evaluators_chair = ProfileModel.objects.filter(position = 2)
-            for person in evaluators_committie:
-                 EvaluationModel.objects.create(
-                    evaluator = person,
-                    candidate = candidate
-                )
-            for person in evaluators_chair:
-                 EvaluationModel.objects.create(
-                    evaluator = person,
-                    candidate = candidate
-                )
-
+            form.save()
             return redirect('dashboard')
+            
     context = {'form':form}
-
     return render(request, 'mainapp/create_candidate.html', context)
 
 @login_required(login_url = 'login')
@@ -191,3 +194,30 @@ def loginView(request):
 def logoutView(request):
     logout(request)
     return redirect('login')
+
+@login_required(login_url = 'login')
+@check_permissions(allowed_pos=[chair])
+def setThresholdView(request):
+    
+    admission_year, admission_round = getCurrentAdmissionsYearAndRound()
+    
+    try:
+        candidates = admission_round.candidatemodel_set.all()
+        profile = ProfileModel.objects.get(user = request.user)
+    except (ObjectDoesNotExist, AttributeError):
+        return render(request, 'mainapp/dashboard.html')
+
+    form = AdmissionRoundForm()
+    if request.method == "POST":
+        form = AdmissionRoundForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    context = {
+        'admissiou_round':admission_round, 
+        'form':form,
+        'candidates':candidates,
+        'total_candidates':len(candidates)
+      }
+    return render(request, 'mainapp/set_threshold.html', context)
+

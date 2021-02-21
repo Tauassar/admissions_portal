@@ -38,8 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mainapp',
-    'django_filters'
+
+    'mainapp.apps.MainappConfig',
+
+    'django_filters',
+    'phonenumber_field',
+    'django_cleanup.apps.CleanupConfig', # should go after your apps
 ]
 
 MIDDLEWARE = [
@@ -65,6 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'mainapp.context_processors.add_variable_to_context'
             ],
         },
     },

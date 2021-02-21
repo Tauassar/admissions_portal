@@ -1,0 +1,43 @@
+{% extends 'mainapp/base.html' %}
+{% block content %}
+<style>
+    .chair-container {
+    display:flex;
+    justify-content: space-around;
+    padding: 40px;
+}
+</style>
+<main>
+    <main>
+        <div class="chair-container">
+            <form class="filter-students" action='' method="POST">
+            {% csrf_token %}
+                <h2>Candidates' filtering</h2>
+              <label class="label-filter">Enter critical number of points to pass: {{form.threshold}} </label>
+              <input type="submit" class="button-create" value="Set">
+            </form>
+            <div class="student-list">
+                <h2>Candidates' list</h2>
+                {%for candidate in candidates%}
+                     <div class="candidate">{{candidate.first_name}} {{candidate.last_name}}</div>
+                {%endfor%}
+            </div>
+            <div class="stats">
+                <h2>Total statistics</h2>
+                <div class="total-candidates">
+                    <p>Total candidates: {{total_candidates}}</p>
+                </div>
+                <div class="evaluated-candidates">
+                    <p>Evaluated candidates</p>
+                </div>
+                <div class="inprocess-candidates">
+                    <p>Candidates in evaluation:</p>
+                </div>
+                <div class="noteval-candidates">
+                    <p>Not evaluated candidates:</p>
+                </div>
+            </div>
+          </div>
+    </main>
+</main>
+{% endblock %}
