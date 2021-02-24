@@ -8,7 +8,11 @@
                     <h4>{{position}}</h4>
             </div>
             <div>
+            {% if profile_pic %}
+              <img src=" {{profile_pic.url}} " alt="member photo">
+            {% else %}
               <img src="{% static 'img/user-avatar.png'%}" alt="member photo">
+            {% endif %}
             </div>
         </div>
         <div class="member-container">

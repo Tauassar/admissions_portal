@@ -10,16 +10,25 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 from .fields import MinMaxInt,MinMaxFloat
 
+STATUS = [
+('Not evaluated', 'Not evaluated'),
+('In progress', 'In progress'),
+('Approved', 'Approved'),
+('Rejected', 'Rejected'),
+]
 
-
+DEGREE = [
+    (1, 'MSc'),
+    (2, 'PhD'),
+]
+Positions = [
+    (0, 'Admission department'),
+    (1, 'Admission committie member'),
+    (2, 'Chair of the admission committie'),
+    (3, 'School Secretary')
+]
 # TODO: remove this model and add existing fields to the custom user model
 class ProfileModel(models.Model):
-    Positions = [
-        (0, 'Admission department'),
-        (1, 'Admission committie member'),
-        (2, 'Chair of the admission committie'),
-        (3, 'School Secretary')
-    ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
@@ -67,6 +76,7 @@ class AdmissionRoundModel(models.Model):
     admission_year = models.ForeignKey(AdmissionYearModel, on_delete=models.CASCADE)
     round_number = MinMaxInt(min_value=1, max_value=3, default =1)
     threshold=MinMaxInt(min_value=0, max_value=100, default=0)
+    mean_value = models.FloatField(default=0,blank=True)
     finished = models.BooleanField(default = False)
 
     def __str__(self):
@@ -74,17 +84,6 @@ class AdmissionRoundModel(models.Model):
 
 
 class CandidateModel(models.Model):
-
-    STATUS = [
-        ('Not evaluated', 'Not evaluated'),
-        ('In progress', 'In progress'),
-        ('Approved', 'Approved'),
-        ('Rejected', 'Rejected'),
-    ]
-    DEGREE = [
-        (1, 'MSc'),
-        (2, 'PhD'),
-    ]
     #information
     candidate_id = models.AutoField(primary_key=True, editable = False, unique=True) 
     first_name = models.CharField(max_length=255)
@@ -113,10 +112,6 @@ class CandidateTestingInformationModel(models.Model):
 
 
 class CandidateEducationModel(models.Model):
-    DEGREE = [
-        (1, 'MSc'),
-        (2, 'PhD'),
-    ]
     candidate = models.ForeignKey(CandidateModel, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
@@ -137,12 +132,6 @@ class CandidateEvaluationModel(models.Model):
         (3, '3'),
         (4, '4'),
         (5, '5'),
-    ]
-    STATUS = [
-        ('Not evaluated', 'Not evaluated'),
-        ('In progress', 'In progress'),
-        ('Approved', 'Approved'),
-        ('Rejected', 'Rejected'),
     ]
     evaluation_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) 
     evaluator = models.ForeignKey(ProfileModel, on_delete = models.CASCADE)
@@ -178,6 +167,7 @@ class InterviewEvaluationModel(models.Model):
     interpersonal_skills =  MinMaxInt(min_value=0, max_value=10, default=0)
     english_level =  MinMaxInt(min_value=0, max_value=10, default=0)
     interview_comment = models.TextField()
+    skipped_evaluation = models.BooleanField(default=False)
        
     def __str__(self):
         return self.candidate.first_name+" "+self.candidate.last_name  
