@@ -3,11 +3,7 @@
 
 <a href = "{% url 'profile' person.staff_id %}">
     <div >
-        {% if profile_pic%}
-            <img src=" {{profile_pic.url}} " alt="member photo">
-        {% else %}
-            <img src="{% static 'img/user-avatar.png'%}" alt="member photo">
-        {% endif %}
+        <img src=" {{person.profile_pic.url}} " alt="member photo">
         <h2 class="contact-info-chair">{{person.user.first_name}} {{person.user.last_name}}</h2>
         <a href="tel:{{person.phone_number}}<" class="contact-info-chair">{{person.phone_number}}</a>
     </div >

@@ -27,12 +27,21 @@ Positions = [
     (2, 'Chair of the admission committie'),
     (3, 'School Secretary')
 ]
+
+choices = [
+    (1, '1'),
+    (2, '2'),
+    (3, '3'),
+    (4, '4'),
+    (5, '5'),
+]
+
 # TODO: remove this model and add existing fields to the custom user model
 class ProfileModel(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    profile_pic = models.ImageField(null=True, blank=True)
+    profile_pic = models.ImageField(default = 'default_user-avatar.png',null=True, blank=True)
     staff_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) 
     phone_number = PhoneNumberField(null=False, blank=False)
     department = models.CharField(max_length=50)
@@ -126,13 +135,6 @@ class CandidateEducationModel(models.Model):
 
 
 class CandidateEvaluationModel(models.Model):
-    choices = [
-        (1, '1'),
-        (2, '2'),
-        (3, '3'),
-        (4, '4'),
-        (5, '5'),
-    ]
     evaluation_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) 
     evaluator = models.ForeignKey(ProfileModel, on_delete = models.CASCADE)
     candidate = models.ForeignKey(CandidateModel, on_delete=models.CASCADE, default=None)
