@@ -98,7 +98,7 @@ def createCandidateView(request):
     admission_round = admission_year.admissionroundmodel_set.filter(finished=False)
     form = AddCandidateForm()
     if request.method == "POST":
-        form = AddCandidateForm(request.POST)
+        form = AddCandidateForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('dashboard')

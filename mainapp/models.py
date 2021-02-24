@@ -92,6 +92,11 @@ class AdmissionRoundModel(models.Model):
         return "Round #" + str(self.round_number)+" for year: "+str(self.admission_year.start_year)+"-"+str(self.admission_year.end_year)
 
 
+def file_directiry_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    return '{0}_{1}_{2}/{3}'.format(instance.first_name, instance.last_name,
+    instance.date_created.strftime('%d_%m_%Y'),filename)
+
 class CandidateModel(models.Model):
     #information
     candidate_id = models.AutoField(primary_key=True, editable = False, unique=True) 
@@ -102,9 +107,22 @@ class CandidateModel(models.Model):
     admission_round = models.ForeignKey(AdmissionRoundModel, on_delete=models.CASCADE)
 
     #candidate evaluation
-    gpa = MinMaxFloat(min_value=0, max_value=4.0, default=0, help_text='GPA')
+    gpa = MinMaxFloat(min_value=0, max_value=4.0, default=0)
     school_rating = MinMaxInt(min_value=0, max_value=5, default=0)
     research_experience = models.IntegerField(default=0)
+
+    #files
+    diploma = models.FileField(upload_to=file_directiry_path)
+    ielts_certificate = models.FileField(null = True, blank = True)
+    ielts_certificate = models.FileField(null = True, blank = True)
+    toefl_certificate = models.FileField(null = True, blank = True)
+    english_level_certificate = models.FileField(null = True, blank = True)
+    gmat_or_gre = models.FileField(null = True, blank = True)
+    statement_of_purpose = models.FileField(null = True, blank = True)
+    cv = models.FileField(null = True, blank = True)
+    recomendation_1 = models.FileField(null = True, blank = True)
+    recomendation_2 = models.FileField(null = True, blank = True)
+
 
     def __str__(self):
         return self.first_name+" "+self.last_name

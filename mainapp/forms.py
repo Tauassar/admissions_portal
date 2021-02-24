@@ -17,7 +17,7 @@ class CandidateEvaluateForm(ModelForm):
 class AddCandidateForm(ModelForm):
     class Meta:
         model = CandidateModel
-        exclude = ['admission_round',]
+        exclude = ['admission_round','gpa','school_rating','research_experience']
 
 
 class AdmissionRoundForm(ModelForm):
