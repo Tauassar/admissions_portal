@@ -36,14 +36,14 @@ def dashboardView(request):
         profile = ProfileModel.objects.get(user = request.user)
         evaluations = CandidateEvaluationModel.objects.all()
     except (ObjectDoesNotExist, AttributeError):
-        return render(request, 'mainapp/dashboard.html')
+        return render(request, 'mainapp/main_dashboard.html')
 
     context={
         'candidates':candidates,
         'position':profile.position,
         'evaluations':evaluations,
     }
-    return render(request, 'mainapp/dashboard.html', context)
+    return render(request, 'mainapp/main_dashboard.html', context)
 
 @login_required(login_url = 'login')
 @check_permissions(allowed_pos=[committie,chair])

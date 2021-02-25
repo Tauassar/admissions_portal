@@ -8,7 +8,7 @@
 
 <a href = "{% url 'candidate_evaluate' candidate.candidate_id %}">
     <div class="candidate-eval">
-        <img src="{%static 'img/user-avatar.png'%}" alt="candidate avatar">
+        <img src="{%static 'img/default_user_avatar.png'%}" alt="candidate avatar">
         <p>{{candidate.first_name}} {{candidate.last_name}}</p>
         <p>{{candidate.uuid}}</p>
         <p id="status">Status</p>
