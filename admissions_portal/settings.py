@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'mainapp.apps.MainappConfig',
-
+    
+    'crispy_forms',
+    "crispy_tailwind",
     'django_filters',
     'phonenumber_field',
     'django_cleanup.apps.CleanupConfig', # should go after your apps
@@ -127,6 +129,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
+CRISPY_TEMPLATE_PACK = 'uni_form'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')

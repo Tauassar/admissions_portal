@@ -2,16 +2,17 @@ from django.forms import ModelForm
 from .models import *
 from django.contrib.auth.models import User
 
+class InterviewEvaluationInline(ModelForm):
+    class Meta:
+        model = InterviewEvaluationModel
+        fields = '__all__'
+
+
 class CandidateEvaluateForm(ModelForm):
     class Meta:
         model = CandidateEvaluationModel
-        fields = [
-            # 'gpa','recommendations','educational_backgorund',
-            # 'understanding_of_major',
-            #'research_interest_and_motivation', 
-            # 'experience_and_goals',
-            #'english_level',
-        ]
+        exclude = ['evaluator']
+        inlines = [InterviewEvaluationInline]
 
 
 class AddCandidateForm(ModelForm):

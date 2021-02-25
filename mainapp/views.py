@@ -7,8 +7,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+from django.forms import inlineformset_factory
 
-from .models import ProfileModel, CandidateModel,CandidateEvaluationModel,InformationModel,AdmissionYearModel
+from .models import ProfileModel, CandidateModel,CandidateEvaluationModel,InformationModel,AdmissionYearModel,ApplicationEvaluationModel, InterviewEvaluationModel
 from .forms import CandidateEvaluateForm, AddCandidateForm, ApprovementForm, AdmissionRoundForm
 from .decorators import auth_check,check_permissions
 
@@ -52,15 +53,20 @@ def candidateEvaluateView(request,uuid):
     candidate = CandidateModel.objects.get(candidate_id = uuid)
     evaluation = CandidateEvaluationModel.objects.get(evaluator = evaluator, candidate=candidate)
     form = CandidateEvaluateForm(instance=evaluation)
+    application_formset = inlineformset_factory(CandidateEvaluationModel, ApplicationEvaluationModel,fields = '__all__', can_delete = False)
+    interview_formset = inlineformset_factory(CandidateEvaluationModel, InterviewEvaluationModel,fields = '__all__', can_delete = False)
     if request.method == "POST":
         form = CandidateEvaluateForm(request.POST,instance=evaluation)
         #, instance=evaluation
         if form.is_valid():
             form.save()
             return redirect('dashboard')
-    context = {'form':form, 'candidate':candidate}
+    context = {
+        'application_formset':application_formset,
+        'interview_formset':interview_formset,
+        'candidate':candidate}
 
-    return render(request, 'mainapp/profile-candidate.html', context)
+    return render(request, 'mainapp/evaluate_candidate.html', context)
 
 
 @login_required(login_url = 'login')

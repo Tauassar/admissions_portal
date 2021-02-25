@@ -1,0 +1,35 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+{% block content %}
+{% load crispy_forms_tags %}
+{{ formset.management_form|crispy }}
+
+  <div class="candidate-info">
+    <h1>{{candidate.first_name}} {{candidate.last_name}}</h2>
+    <div>
+      <img src="{% static 'img/default_user-avatar.png' %}" alt="user photo">
+    </div>
+  </div>
+  <div class="candidate-results">
+    <form action = "" method = "POST">
+      <div id="application-eval" class="evaluation">
+            {% csrf_token %}
+
+          <legend>Application Evaluation</legend>
+          <p>
+          {% crispy application_formset %}
+          </p>
+      </div>
+      <div id="interview-eval" class="evaluation">
+
+          <legend>Interview Evaluation</legend>
+          <p>
+          {% crispy interview_formset %}
+          </p>
+      </div>
+      <input type="submit" class="button-profile" name="Submit">
+    </form>
+  </div>
+</main>
+
+{% endblock %}

@@ -1,5 +1,6 @@
 
 {% extends 'mainapp/base.html' %}
+{% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
       <main>
@@ -16,7 +17,7 @@
                   <label>Enter Candidate's Reccomendations: {{form.recommendations}}</label>
                   <label>Upload Candidate's Educational background: {{form.educational_backgorund}}</label>
                 -->
-                {{form.as_p}}
+                {{ form|crispy }}
               <input type="submit" class="button-create" value="Create New Candidate">
               </form>
           </div>
