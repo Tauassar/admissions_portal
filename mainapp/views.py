@@ -9,7 +9,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.forms import inlineformset_factory
 
-from .models import ProfileModel, CandidateModel,CandidateEvaluationModel,InformationModel,AdmissionYearModel,ApplicationEvaluationModel, InterviewEvaluationModel
+from .models import CustomUserModel,CandidateModel,CandidateEvaluationModel,InformationModel,AdmissionYearModel,ApplicationEvaluationModel, InterviewEvaluationModel
 from .forms import CandidateEvaluateForm, AddCandidateForm, ApprovementForm, AdmissionRoundForm
 from .decorators import auth_check,check_permissions
 
@@ -17,6 +17,7 @@ adm_dep = 0
 committie = 1
 chair = 2
 secretary=3
+
 def getCurrentAdmissionsYearAndRound():
     try:
         admission_year = AdmissionYearModel.objects.get(active=True)
@@ -29,18 +30,15 @@ def getCurrentAdmissionsYearAndRound():
 
 @login_required(login_url = 'login')
 def dashboardView(request):
-    admission_year, admission_round = getCurrentAdmissionsYearAndRound()
-    
+    admission_year, admission_round = getCurrentAdmissionsYearAndRound()    
     try:
         candidates = admission_round.candidatemodel_set.all()
-        profile = ProfileModel.objects.get(user = request.user)
         evaluations = CandidateEvaluationModel.objects.all()
     except (ObjectDoesNotExist, AttributeError):
         return render(request, 'mainapp/main_dashboard.html')
-
     context={
         'candidates':candidates,
-        'position':profile.position,
+        'position':request.user.position,
         'evaluations':evaluations,
     }
     return render(request, 'mainapp/main_dashboard.html', context)
@@ -49,7 +47,7 @@ def dashboardView(request):
 @check_permissions(allowed_pos=[committie,chair])
 def candidateEvaluateView(request,uuid):
 
-    evaluator = ProfileModel.objects.get(user = request.user)
+    evaluator = request.user
     candidate = CandidateModel.objects.get(candidate_id = uuid)
     evaluation = CandidateEvaluationModel.objects.get(evaluator = evaluator, candidate=candidate)
     form = CandidateEvaluateForm(instance=evaluation)
@@ -120,10 +118,10 @@ def infoView(request):
 
 @login_required(login_url = 'login')
 def contactsView(request):
-    dept_members = ProfileModel.objects.filter(position = 0)
-    committie = ProfileModel.objects.filter(position = 1)
-    chairs = ProfileModel.objects.filter(position = 2)
-    secretaries = ProfileModel.objects.filter(position = 3)
+    dept_members = CustomUserModel.objects.filter(position = 0)
+    committie = CustomUserModel.objects.filter(position = 1)
+    chairs = CustomUserModel.objects.filter(position = 2)
+    secretaries = CustomUserModel.objects.filter(position = 3)
     context ={
         'dept_members':dept_members,
         'committie':committie,
@@ -153,9 +151,9 @@ def personalView(request):
     else:
         form = PasswordChangeForm(request.user)
     context ={
-        'position':position[request.user.profilemodel.position],
+        'position':position[request.user.position],
         'form': form,
-        'user':request.user.profilemodel
+        'user':request.user
         }
     return render(request, 'mainapp/personal.html', context)
 
@@ -166,9 +164,9 @@ def profileView(request, uiid):
         'Admission department','Admission committie member',
         'Chair of the admission committie','School Secretary'
     ]
-    user = ProfileModel.objects.get(staff_id = uiid)
+    user = CustomUserModel.objects.get(staff_id = uiid)
     context ={
-        'position':position[request.user.profilemodel.position],
+        'position':position[request.user.position],
         'user': user
         }
     return render(request, 'mainapp/personal.html', context)
@@ -209,7 +207,7 @@ def setThresholdView(request):
     
     try:
         candidates = admission_round.candidatemodel_set.all()
-        profile = ProfileModel.objects.get(user = request.user)
+        profile = request.user
     except (ObjectDoesNotExist, AttributeError):
         return render(request, 'mainapp/dashboard.html')
 

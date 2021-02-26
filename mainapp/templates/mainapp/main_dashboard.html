@@ -2,11 +2,11 @@
 {% block content %}
     <main>
           <div class="main-container">
-                {%if position == 2 or position == 1 %}
+                {%if request.user.position == 2 or request.user.position == 1 %}
                     {% include 'mainapp/eval_dashboard.html' %}
-                {%elif position == 0  %}
+                {%elif request.user.position == 0  %}
                     {% include 'mainapp/create_dashboard.html' %}                    
-                {%elif position == 3  %}
+                {%elif request.user.position == 3  %}
                     {% include 'mainapp/approve_dashboard.html' %}
                 {% endif %}
 

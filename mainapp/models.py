@@ -3,55 +3,63 @@ import datetime
 
 from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser, PermissionsMixin
+from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 from phonenumber_field.modelfields import PhoneNumberField
 
+from .managers import CustomUserManager
 from .fields import MinMaxInt,MinMaxFloat
-
-STATUS = [
-('Not evaluated', 'Not evaluated'),
-('In progress', 'In progress'),
-('Approved', 'Approved'),
-('Rejected', 'Rejected'),
-]
 
 DEGREE = [
     (1, 'MSc'),
     (2, 'PhD'),
 ]
-Positions = [
-    (0, 'Admission department'),
-    (1, 'Admission committie member'),
-    (2, 'Chair of the admission committie'),
-    (3, 'School Secretary')
-]
 
-choices = [
-    (1, '1'),
-    (2, '2'),
-    (3, '3'),
-    (4, '4'),
-    (5, '5'),
-]
+# choices = [
+#     (1, '1'),
+#     (2, '2'),
+#     (3, '3'),
+#     (4, '4'),
+#     (5, '5'),
+# ]
 
-# TODO: remove this model and add existing fields to the custom user model
-class ProfileModel(models.Model):
+'''User profile model, for managing staff accounts'''
+class CustomUserModel(AbstractUser):
+    username = None
+    email = models.EmailField(_('email address'), unique=True)
+    
+    admission_department=0
+    committie_member=1
+    committie_chair=2
+    school_secretary=3
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    Positions = [
+    (admission_department, 'Admission department'),
+    (committie_member, 'Admission committie member'),
+    (committie_chair, 'Chair of the admission committie'),
+    (school_secretary, 'School Secretary')
+    ]
 
     profile_pic = models.ImageField(default = 'default_user-avatar.png',null=True, blank=True)
-    staff_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) 
+    staff_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     phone_number = PhoneNumberField(null=False, blank=False)
     department = models.CharField(max_length=50)
     school = models.CharField(max_length=50)
-    position = models.IntegerField(choices=Positions, default=0)
+    position = models.IntegerField(choices=Positions, default=admission_department)
+
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
 
     def __str__(self):
-        return self.user.first_name+" "+self.user.last_name
+        return self.email
 
-
+'''Models for changing the admission periods, including admission rounds and years'''
 class AdmissionYearModel(models.Model):
     start_year = models.PositiveIntegerField(
             validators=[
@@ -75,7 +83,7 @@ class AdmissionYearModel(models.Model):
 
 class StaffListModel(models.Model):
     admission_year = models.OneToOneField(AdmissionYearModel, on_delete=models.CASCADE)
-    staff = models.ManyToManyField(ProfileModel)
+    staff = models.ManyToManyField(CustomUserModel)
 
     def __str__(self):
         return "Staff list for year: "+str(self.admission_year.start_year)+"-"+str(self.admission_year.end_year)
@@ -91,9 +99,10 @@ class AdmissionRoundModel(models.Model):
     def __str__(self):
         return "Round #" + str(self.round_number)+" for year: "+str(self.admission_year.start_year)+"-"+str(self.admission_year.end_year)
 
+'''Candidate models to store information about candidate 
+    and evaluations related to particular candidate'''
 
 def file_directiry_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     return '{0}_{1}_{2}/{3}'.format(instance.first_name, instance.last_name,
     instance.date_created.strftime('%d_%m_%Y'),filename)
 
@@ -153,16 +162,28 @@ class CandidateEducationModel(models.Model):
 
 
 class CandidateEvaluationModel(models.Model):
+    not_evaluated = 'Not evaluated'
+    in_progress = 'In progress'
+    approved = 'Approved'
+    rejected = 'Rejected'
+    
+    STATUS = [
+    (not_evaluated, 'Not evaluated'),
+    (in_progress, 'In progress'),
+    (approved, 'Approved'),
+    (rejected, 'Rejected'),
+    ]
+
     evaluation_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) 
-    evaluator = models.ForeignKey(ProfileModel, on_delete = models.CASCADE)
+    evaluator = models.ForeignKey(CustomUserModel, on_delete = models.CASCADE)
     candidate = models.ForeignKey(CandidateModel, on_delete=models.CASCADE, default=None)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
 
-    status = models.CharField(max_length =20, choices=STATUS,default='Not evaluated')
+    status = models.CharField(max_length =20, choices=STATUS,default=not_evaluated)
     approved_by_secretary = models.BooleanField(default= False)
 
     def __str__(self):
-        return self.candidate.first_name+" "+self.candidate.last_name +"("+self.evaluator.user.first_name+" "+self.evaluator.user.last_name+")" 
+        return self.candidate.first_name+" "+self.candidate.last_name +"("+self.evaluator.first_name+" "+self.evaluator.last_name+")" 
 
 
 class ApplicationEvaluationModel(models.Model):
@@ -193,7 +214,7 @@ class InterviewEvaluationModel(models.Model):
         return self.candidate.first_name+" "+self.candidate.last_name  
 
 
-
+'''Model to store information for the support(information) page'''
 class InformationModel(models.Model):
     publication_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) 
     title = models.CharField(max_length=255)

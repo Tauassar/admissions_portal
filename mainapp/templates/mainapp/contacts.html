@@ -26,5 +26,13 @@
                   {% endfor %}
               </div>
           </div>
+          <div class="contacts-container">
+              <h1>School Secretaries </h1>
+              <div class="contact-info-container">
+                  {%for person in secretaries%}
+                    {% include "mainapp/contact_card.html" with person=person %} 
+                  {% endfor %}
+              </div>
+          </div>
       </main>
 {% endblock %}

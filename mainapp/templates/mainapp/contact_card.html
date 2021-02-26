@@ -4,7 +4,7 @@
 <a href = "{% url 'profile' person.staff_id %}">
     <div >
         <img src=" {{person.profile_pic.url}} " alt="member photo">
-        <h2 class="contact-info-chair">{{person.user.first_name}} {{person.user.last_name}}</h2>
+        <h2 class="contact-info-chair">{{person.first_name}} {{person.last_name}}</h2>
         <a href="tel:{{person.phone_number}}<" class="contact-info-chair">{{person.phone_number}}</a>
     </div >
 </a>

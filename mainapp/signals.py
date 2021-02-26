@@ -2,12 +2,13 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from django.contrib.auth.models import User
-from .models import (CandidateModel, CandidateEvaluationModel, 
-    ProfileModel,AdmissionRoundModel, AdmissionYearModel, StaffListModel)
+from .models import (
+    CandidateModel, CandidateEvaluationModel, CustomUserModel, 
+    AdmissionRoundModel, AdmissionYearModel, StaffListModel)
 
 def candidate_evaluation(sender, instance, created, **kwargs):
     if created:
-        evaluators = ProfileModel.objects.filter(position__in = [1, 2])
+        evaluators = CustomUserModel.objects.filter(position__in = [1, 2])
         
         for person in evaluators:
                 CandidateEvaluationModel.objects.create(
@@ -17,7 +18,7 @@ def candidate_evaluation(sender, instance, created, **kwargs):
 
 def create_profile(sender, instance, created, **kwargs):
     if created:        
-        ProfileModel.objects.create(user = instance)
+        CustomUserModel.objects.create(user = instance)
 
 def create_admission_year(sender, instance, created, **kwargs):
     if created:
