@@ -32,14 +32,14 @@ class CustomUserModel(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
     
     admission_department=0
-    committie_member=1
-    committie_chair=2
+    committiee_member=1
+    committiee_chair=2
     school_secretary=3
 
     Positions = [
     (admission_department, 'Admission department'),
-    (committie_member, 'Admission committie member'),
-    (committie_chair, 'Chair of the admission committie'),
+    (committiee_member, 'Admission committie member'),
+    (committiee_chair, 'Chair of the admission committie'),
     (school_secretary, 'School Secretary')
     ]
 
@@ -208,7 +208,7 @@ class InterviewEvaluationModel(models.Model):
     interpersonal_skills =  MinMaxInt(min_value=0, max_value=10, default=0)
     english_level =  MinMaxInt(min_value=0, max_value=10, default=0)
     interview_comment = models.TextField()
-    skipped_evaluation = models.BooleanField(default=False)
+    skip_evaluation = models.BooleanField(default=False)
        
     def __str__(self):
         return self.candidate.first_name+" "+self.candidate.last_name  

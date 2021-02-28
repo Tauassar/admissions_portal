@@ -187,7 +187,7 @@ def loginView(request):
             return redirect('dashboard')
 
         else:
-            messages.error(request, "Data is invalid")
+            messages.error(request, "Please check username and password")
             return render(request, 'mainapp/login.html', context)
 
 
