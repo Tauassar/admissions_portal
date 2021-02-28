@@ -7,6 +7,7 @@ from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.shortcuts import render, redirect, get_object_or_404
 
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -80,6 +81,16 @@ class AdmissionYearModel(models.Model):
     def __str__(self):
         return "Admissions year: "+str(self.start_year)+"-"+str(self.end_year)
 
+    def getCurrentAdmissionRound(self):
+        try:
+            output=self.admissionroundmodel_set.get(finished=False)
+            return output
+        except Exception as e:
+            print(e)
+
+    def getStaffList(self):
+        return StaffListModel.objects.get(admission_year=self).staff.all()
+
 
 class StaffListModel(models.Model):
     admission_year = models.OneToOneField(AdmissionYearModel, on_delete=models.CASCADE)
@@ -88,12 +99,33 @@ class StaffListModel(models.Model):
     def __str__(self):
         return "Staff list for year: "+str(self.admission_year.start_year)+"-"+str(self.admission_year.end_year)
 
-    
+
+def get_current_admission_year():
+    try:
+        admission_year = AdmissionYearModel.objects.get(active=True)
+    except Exception as e:
+        print(e)
+    return admission_year
+
+def set_round_number():
+    try:
+        current_round_number = get_current_admission_round().round_number
+        if current_round_number == AdmissionRoundModel.max_rounds:
+            raise Exception('Number of admissions rounds exceeded its max value')
+    except Exception as e:
+        print(e)
+        return 0
+    return current_round_number+1
+
 class AdmissionRoundModel(models.Model):
-    admission_year = models.ForeignKey(AdmissionYearModel, on_delete=models.CASCADE)
-    round_number = MinMaxInt(min_value=1, max_value=3, default =1)
-    threshold=MinMaxInt(min_value=0, max_value=100, default=0)
-    mean_value = models.FloatField(default=0,blank=True)
+    max_rounds = 3
+    admission_year = models.ForeignKey(
+        AdmissionYearModel, 
+        default=get_current_admission_year, 
+        on_delete=models.CASCADE)
+    round_number = MinMaxInt(min_value=1, max_value=max_rounds, default =set_round_number)
+    threshold=MinMaxInt(min_value=0, max_value=100, default=None, blank=True, null=True)
+    mean_value = models.FloatField(default=None, blank=True, null=True)
     finished = models.BooleanField(default = False)
 
     def __str__(self):
@@ -106,6 +138,15 @@ def file_directiry_path(instance, filename):
     return '{0}_{1}_{2}/{3}'.format(instance.first_name, instance.last_name,
     instance.date_created.strftime('%d_%m_%Y'),filename)
 
+
+def get_current_admission_round():
+    try:
+        admission_year = AdmissionYearModel.objects.get(active=True)
+        admission_round = admission_year.getCurrentAdmissionRound()
+    except Exception as e:
+        print(e)
+    return admission_round
+
 class CandidateModel(models.Model):
     #information
     candidate_id = models.AutoField(primary_key=True, editable = False, unique=True) 
@@ -113,7 +154,7 @@ class CandidateModel(models.Model):
     last_name = models.CharField(max_length=255)
     applying_degree = models.IntegerField(choices=DEGREE, default =1)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
-    admission_round = models.ForeignKey(AdmissionRoundModel, on_delete=models.CASCADE)
+    admission_round = models.ForeignKey(AdmissionRoundModel, editable=False, default=get_current_admission_round, on_delete=models.CASCADE)
 
     #candidate evaluation
     gpa = MinMaxFloat(min_value=0, max_value=4.0, default=0)
@@ -131,7 +172,6 @@ class CandidateModel(models.Model):
     cv = models.FileField(null = True, blank = True)
     recomendation_1 = models.FileField(null = True, blank = True)
     recomendation_2 = models.FileField(null = True, blank = True)
-
 
     def __str__(self):
         return self.first_name+" "+self.last_name

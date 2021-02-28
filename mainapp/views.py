@@ -1,7 +1,7 @@
 import time
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -19,12 +19,8 @@ chair = 2
 secretary=3
 
 def getCurrentAdmissionsYearAndRound():
-    try:
-        admission_year = AdmissionYearModel.objects.get(active=True)
-        admission_round = admission_year.admissionroundmodel_set.get(finished=False)
-    except ObjectDoesNotExist:
-        admission_year = None
-        admission_round = None
+    admission_year = get_object_or_404(AdmissionYearModel, active=True)
+    admission_round = admission_year.getCurrentAdmissionRound()
     return [admission_year, admission_round]
     
 
@@ -38,7 +34,6 @@ def dashboardView(request):
         return render(request, 'mainapp/main_dashboard.html')
     context={
         'candidates':candidates,
-        'position':request.user.position,
         'evaluations':evaluations,
     }
     return render(request, 'mainapp/main_dashboard.html', context)
@@ -46,10 +41,9 @@ def dashboardView(request):
 @login_required(login_url = 'login')
 @check_permissions(allowed_pos=[committie,chair])
 def candidateEvaluateView(request,uuid):
-
     evaluator = request.user
-    candidate = CandidateModel.objects.get(candidate_id = uuid)
-    evaluation = CandidateEvaluationModel.objects.get(evaluator = evaluator, candidate=candidate)
+    candidate = get_object_or_404(CandidateModel, candidate_id = uuid)
+    evaluation = get_object_or_404(CandidateEvaluationModel, evaluator = evaluator, candidate=candidate)
     form = CandidateEvaluateForm(instance=evaluation)
     application_formset = inlineformset_factory(CandidateEvaluationModel, ApplicationEvaluationModel,fields = '__all__', can_delete = False)
     interview_formset = inlineformset_factory(CandidateEvaluationModel, InterviewEvaluationModel,fields = '__all__', can_delete = False)
@@ -66,23 +60,12 @@ def candidateEvaluateView(request,uuid):
 
     return render(request, 'mainapp/evaluate_candidate.html', context)
 
-
-@login_required(login_url = 'login')
-@check_permissions(allowed_pos=[adm_dep])
-def observeCandidateView(request,uuid):
-
-    candidate = CandidateModel.objects.get(candidate_id = uuid)
-    context = {'candidate':candidate}
-    return render(request, 'mainapp/view_candidate.html', context)
-
-
 @login_required(login_url = 'login')
 @check_permissions(allowed_pos=[secretary])
 def approveEvalView(request,uuid):
-
-    evaluation = CandidateEvaluationModel.objects.get(evaluation_id = uuid)
+    evaluation = get_object_or_404(CandidateEvaluationModel, evaluation_id = uuid)
     form = ApprovementForm(instance=evaluation)
-    context = {'evaluation':evaluation}
+
     if request.method == "POST":
         form = ApprovementForm(request.POST, instance=evaluation)
         form.status = 'Approved'
@@ -90,6 +73,7 @@ def approveEvalView(request,uuid):
             evaluation.status = 'Approved'
             evaluation.save()
             return redirect('dashboard')
+
     context = {'form':form, 'evaluation':evaluation}
     return render(request, 'mainapp/approve_evaluation.html', context)
 
@@ -97,10 +81,14 @@ def approveEvalView(request,uuid):
 
 @login_required(login_url = 'login')
 @check_permissions(allowed_pos=[adm_dep])
-def createCandidateView(request):
-    admission_year = AdmissionYearModel.objects.get(active=True)
-    admission_round = admission_year.admissionroundmodel_set.filter(finished=False)
-    form = AddCandidateForm()
+def createCandidateView(request, id=None):
+    admission_year, admission_round = getCurrentAdmissionsYearAndRound()
+    if id is not None:
+        candidate = get_object_or_404(CandidateModel, candidate_id = id)
+        form = AddCandidateForm(instance=candidate)
+    else:
+        form = AddCandidateForm()
+        
     if request.method == "POST":
         form = AddCandidateForm(request.POST, request.FILES)
         if form.is_valid():
@@ -118,10 +106,12 @@ def infoView(request):
 
 @login_required(login_url = 'login')
 def contactsView(request):
-    dept_members = CustomUserModel.objects.filter(position = 0)
-    committie = CustomUserModel.objects.filter(position = 1)
-    chairs = CustomUserModel.objects.filter(position = 2)
-    secretaries = CustomUserModel.objects.filter(position = 3)
+    admission_year = get_object_or_404(AdmissionYearModel, active=True)
+    staff_list = admission_year.getStaffList()
+    dept_members = staff_list.filter(position = 0)
+    committie = staff_list.filter(position = 1)
+    chairs = staff_list.filter(position = 2)
+    secretaries = staff_list.filter(position = 3)
     context ={
         'dept_members':dept_members,
         'committie':committie,
@@ -164,10 +154,13 @@ def profileView(request, uiid):
         'Admission department','Admission committie member',
         'Chair of the admission committie','School Secretary'
     ]
-    user = CustomUserModel.objects.get(staff_id = uiid)
+    
+    if uiid.replace(" ", "")==str(request.user.staff_id):
+        return redirect('personal')
+    user = get_object_or_404(CustomUserModel, staff_id = uiid)
+
     context ={
         'position':position[request.user.position],
-        'user': user
         }
     return render(request, 'mainapp/personal.html', context)
 
@@ -201,8 +194,7 @@ def logoutView(request):
 
 @login_required(login_url = 'login')
 @check_permissions(allowed_pos=[chair])
-def setThresholdView(request):
-    
+def ChairView(request):
     admission_year, admission_round = getCurrentAdmissionsYearAndRound()
     
     try:
@@ -223,5 +215,5 @@ def setThresholdView(request):
         'candidates':candidates,
         'total_candidates':len(candidates)
       }
-    return render(request, 'mainapp/set_threshold.html', context)
+    return render(request, 'mainapp/chair_template.html', context)
 
