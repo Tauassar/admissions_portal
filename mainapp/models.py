@@ -1,22 +1,30 @@
 import uuid
 import datetime
-
 from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import AbstractUser, PermissionsMixin
-from django.utils import timezone
+from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.shortcuts import render, redirect, get_object_or_404
-
 from phonenumber_field.modelfields import PhoneNumberField
-
 from .managers import CustomUserManager
 from .fields import MinMaxInt,MinMaxFloat
 
+MASTER = 1
+PHD = 2
 DEGREE = [
-    (1, 'MSc'),
-    (2, 'PhD'),
+    (MASTER, 'MSc'),
+    (PHD, 'PhD'),
+]
+
+ENROLLED=0
+ACCEPTED=1
+IN_WAITING_LIST=2
+REJECTED=3
+CANDIDATE_STATUS = [
+(ENROLLED, 'Enrolled'),
+(ACCEPTED, 'Accepted for enrollment'),
+(IN_WAITING_LIST, 'In waiting list'),
+(REJECTED, 'Rejected')
 ]
 
 # choices = [
@@ -31,13 +39,14 @@ DEGREE = [
 class CustomUserModel(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
-    
+    staff_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     admission_department=0
     committiee_member=1
     committiee_chair=2
     school_secretary=3
 
-    Positions = [
+    POSITIONS = [
     (admission_department, 'Admission department'),
     (committiee_member, 'Admission committie member'),
     (committiee_chair, 'Chair of the admission committie'),
@@ -45,11 +54,10 @@ class CustomUserModel(AbstractUser):
     ]
 
     profile_pic = models.ImageField(default = 'default_user-avatar.png',null=True, blank=True)
-    staff_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     phone_number = PhoneNumberField(null=False, blank=False)
     department = models.CharField(max_length=50)
     school = models.CharField(max_length=50)
-    position = models.IntegerField(choices=Positions, default=admission_department)
+    position = models.IntegerField(choices=POSITIONS, default=admission_department)
 
     objects = CustomUserManager()
 
@@ -79,7 +87,7 @@ class AdmissionYearModel(models.Model):
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return "Admissions year: "+str(self.start_year)+"-"+str(self.end_year)
+        return "Admissions year: {0}-{1}".format(str(self.start_year), str(self.end_year))
 
     def getCurrentAdmissionRound(self):
         try:
@@ -97,14 +105,16 @@ class StaffListModel(models.Model):
     staff = models.ManyToManyField(CustomUserModel)
 
     def __str__(self):
-        return "Staff list for year: "+str(self.admission_year.start_year)+"-"+str(self.admission_year.end_year)
+        return "Staff list for year: {0}-{1}".format(
+            self.admission_year.start_year,
+            self.admission_year.end_year)
 
 
 def get_current_admission_year():
     try:
         admission_year = AdmissionYearModel.objects.get(active=True)
     except Exception as e:
-        print(e)
+        return
     return admission_year
 
 def set_round_number():
@@ -114,7 +124,7 @@ def set_round_number():
             raise Exception('Number of admissions rounds exceeded its max value')
     except Exception as e:
         print(e)
-        return 0
+        return 1
     return current_round_number+1
 
 class AdmissionRoundModel(models.Model):
@@ -125,13 +135,26 @@ class AdmissionRoundModel(models.Model):
         on_delete=models.CASCADE)
     round_number = MinMaxInt(min_value=1, max_value=max_rounds, default =set_round_number)
     threshold=MinMaxInt(min_value=0, max_value=100, default=None, blank=True, null=True)
-    mean_value = models.FloatField(default=None, blank=True, null=True)
+    mean_score = models.FloatField(default=None, blank=True, null=True)
     finished = models.BooleanField(default = False)
+    
+    def calculateMeanScore(self):
+        candidates = self.candidatemodel_set.all()
+        sum_score = 0;
+        for candidate in candidates:
+            sum_score+=candidate.total_score
+       
+        self.mean_score = sum_score/len(candidates)
+        self.save()
 
     def __str__(self):
-        return "Round #" + str(self.round_number)+" for year: "+str(self.admission_year.start_year)+"-"+str(self.admission_year.end_year)
+        return "Round #{0} year: {1}-{2}".format(
+            self.round_number,
+            self.admission_year.start_year,
+            self.admission_year.end_year
+            )
 
-'''Candidate models to store information about candidate 
+'''Candidate models to store information about candidate
     and evaluations related to particular candidate'''
 
 def file_directiry_path(instance, filename):
@@ -152,14 +175,25 @@ class CandidateModel(models.Model):
     candidate_id = models.AutoField(primary_key=True, editable = False, unique=True) 
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    applying_degree = models.IntegerField(choices=DEGREE, default =1)
+    applying_degree = models.IntegerField(choices=DEGREE, default =MASTER)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
-    admission_round = models.ForeignKey(AdmissionRoundModel, editable=False, default=get_current_admission_round, on_delete=models.CASCADE)
-
+    admission_round = models.ForeignKey(
+        AdmissionRoundModel,
+        editable=False,
+        default=get_current_admission_round,
+        on_delete=models.CASCADE)
+    total_score = MinMaxFloat(min_value=0, max_value=100, null=True, blank=True)
+    candidate_status = models.IntegerField(blank = True, null=True, choices=CANDIDATE_STATUS)
+    evaluation_finished = models.BooleanField(default=False)
     #candidate evaluation
-    gpa = MinMaxFloat(min_value=0, max_value=4.0, default=0)
-    school_rating = MinMaxInt(min_value=0, max_value=5, default=0)
-    research_experience = models.IntegerField(default=0)
+    gpa = MinMaxFloat(min_value=0, max_value=4.0, null=True, blank=True)
+    school_rating = MinMaxInt(min_value=0, max_value=5, null=True, blank=True)
+    research_experience = MinMaxInt(
+        min_value=0,
+        max_value=3,
+        null=True,
+        blank=True,
+        verbose_name='Relevant work/research experience')
 
     #files
     diploma = models.FileField(upload_to=file_directiry_path)
@@ -179,12 +213,12 @@ class CandidateModel(models.Model):
 
 class CandidateTestingInformationModel(models.Model):
     candidate = models.OneToOneField(CandidateModel, on_delete=models.CASCADE)
-    ielts = MinMaxFloat(min_value=1.0, max_value=9.0, null=True, help_text='IELTS')
-    toefl = MinMaxInt(min_value=0, max_value=120, null=True, help_text='TOEFL')
-    gre = MinMaxInt(min_value=0, max_value=340, null=True, help_text='GRE')
+    ielts = MinMaxFloat(min_value=1.0, max_value=9.0, null=True, blank = True, help_text='IELTS')
+    toefl = MinMaxInt(min_value=0, max_value=120, null=True, blank = True, help_text='TOEFL')
+    gre = MinMaxInt(min_value=0, max_value=340, null=True, blank = True, help_text='GRE')
 
     def __str__(self):
-        return "Test infromation for "+self.candidate.first_name+" "+self.candidate.last_name  
+        return "Test infromation for "+self.candidate.first_name+" "+self.candidate.last_name
 
 
 class CandidateEducationModel(models.Model):
@@ -192,13 +226,13 @@ class CandidateEducationModel(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     grad_date = models.DateField()
-    degree_type = models.IntegerField(choices=DEGREE, default =1)
+    degree_type = models.IntegerField(choices=DEGREE, default =MASTER)
     institution = models.CharField(max_length=255)
     study_field = models.CharField(max_length=255)
-    gpa = MinMaxFloat(min_value=0, max_value=4.0, default=0, help_text='GPA')
-   
+    gpa = MinMaxFloat(min_value=0, max_value=4.0, null=True, blank = True)
+
     def __str__(self):
-        return self.candidate.first_name+" "+self.candidate.last_name  
+        return self.candidate.first_name+" "+self.candidate.last_name
 
 
 class CandidateEvaluationModel(models.Model):
@@ -206,7 +240,7 @@ class CandidateEvaluationModel(models.Model):
     in_progress = 'In progress'
     approved = 'Approved'
     rejected = 'Rejected'
-    
+
     STATUS = [
     (not_evaluated, 'Not evaluated'),
     (in_progress, 'In progress'),
@@ -218,40 +252,86 @@ class CandidateEvaluationModel(models.Model):
     evaluator = models.ForeignKey(CustomUserModel, on_delete = models.CASCADE)
     candidate = models.ForeignKey(CandidateModel, on_delete=models.CASCADE, default=None)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
+    admission_round = models.ForeignKey(
+        AdmissionRoundModel,
+        on_delete=models.CASCADE,
+        default=get_current_admission_round)
 
-    status = models.CharField(max_length =20, choices=STATUS,default=not_evaluated)
+    evaluation_status = models.CharField(max_length =20, choices=STATUS,default=not_evaluated)
     approved_by_secretary = models.BooleanField(default= False)
 
     def __str__(self):
-        return self.candidate.first_name+" "+self.candidate.last_name +"("+self.evaluator.first_name+" "+self.evaluator.last_name+")" 
+        return "{0} {1} ({2} {3})".format(
+            self.candidate.first_name,
+            self.candidate.last_name,
+            self.evaluator.first_name,
+            self.evaluator.last_name)
 
 
 class ApplicationEvaluationModel(models.Model):
-    candidate = models.OneToOneField(CandidateEvaluationModel, on_delete=models.CASCADE)
-    relevancy = MinMaxInt(min_value=0, max_value=30, default=0)
-    statement_of_purpose = MinMaxInt(min_value=0, max_value=7, default=0)
-    recommendation_1 = MinMaxInt(min_value=0, max_value=5, default=0)
-    recommendation_2 = MinMaxInt(min_value=0, max_value=5, default=0)
-    relevant_degrees = MinMaxInt(min_value=0, max_value=5, default=0)
-    evaluation_comment = models.TextField()
-       
+    evaluation = models.OneToOneField(CandidateEvaluationModel, on_delete=models.CASCADE)
+    relevancy = MinMaxInt(
+        min_value=0,
+        max_value=30,
+        null=True,
+        blank=True,
+        verbose_name='Educational Background (relevancy)*')
+    statement_of_purpose = MinMaxInt(min_value=0, max_value=7, null=True, blank = True)
+    recommendation_1 = MinMaxInt(min_value=0, max_value=5, null=True, blank = True)
+    recommendation_2 = MinMaxInt(min_value=0, max_value=5, null=True, blank = True)
+    relevant_degrees = MinMaxInt(
+        min_value=0,
+        max_value=5,
+        null=True,
+        blank = True,
+        verbose_name='Other relevant academic degrees (if any), professional certification, academic distinction')
+    evaluation_comment = models.TextField(verbose_name='Comments by Evaluator(mandatory)')
+
+    def getField(self, field_name):
+        return self._meta.get_field(field_name)
+
     def __str__(self):
-        return self.candidate.first_name+" "+self.candidate.last_name  
+        return self.evaluation.candidate.first_name+" "+self.evaluation.candidate.last_name
 
 
 class InterviewEvaluationModel(models.Model):
-    candidate = models.OneToOneField(CandidateEvaluationModel, on_delete=models.CASCADE)
-    work_experience_goals = MinMaxInt(min_value=0, max_value=10, default=0)
-    research_interest_and_motivation = MinMaxInt(min_value=0, max_value=10, default=0)
-    understanding_of_major = MinMaxInt(min_value=0, max_value=10, default=0)
-    community_involvement =  MinMaxInt(min_value=0, max_value=10, default=0)
-    interpersonal_skills =  MinMaxInt(min_value=0, max_value=10, default=0)
-    english_level =  MinMaxInt(min_value=0, max_value=10, default=0)
-    interview_comment = models.TextField()
+    evaluation = models.OneToOneField(CandidateEvaluationModel, on_delete=models.CASCADE)
+    work_experience_goals = MinMaxInt(
+        min_value=0,
+        max_value=10,
+        null=True,
+        blank = True,
+        verbose_name='Career goals / Professional work experience')
+    research_interest_and_motivation = MinMaxInt(min_value=0, max_value=10, null=True, blank = True)
+    understanding_of_major = MinMaxInt(
+        min_value=0,
+        max_value=10,
+        null=True,
+        blank=True,
+        verbose_name='Overall understanding of major domain')
+    community_involvement =  MinMaxInt(
+        min_value=0,
+        max_value=10,
+        null=True,
+        blank=True,
+        verbose_name='Leadership and Community Involvement')
+    interpersonal_skills =  MinMaxInt(
+        min_value=0,
+        max_value=10,
+        null=True,
+        blank=True,
+        verbose_name='Communication and Interpersonal Skills')
+    english_level =  MinMaxInt(
+        min_value=0,
+        max_value=10,
+        null=True,
+        blank=True,
+        verbose_name='Command of English')
+    interview_comment = models.TextField(verbose_name='Comments by Evaluator(mandatory)')
     skip_evaluation = models.BooleanField(default=False)
-       
+
     def __str__(self):
-        return self.candidate.first_name+" "+self.candidate.last_name  
+        return self.evaluation.candidate.first_name+" "+self.evaluation.candidate.last_name
 
 
 '''Model to store information for the support(information) page'''
@@ -263,6 +343,3 @@ class InformationModel(models.Model):
 
     def __str__(self):
         return self.title
-    
-
-
