@@ -275,7 +275,7 @@ def ChairView(request):
         form = AdmissionRoundForm(request.POST, instance = admission_round)
         if non_evaluated_candidates_count!=0:
             messages.error(request,'Evaluation of candidates is not finished yet')
-            return render(request, 'mainapp/chair_template.html', context) 
+            return render(request, 'mainapp/chair_template.html', context)
         if form.is_valid():
             form.save()
             return redirect('dashboard')
