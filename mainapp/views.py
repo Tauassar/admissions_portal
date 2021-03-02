@@ -60,6 +60,7 @@ def dashboardView(request):
     context={
         'candidates':candidates,
         'evaluations':committie_evaluations,
+        'admission_round': admission_round.round_number
     }
     return render(request, 'mainapp/main_dashboard.html', context)
 
@@ -262,20 +263,21 @@ def ChairView(request):
         non_evaluated_candidates_count = len(candidates.exclude(evaluation_finished=True))
     except (ObjectDoesNotExist, AttributeError):
         return redirect('dashboard')
-
     form = AdmissionRoundForm()
-    if request.method == "POST":
-        form = AdmissionRoundForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('dashboard')
     context = {
-        'admissiou_round':admission_round, 
         'form':form,
         'candidates':candidates,
         'total_candidates':len(candidates),
         'evaluated_candidates_count':evaluated_candidates_count,
         'non_evaluated_candidates_count':non_evaluated_candidates_count
       }
+    if request.method == "POST":
+        form = AdmissionRoundForm(request.POST, instance = admission_round)
+        if non_evaluated_candidates_count!=0:
+            messages.error(request,'Evaluation of candidates is not finished yet')
+            return render(request, 'mainapp/chair_template.html', context) 
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
     return render(request, 'mainapp/chair_template.html', context)
 

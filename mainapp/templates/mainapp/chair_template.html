@@ -16,6 +16,13 @@
               <label class="label-filter">Enter critical number of points to pass: {{form.threshold}} </label>
               <input type="submit" class="button-create" value="Set">
             </form>
+            {% for message in messages %}
+                    <div class="alert-message">
+                        <a class="close" href="#" data-dismiss="alert">×</a>
+                        {{ message }}
+
+                    </div>
+            {% endfor %}
             <div class="stats">
                 <h2>Total statistics</h2>
                 <div class="total-candidates">
