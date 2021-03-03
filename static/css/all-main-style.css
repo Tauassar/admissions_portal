@@ -183,7 +183,7 @@ label {
   width: 30%;
 }
 
-.member-pic {
+.member-pic, .candidate-profile-pic {
   width: 80%;
   border-radius: 50%;
 }
@@ -269,6 +269,7 @@ h3 {
   display: flex;
   justify-content: space-evenly;
   margin-top: 20px;
+  align-items: center;
 }
 
 .candidate-results {
@@ -354,7 +355,7 @@ fieldset {
 
 .title-candidate {
   margin: 0;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .candidate-link {
@@ -380,7 +381,7 @@ fieldset {
   display:flex;
   justify-content: space-around;
   flex-direction: column;
-  padding: 40px;
+  padding: 40px 20px;
   background: #FFFFFF;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
@@ -389,8 +390,43 @@ fieldset {
 .statistics-filtering-wrapper {
   display: flex;
   justify-content: space-around;
+  margin-bottom: 40px;
 }
 
 .student-list {
+  display: flex;
+  flex-direction: column;
   align-self: center;
+  align-items: center;
+  width: 100%;
+}
+
+/*evaluation page*/
+.evaluation-container {
+  flex-direction: column;
+  background: #FFFFFF;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.evaluation {
+  width: 90%;
+  margin: 20px 40px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.evaluation-legend {
+  font-size: xx-large;
+}
+
+.evaluation-fields {
+  margin-left: 50px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 20px;
+  width: 100%;
 }
