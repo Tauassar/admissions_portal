@@ -1,16 +1,16 @@
 {% extends 'mainapp/base.html' %}
 {% block content %}
     <main>
-          <div class="main-container">
-                {%if request.user.position == 2 or request.user.position == 1 %}
+          <div class="container main-container">
+                {%if position == 2 or position == 1 %}
                     {% include 'mainapp/eval_dashboard.html' %}
-                {%elif request.user.position == 0  %}
+                {%elif position == 0  %}
                     {% include 'mainapp/create_dashboard.html' %}                    
-                {%elif request.user.position == 3  %}
+                {%elif position == 3  %}
                     {% include 'mainapp/approve_dashboard.html' %}
                 {% endif %}
 
-            <div id="events">
+            <div class="events">
                 <h3>History</h3>
                 
                 <div class="event-aside">

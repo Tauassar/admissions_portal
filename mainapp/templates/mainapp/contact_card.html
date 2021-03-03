@@ -1,10 +1,8 @@
 {% load static %}
 
-
-<a href = "{% url 'profile' person.staff_id %}">
-    <div >
-        <img src=" {{person.profile_pic.url}} " alt="member photo">
-        <h2 class="contact-info-chair">{{person.first_name}} {{person.last_name}}</h2>
-        <a href="tel:{{person.phone_number}}<" class="contact-info-chair">{{person.phone_number}}</a>
-    </div >
+<a href = "{% url 'profile' person.staff_id %}" class="contact-link">
+    <div class="contacts-container contact-card">
+        <img src="{%static 'img/user-avatar.png'%}" alt="photo of person" class="contact-img">
+        <span class="contact-name">{{person.user.first_name}} {{person.user.last_name}}</span>
+    </div>
 </a>

@@ -2,42 +2,41 @@
 {% load static %}
 {% block content %}
       <main>
-        <div class="member-info">
-            <div>
-                <h1>{{request.user.first_name}} {{request.user.last_name}}</h1>
-                    <h4>{{request.user.fposition}}</h4>
+        <div class="container profile-container" autofocus>
+            <div class="member-info">
+                <div>
+                    <h1>{{request.user.first_name}} {{request.user.last_name}}</h1>
+                        <h4>{{request.user.fposition}}</h4>
+                </div>
+                <div>
+                  <img src=" {{user.profile_pic.url}} " alt="member photo">
+                </div>
             </div>
-            <div>
-              <img src=" {{user.profile_pic.url}} " alt="member photo">
+            <div class="member-container">
+                <p class="general-member">Department: {{request.user.department}}</p>
+                <p class="general-member">School: {{request.user.school}}</p>
+                <p class="general-member">Telephone number: <a href="tel:{{request.user.phone_number}}" class="contact-info-member">{{request.user.phone_number}}</a></p>
+                <p class="general-member">Email: <a href="mailto:{{request.user.email}}" class="contact-info-member">{{request.user.email}}</a></p>
             </div>
+    
+            {%if form %}
+                <div class="member-password">
+                    <h2>Change Password</h2>
+                        <div>
+                            <form id="password-form" action="" method="POST">
+                            {% csrf_token %}
+    
+                            {{form.as_p}}
+    
+                            {%for message in messages%}
+                                <p> {{message}}<p>
+                            {% endfor %}
+    
+                            <input type="submit" class="button-password" value="Change password">
+                            </form>
+                        </div>
+                </div>
+            {%endif%}
         </div>
-        <div class="member-container">
-            <h2>General Information</h2>
-            <p>Department: {{request.user.department}}</p>
-            <p>School: {{request.user.school}}</p>
-            <hr>
-            <h2>Contact Information:</h2>
-            <p>Telephone number: <a href="tel:{{request.user.phone_number}}" class="contact-info-member">{{request.user.phone_number}}</a></p>
-            <p>Email: <a href="mailto:{{request.user.email}}" class="contact-info-member">{{request.user.email}}</a></p>
-        </div>
-
-        {%if form %}
-            <div class="member-password">
-                <h2>Change Password</h2>
-                    <div>
-                        <form id="password-form" action="" method="POST">
-                        {% csrf_token %}
-
-                        {{form.as_p}}
-
-                        {%for message in messages%}
-                            <p> {{message}}<p>
-                        {% endfor %}
-
-                        <input type="submit" class="button-password" value="Change password">
-                        </form>
-                    </div>
-            </div>
-        {%endif%}
       </main>
 {% endblock %}
