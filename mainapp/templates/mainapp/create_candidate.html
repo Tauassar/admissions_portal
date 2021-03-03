@@ -4,19 +4,23 @@
 {% load static %}
 {% block content %}
       <main>
-      <fieldset>
-          <div>
-              <h1>Create New Candidate Profile</h1>
+          <div class="container creation-container">
+              <h3>Create New Candidate Profile</h3>
               <form action = "" method = "POST" enctype="multipart/form-data">
               {% csrf_token %}
-                {{ form.as_table }}
+                <div class="candidate-general">
+                  {{ form.as_p }}
+                </div>
                 
-                {{ testing_formset.as_ul }}
+                <div class="candidate-test">
+                  {{ testing_formset.as_p }}
+                </div>
                 
-                {{ education_formset.as_p }}
+                <div class="candidate-other">
+                  {{ education_formset.as_p }}
+                </div>
               <input type="submit" class="button-create" value="Create New Candidate">
               </form>
           </div>
-          </fieldset>
       </main>
 {% endblock %}

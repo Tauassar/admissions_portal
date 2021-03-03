@@ -162,6 +162,16 @@ label {
   background-position: right;
 }
 
+.creation-link {
+  text-decoration: none;
+  color: #000;
+}
+
+.creation-link:hover {
+  color: #6c63ff;
+  transition: 0.3s;
+}
+
 /*committee profile*/
 
 .member-container, .member-password{
@@ -184,6 +194,7 @@ label {
 }
 
 .member-info-wrapper {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   background: #f4f5f9;
   border-radius: 5px;
 }
@@ -204,7 +215,7 @@ label {
 
 .button-password{
   display: block;
-  width: 100%;
+  width: 50%;
   height: 40px;
   border-radius: 25px;
   margin: 1rem 0;
@@ -438,4 +449,27 @@ fieldset {
   border-radius: 5px;
   padding: 20px;
   width: 100%;
+}
+
+/*create new candidate page*/
+.creation-container {
+  flex-direction: column;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border-radius: 5px;
+}
+
+.candidate-general, .candidate-test, .candidate-other {
+  display: flex;
+  flex-wrap: wrap;
+  width: 60%;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border-radius: 5px;
+  margin-top: 20px;
+  padding: 50px;
+}
+
+.candidate-test {
+  flex-direction: column;
 }
