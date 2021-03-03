@@ -3,64 +3,67 @@
 {% block content %}
 
 
-  <div class="candidate-info">
-    <h1>Candidate Candidate</h2>
-    <div>
-      <img src="{% static 'img/default_user_avatar.png' %}" alt="user photo">
-    </div>
-  </div>
-  <div class="candidate-results">
-    <form action = "" method = "POST" enctype="multipart/form-data">
-      {% csrf_token %}
-      <h3>Candidate evaluation</h3>
-      <h4>
-        This evaluation fields to be evaluated by School Secretary
-      </h4>
-      <table>
-        <tr>
-          <th>{{ evaluate_form.gpa.label }}{{ evaluate_form.gpa }}</th>
-          <th>{{ evaluate_form.school_rating.label }}{{ evaluate_form.school_rating }}</th>
-          <th>{{ evaluate_form.research_experience.label }}{{ evaluate_form.research_experience }}</th>
-        </tr>
-      </table>
-      {% comment %} {{evaluate_form.as_table}} {% endcomment %}
-      <div id="interview-eval" class="evaluation">
-          <fieldset>
-            
-          <legend>Application Evaluation</legend>
-          {%for key, value in application_evaluation_dict.items%}
-          <p>
-              <label>{{key}}:</label>
-                {{value}}
-          </p>
-          {%endfor%}
-
-      </p>
-        </fieldset>
-
+<main>
+  <div class="container secretary-container">
+    <div class="candidate-info">
+      <h1>Candidate Candidate</h2>
+      <div>
+        <img src="{% static 'img/default_user_avatar.png' %}" alt="user photo">
       </div>
-      <div id="application-eval" class="evaluation">
-        <fieldset>
-          <legend>Interview Evaluation</legend>
-          {% if interview_evaluation_dict is not None%}
-            {%for key, value in interview_evaluation_dict.items%}
+    </div>
+    <div class="candidate-results">
+      <form action = "" method = "POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3>Candidate evaluation</h3>
+        <h4>
+          This evaluation fields to be evaluated by School Secretary
+        </h4>
+        <table>
+          <tr>
+            <th>{{ evaluate_form.gpa.label }}{{ evaluate_form.gpa }}</th>
+            <th>{{ evaluate_form.school_rating.label }}{{ evaluate_form.school_rating }}</th>
+            <th>{{ evaluate_form.research_experience.label }}{{ evaluate_form.research_experience }}</th>
+          </tr>
+        </table>
+        {% comment %} {{evaluate_form.as_table}} {% endcomment %}
+        <div class="evaluation interview-eval">
+            <fieldset>
+              
+            <legend>Application Evaluation</legend>
+            {%for key, value in application_evaluation_dict.items%}
             <p>
                 <label>{{key}}:</label>
                   {{value}}
             </p>
             {%endfor%}
-          {%else%}
-            <p>
-                <label>Evaluation is skipped</label>
-            </p>
-          {% endif %}
-        </fieldset>
-      </div>
-    <p>
-      {{approve_form.as_table}}
-      </p>
-      <input type="submit" class="button-profile" name="Submit">
-    </form>
+  
+        </p>
+          </fieldset>
+  
+        </div>
+        <div class="evaluation application-eval">
+          <fieldset>
+            <legend>Interview Evaluation</legend>
+            {% if interview_evaluation_dict is not None%}
+              {%for key, value in interview_evaluation_dict.items%}
+              <p>
+                  <label>{{key}}:</label>
+                    {{value}}
+              </p>
+              {%endfor%}
+            {%else%}
+              <p>
+                  <label>Evaluation is skipped</label>
+              </p>
+            {% endif %}
+          </fieldset>
+        </div>
+      <p>
+        {{approve_form.as_table}}
+        </p>
+        <input type="submit" class="button-profile" name="Submit">
+      </form>
+    </div>
   </div>
 </main>
 
