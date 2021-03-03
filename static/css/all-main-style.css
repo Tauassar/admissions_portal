@@ -111,7 +111,7 @@ main {
   margin-right: 20px;
   padding: 12px 30px;
   max-width: 256px;
-  max-height: 112px;
+  height: 80px;
 }
 
 .contact-info-container {
@@ -119,8 +119,8 @@ main {
 }
 
 .contact-img {
-  width: 30%;
-  height: 30%;
+  width: 50%;
+  height: 50%;
 }
 
 .contact-link {
