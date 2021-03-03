@@ -10,24 +10,30 @@
     </div>
   </div>
   <div class="candidate-results">
-    <form action = "" method = "POST">
+    <form action = "" method = "POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <h3>Candidate evaluation</h3>
+      <h4>
+        This evaluation fields to be evaluated by School Secretary
+      </h4>
+      <table>
+        <tr>
+          <th>{{ evaluate_form.gpa.label }}{{ evaluate_form.gpa }}</th>
+          <th>{{ evaluate_form.school_rating.label }}{{ evaluate_form.school_rating }}</th>
+          <th>{{ evaluate_form.research_experience.label }}{{ evaluate_form.research_experience }}</th>
+        </tr>
+      </table>
+      {% comment %} {{evaluate_form.as_table}} {% endcomment %}
       <div id="interview-eval" class="evaluation">
           <fieldset>
             
           <legend>Application Evaluation</legend>
-          
+          {%for key, value in application_evaluation_dict.items%}
           <p>
-              <label>GPA</label>
-              {% comment %} {{evaluation.gpa}} {% endcomment %}
+              <label>{{key}}:</label>
+                {{value}}
           </p>
-          <p>
-          <label>Recommendations</label>
-              {% comment %} {{evaluation.recommendations}} {% endcomment %}
-        </p>
-        <p>
-        <label>Educational Background</label>
-              {% comment %} {{evaluation.educational_backgorund}} {% endcomment %}
-
+          {%endfor%}
 
       </p>
         </fieldset>
@@ -36,29 +42,22 @@
       <div id="application-eval" class="evaluation">
         <fieldset>
           <legend>Interview Evaluation</legend>
-          <p>
-              <label>Understanding of Major Domain</label>
-              {{evaluation.understanding_of_major}}
-          </p>
-          <p>
-            <label>Research Interest and Motivation</label>
-              {{evaluation.research_interest_and_motivation}}
-          </p>
-          <p>
-          <label>Professional Work Experience/Career Goals</label>
-              {% comment %} {{evaluation.experience_and_goals}} {% endcomment %}
-        </p>
-        <p>
-        <label>Command of English</label>
-              {{evaluation.english_level}}
-      </p>
+          {% if interview_evaluation_dict is not None%}
+            {%for key, value in interview_evaluation_dict.items%}
+            <p>
+                <label>{{key}}:</label>
+                  {{value}}
+            </p>
+            {%endfor%}
+          {%else%}
+            <p>
+                <label>Evaluation is skipped</label>
+            </p>
+          {% endif %}
         </fieldset>
       </div>
-    <form action = "" method = "POST">
-    {% csrf_token %}
     <p>
-        <label>Approve</label>
-              {{form.approved_by_secretary}}
+      {{approve_form.as_table}}
       </p>
       <input type="submit" class="button-profile" name="Submit">
     </form>

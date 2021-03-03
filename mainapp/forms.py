@@ -1,8 +1,18 @@
 from django import forms
-from django.forms import ModelForm
+from django.forms import ModelForm, Form, Select
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
-from .models import CustomUserModel, InterviewEvaluationModel, CandidateEvaluationModel, CandidateModel, AdmissionRoundModel
+from django.forms import inlineformset_factory
+from .models import (
+    CustomUserModel,
+    InterviewEvaluationModel,
+    CandidateEvaluationModel,
+    CandidateModel,
+    AdmissionRoundModel,
+    ApplicationEvaluationModel,
+    CandidateTestingInformationModel,
+    CandidateEducationModel
+    )
 
 '''User forms'''
 class NewUserForm(UserCreationForm):
@@ -34,32 +44,70 @@ class CustomUserChangeForm(UserChangeForm):
         fields = ('email',)
 
 '''Candidate forms'''
-class InterviewEvaluationInline(ModelForm):
-    class Meta:
-        model = InterviewEvaluationModel
-        fields = '__all__'
+ApplicationFormset = inlineformset_factory(
+    CandidateEvaluationModel,
+    ApplicationEvaluationModel,
+    fields = '__all__',
+    can_delete = False)
+InterviewFormset = inlineformset_factory(
+    CandidateEvaluationModel,
+    InterviewEvaluationModel,
+    fields = '__all__',
+    can_delete = False)
 
 
-class CandidateEvaluateForm(ModelForm):
-    class Meta:
-        model = CandidateEvaluationModel
-        exclude = ['evaluator']
-        inlines = [InterviewEvaluationInline]
-
-
+''' 
+for creation of a new candidate
+'''
 class AddCandidateForm(ModelForm):
     class Meta:
         model = CandidateModel
         exclude = ['admission_round','gpa','school_rating','research_experience']
 
+TestingFormset = inlineformset_factory(
+    CandidateModel, 
+    CandidateTestingInformationModel,
+    fields = '__all__', 
+    max_num = 1,
+    min_num=1,
+    can_delete = False)
+EducationFormset = inlineformset_factory(
+    CandidateModel,
+    CandidateEducationModel,
+    extra=1,
+    fields = '__all__',
+    can_delete = False)
+
 
 class AdmissionRoundForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['threshold'].required = True
     class Meta:
         model = AdmissionRoundModel
         fields = ['threshold']
 
+'''
+Secretary forms
+'''
+# Set evaluation status to accepted or rejected
+class ApprovementForm(Form):
+    approved = 'Approved'
+    rejected = 'Rejected'
+    STATUS_CHOICES = [
+    ('', ('-')),
+    (approved, ('Approved')),
+    (rejected, ('Rejected')),
+    ]
+    status = forms.ChoiceField(
+        choices = STATUS_CHOICES,
+        label="Evaluation status: ",
+        initial='-',
+        widget=Select(),
+        required=True)
 
-class ApprovementForm(ModelForm):
+# Evaluation fields dedicated for secretaries only 
+class SecretaryEvaluationForm(ModelForm):
     class Meta:
-        model = CandidateEvaluationModel
-        fields = ['approved_by_secretary', 'status']
+        model = CandidateModel
+        fields = ['gpa','school_rating','research_experience']

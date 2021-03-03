@@ -17,7 +17,8 @@ class CustomUserAdmin(UserAdmin):
         ('Info', {'fields': (
             'email', 'profile_pic', 'first_name', 'last_name', 'school', 'department',
             'phone_number', 'password','position')}),
-        ('Permissions', {'fields': ('is_staff','is_active','groups','user_permissions')}),
+        ('Permissions', {'fields': ('is_staff','is_active',)}),
+        # ('Permissions', {'fields': ('is_staff','is_active','groups','user_permissions')}),
     )
     add_fieldsets = (
         (None, {
@@ -28,13 +29,54 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ('email',)
     ordering = ('email',)
 
+'''
+    Candidate evaluation registration to admin site
+'''
+class ApplicationEvaluationAdmin(admin.TabularInline):
+    model=models.ApplicationEvaluationModel
+
+
+class InterviewEvaluationAdmin(admin.TabularInline):
+    model=models.InterviewEvaluationModel
+
+
+class CandidateEvaluationAdmin(admin.ModelAdmin):
+    model=models.CandidateEvaluationModel
+    inlines = [ApplicationEvaluationAdmin, InterviewEvaluationAdmin,]
+'''
+    AdmissionYear registration to admin site
+'''
+class StaffListAdmin(admin.TabularInline):
+    model=models.StaffListModel
+
+
+class AdmissionRoundAdmin(admin.TabularInline):
+    model=models.AdmissionRoundModel
+    max_num=3
+    extra=1
+
+
+class AdmissionYearAdmin(admin.ModelAdmin):
+    model=models.AdmissionYearModel
+    inlines = [StaffListAdmin, AdmissionRoundAdmin,]
+
+'''
+    CandidateModel registration to admin site
+'''
+class CandidateTestingInformationAdmin(admin.TabularInline):
+    model=models.CandidateTestingInformationModel
+
+class CandidateEducationAdmin(admin.TabularInline):
+    model=models.CandidateEducationModel
+    max_num=3
+    extra=1
+
+class CandidateAdmin(admin.ModelAdmin):
+    model=models.CandidateModel
+    inlines = [CandidateEducationAdmin, CandidateTestingInformationAdmin,]
 
 admin.site.register(models.CustomUserModel, CustomUserAdmin)
-admin.site.register(models.CandidateModel)
-admin.site.register(models.CandidateEvaluationModel)
+admin.site.register(models.CandidateEvaluationModel,CandidateEvaluationAdmin)
+admin.site.register(models.CandidateModel, CandidateAdmin)
+admin.site.register(models.AdmissionYearModel, AdmissionYearAdmin)
 admin.site.register(models.InformationModel)
-admin.site.register(models.CandidateTestingInformationModel)
-admin.site.register(models.CandidateEducationModel)
-admin.site.register(models.StaffListModel)
-admin.site.register(models.AdmissionRoundModel)
-admin.site.register(models.AdmissionYearModel)

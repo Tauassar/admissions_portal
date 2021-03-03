@@ -11,23 +11,25 @@
     </div>
   </div>
   <div class="candidate-results">
-    <form action = "" method = "POST">
+
+    <form action = "" method = "POST" enctype="multipart/form-data">
       <div id="application-eval" class="evaluation">
             {% csrf_token %}
 
           <legend>Application Evaluation</legend>
           <p>
-          {% crispy application_formset %}
+          {{application_formset.as_p}}
           </p>
       </div>
       <div id="interview-eval" class="evaluation">
 
           <legend>Interview Evaluation</legend>
           <p>
-          {% crispy interview_formset %}
+          
+          {{interview_formset.as_p}}
           </p>
       </div>
-      <input type="submit" class="button-profile" name="Submit">
+      <input type="submit" class="button-profile" value="Submit">
     </form>
   </div>
 </main>
