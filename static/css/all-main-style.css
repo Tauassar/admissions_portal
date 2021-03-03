@@ -183,6 +183,11 @@ label {
   width: 30%;
 }
 
+.member-info-wrapper {
+  background: #f4f5f9;
+  border-radius: 5px;
+}
+
 .member-pic, .candidate-profile-pic {
   width: 80%;
   border-radius: 50%;
