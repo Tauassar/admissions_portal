@@ -31,6 +31,7 @@ main {
   width: 90vw;
   margin: 0 auto;
   display: flex;
+  border-radius: 5px;
 }
 
 .header {
@@ -178,6 +179,14 @@ label {
   align-items: center;
 }
 
+.member-pic-container {
+  width: 30%;
+}
+
+.member-pic {
+  width: 100%;
+  border-radius: 50%;
+}
 
 .contact-info-member {
   text-decoration: none;
@@ -357,9 +366,10 @@ fieldset {
   background: #ffffff;
   padding: 50px;
   flex-direction: column;
+  width: 85vw;
 }
 
 .member-container {
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-evenly;
 }
