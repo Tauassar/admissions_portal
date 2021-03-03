@@ -2,7 +2,8 @@
 
 <a href = "{% url 'profile' person.staff_id %}" class="contact-link">
     <div class="contacts-container contact-card">
-        <img src="{%static 'img/user-avatar.png'%}" alt="photo of person" class="contact-img">
+        <img src="{{person.profile_pic.url}}" alt="photo of person" class="contact-img">
         <span class="contact-name">{{person.user.first_name}} {{person.user.last_name}}</span>
     </div>
 </a>
+{% comment %} %static 'img/user-avatar.png'% {% endcomment %}
