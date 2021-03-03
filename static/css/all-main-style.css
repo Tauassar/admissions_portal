@@ -31,6 +31,7 @@ main {
   width: 90vw;
   margin: 0 auto;
   display: flex;
+  border-radius: 5px;
 }
 
 .header {
@@ -88,7 +89,7 @@ main {
     flex-direction: column;
     padding: 30px 50px;
     background: #FFFFFF;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0px 0px 10px rgb(0 0 0 / 10%);
     border-radius: 5px;
 }
 
@@ -104,20 +105,23 @@ main {
 }
 
 .contact-card {
-  display: inline-flex;
+  flex-direction: row;
   align-items: center;
-  flex-wrap: wrap;
   margin: 10px;
   margin-left: 0;
   margin-right: 20px;
   padding: 12px 30px;
   max-width: 256px;
-  max-height: 112px;
+  height: 80px;
+}
+
+.contact-info-container {
+  display: flex;
 }
 
 .contact-img {
-  width: 30%;
-  height: 30%;
+  width: 50%;
+  height: 50%;
 }
 
 .contact-link {
@@ -175,6 +179,14 @@ label {
   align-items: center;
 }
 
+.member-pic-container {
+  width: 30%;
+}
+
+.member-pic {
+  width: 100%;
+  border-radius: 50%;
+}
 
 .contact-info-member {
   text-decoration: none;
@@ -220,7 +232,7 @@ background-position: right;
   flex-direction: column;
   width: 65%;
   background: #FFFFFF;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.02);
+  box-shadow: 0px 0px 10px rgb(0 0 0 / 10%);
   border-radius: 5px;
   padding: 30px 40px;
 }
@@ -230,7 +242,7 @@ background-position: right;
   flex-direction: column;
   width: 25%;
   background: #FFFFFF;
-  box-shadow: 0px 0px 10px rgb(0 0 0 / 2%);
+  box-shadow: 0px 0px 10px rgb(0 0 0 / 10%);
   border-radius: 5px;
 }
 
@@ -239,6 +251,12 @@ background-position: right;
   align-items: center;
   display: flex;
   justify-content: space-around;
+}
+
+.candidate-eval {
+  box-shadow: 0px 0px 10px rgb(0 0 0 / 10%);
+  border-radius: 5px;
+  padding: 10px;
 }
 
 h3 {
@@ -307,15 +325,25 @@ fieldset {
 
 .info-container {
   background: #FFFFFF;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.02);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   padding: 30px 40px;
   flex-direction: column;
   margin: 30px 65px;
+  display: flex;
+  align-items: center;
+  font-size: 20px;
 }
 
 .info-title {
   align-self: baseline;
+}
+
+.info-txt {
+  box-shadow: none;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0;
 }
 
 
@@ -338,13 +366,10 @@ fieldset {
   background: #ffffff;
   padding: 50px;
   flex-direction: column;
+  width: 85vw;
 }
 
 .member-container {
   flex-direction: row;
-  justify-content: space-around;
-}
-
-#password-form {
-  
+  justify-content: space-evenly;
 }

@@ -1,7 +1,7 @@
 {% extends 'mainapp/base.html' %}
 {% block content %}
     <main>
-          <p>Round number #{{admission_round}}</p>
+          <h3 class="round-title">Round number #{{admission_round}}</h3>
           <div class="container main-container">
                 {%if request.user.position == 2 or request.user.position == 1 %}
                     {% include 'mainapp/eval_dashboard.html' %}

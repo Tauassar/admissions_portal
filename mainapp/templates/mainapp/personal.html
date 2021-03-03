@@ -2,14 +2,14 @@
 {% load static %}
 {% block content %}
       <main>
-        <div class="container profile-container" autofocus>
+        <div class="container profile-container">
             <div class="member-info">
                 <div>
                     <h1>{{user.first_name}} {{user.last_name}}</h1>
                         <h4>{{position}}</h4>
                 </div>
-                <div>
-                  <img src=" {{user.profile_pic.url}} " alt="member photo">
+                <div class="member-pic-container">
+                  <img src=" {{user.profile_pic.url}} " alt="member photo" class="member-pic">
                 </div>
             </div>
             <div class="member-container">
