@@ -6,7 +6,7 @@
       <ul class="nav-list">
         <li class="nav-item"><a href="{% url 'dashboard'%}" class="nav-link">Home</a></li>
         {%if request.user.position == 2%}
-        <li class="nav-item"><a href="{% url 'chair'%}">Chair</a></li>
+        <li class="nav-item"><a href="{% url 'chair'%}" class="nav-link">Chair</a></li>
         {%endif%}
         <li class="nav-item"><a href="{% url 'contacts'%}" class="nav-link">Contacts</a></li>
         <li class="nav-item"><a href="{% url 'info'%}" class="nav-link">Information</a></li>
