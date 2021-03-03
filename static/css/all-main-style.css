@@ -112,7 +112,7 @@ main {
   margin-right: 20px;
   padding: 12px 30px;
   max-width: 256px;
-  height: 80px;
+  height: 120px;
 }
 
 .contact-info-container {
@@ -121,7 +121,7 @@ main {
 
 .contact-img {
   width: 50%;
-  height: 50%;
+  border-radius: 50%;
 }
 
 .contact-link {
@@ -184,7 +184,7 @@ label {
 }
 
 .member-pic {
-  width: 100%;
+  width: 80%;
   border-radius: 50%;
 }
 
@@ -372,4 +372,25 @@ fieldset {
 .member-container {
   flex-direction: row;
   justify-content: space-evenly;
+}
+
+
+/*chair page*/ 
+.chair-container {
+  display:flex;
+  justify-content: space-around;
+  flex-direction: column;
+  padding: 40px;
+  background: #FFFFFF;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.statistics-filtering-wrapper {
+  display: flex;
+  justify-content: space-around;
+}
+
+.student-list {
+  align-self: center;
 }
