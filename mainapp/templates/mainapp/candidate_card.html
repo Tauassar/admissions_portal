@@ -1,7 +1,7 @@
 
 {% load static %}
 
-<a href = "{% url 'candidate_evaluate' evaluation.candidate.candidate_id %}" style="text-decoration: none; color: inherit; ">
+<a href = "{% url 'candidate_evaluate' evaluation.candidate.candidate_id %}">
     <div class="candidate-eval">
         <img src="{%static 'img/default_user_avatar.png'%}" alt="candidate avatar">
         <p>{{evaluation.candidate.first_name}} {{evaluation.candidate.last_name}}</p>

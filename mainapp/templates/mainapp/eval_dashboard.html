@@ -4,19 +4,9 @@
 <div class="candidates">
     <h3 class="title-candidate">List of candidates</h3>
 
-{% for evaluation in evaluations %}
-{% include 'mainapp/candidate_card.html' %}
-{% comment %} <a href = "{% url 'candidate_evaluate' candidate.candidate_id %}">
-    <div class="candidate-eval">
-        <img src="{%static 'img/default_user_avatar.png'%}" alt="candidate avatar" class="candidate-pic">
-        <p>{{candidate.first_name}} {{candidate.last_name}}</p>
-        <p>{{candidate.uuid}}</p>
-        <p class="status">Status</p>
-        <i class="fas fa-circle "></i>
-    </div>
-</a> {% endcomment %}
-
-{% endfor %}
+    {% for evaluation in evaluations %}
+        {% include 'mainapp/candidate_card.html' %}
+    {% endfor %}
 
 
 </div>

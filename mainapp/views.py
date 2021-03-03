@@ -54,12 +54,12 @@ def dashboardView(request):
     try:
         candidates = admission_round.candidatemodel_set.all()
         evaluations = admission_round.candidateevaluationmodel_set.all()
-        committie_evaluations = evaluations.exclude(evaluation_status=CandidateEvaluationModel.approved)
+        # committie_evaluations = evaluations.exclude(evaluation_status=CandidateEvaluationModel.approved)
     except (ObjectDoesNotExist, AttributeError):
         return render(request, 'mainapp/main_dashboard.html')
     context={
         'candidates':candidates,
-        'evaluations':committie_evaluations,
+        'evaluations':evaluations,
         'admission_round': admission_round.round_number
     }
     return render(request, 'mainapp/main_dashboard.html', context)
@@ -80,10 +80,10 @@ def candidateEvaluateView(request,uuid):
         application_formset = ApplicationFormset(request.POST, instance=evaluation)
         interview_formset = InterviewFormset(request.POST, instance=evaluation)
         if application_formset.is_valid() and interview_formset.is_valid():
-            evaluation.status = CandidateEvaluationModel.in_progress
-            evaluation.save()
+            evaluation.evaluation_status = CandidateEvaluationModel.in_progress
             application_formset.save()
             interview_formset.save()
+            evaluation.save()
             return redirect('dashboard')
     context = {
         'application_formset':application_formset,
@@ -145,7 +145,8 @@ def approveEvalView(request,uuid):
 @login_required(login_url = 'login')
 @check_permissions(allowed_pos=[ADMISSION_DEPARTMENT])
 def createCandidateView(request, candidate_id=None):
-    if id is not None:
+    if candidate_id is not None:
+        pass
         candidate = get_object_or_404(CandidateModel, candidate_id=candidate_id)
         form = AddCandidateForm(instance=candidate)
         testing_formset = TestingFormset(instance=candidate)

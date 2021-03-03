@@ -3,20 +3,15 @@
 
 <div class="candidates">
     <h3>List of evaluations</h3>
+    {% for instance in evaluations %}
 
-{% for instance in evaluations %}
-
-<a href = "{% url 'approve_evaluation' instance.evaluation_id %}">
-    <div class="candidate-eval">
-        <img src="{%static 'img/default_user_avatar.png'%}" alt="candidate avatar">
-        <p>{{instance.candidate.first_name}} {{instance.candidate.last_name}}</p>
-        <h5>Evaluator: {{instance.evaluator.first_name}} {{instance.evaluator.last_name}}</h5>
-        <p id="status">Status</p>
-        <i class="fas fa-circle "></i>
-    </div>
-</a>
-
-{% endfor %}
-
-
+        <a href = "{% url 'approve_evaluation' instance.evaluation_id %}">
+            <div class="candidate-eval">
+                <img src="{%static 'img/default_user_avatar.png'%}" alt="candidate avatar">
+                <p>{{instance.candidate.first_name}} {{instance.candidate.last_name}}</p>
+                <h5>Evaluator: {{instance.evaluator.first_name}} {{instance.evaluator.last_name}}</h5>
+                <p id="status">Status: {{evaluation.evaluation_status}}</p>
+            </div>
+        </a>
+    {% endfor %}
 </div>

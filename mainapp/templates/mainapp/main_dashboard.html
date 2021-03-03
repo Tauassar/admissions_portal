@@ -2,12 +2,12 @@
 {% block content %}
     <main>
           <p>Round number #{{admission_round}}</p>
-          <div class="main-container">
+          <div class="container main-container">
                 {%if request.user.position == 2 or request.user.position == 1 %}
                     {% include 'mainapp/eval_dashboard.html' %}
-                {%elif position == 0  %}
+                {%elif request.user.position == 0  %}
                     {% include 'mainapp/create_dashboard.html' %}                    
-                {%elif position == 3  %}
+                {%elif request.user.position == 3  %}
                     {% include 'mainapp/approve_dashboard.html' %}
                 {% endif %}
 

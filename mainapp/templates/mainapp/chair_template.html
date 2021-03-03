@@ -38,7 +38,7 @@
             <div class="student-list">
                 <h2>Candidates' list</h2>
                 {%for candidate in candidates%}
-                     <div class="candidate">{{candidate.first_name}} {{candidate.last_name}}</div>
+                     <div class="candidate">{{candidate.first_name}} {{candidate.last_name}} {{candidate.total_score}}</div>
                 {%endfor%}
             </div>
           </div>
