@@ -56,8 +56,13 @@ def dashboardView(request):
     admission_year, admission_round = getCurrentAdmissionsYearAndRound()    
     try:
         candidates = admission_round.candidatemodel_set.all()
-        evaluations = admission_round.candidateevaluationmodel_set.all()
-        # committie_evaluations = evaluations.exclude(evaluation_status=CandidateEvaluationModel.approved)
+        if request.user.position not in [1,2]:
+            evaluations = admission_round.candidateevaluationmodel_set.all()
+        else:
+            evaluations = admission_round.candidateevaluationmodel_set.filter(
+                evaluator = request.user)
+        # committie_evaluations = evaluations.exclude(
+        # evaluation_status=CandidateEvaluationModel.approved)
     except (ObjectDoesNotExist, AttributeError):
         return render(request, 'mainapp/main_dashboard.html')
     context={
