@@ -34,8 +34,7 @@ CANDIDATE_STATUS = [
 #     (4, '4'),
 #     (5, '5'),
 # ]
-
-'''User profile model, for managing staff accounts'''
+"""User profile model, for managing staff accounts"""
 class CustomUserModel(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
@@ -68,7 +67,8 @@ class CustomUserModel(AbstractUser):
     def __str__(self):
         return self.email
 
-'''Models for changing the admission periods, including admission rounds and years'''
+"""Models for changing the admission periods, including admission rounds and years"""
+# Stores data about particular admission year, changes once a year
 class AdmissionYearModel(models.Model):
     start_year = models.PositiveIntegerField(
             validators=[
@@ -99,7 +99,7 @@ class AdmissionYearModel(models.Model):
     def getStaffList(self):
         return StaffListModel.objects.get(admission_year=self).staff.all()
 
-
+# Stores data about staff involved in particular admission year
 class StaffListModel(models.Model):
     admission_year = models.OneToOneField(AdmissionYearModel, on_delete=models.CASCADE)
     staff = models.ManyToManyField(CustomUserModel)
@@ -109,14 +109,15 @@ class StaffListModel(models.Model):
             self.admission_year.start_year,
             self.admission_year.end_year)
 
-
+# returns active admission year
 def get_current_admission_year():
     try:
         admission_year = AdmissionYearModel.objects.get(active=True)
-    except Exception as e:
+    except Exception:
         return
     return admission_year
 
+# sets default value for admission round count
 def set_round_number():
     try:
         current_round_number = get_current_admission_round().round_number
@@ -127,6 +128,7 @@ def set_round_number():
         return 1
     return current_round_number+1
 
+# stores information about current admission round
 class AdmissionRoundModel(models.Model):
     max_rounds = 3
     admission_year = models.ForeignKey(
@@ -137,13 +139,13 @@ class AdmissionRoundModel(models.Model):
     threshold=MinMaxInt(min_value=0, max_value=100, default=None, blank=True, null=True)
     mean_score = models.FloatField(default=None, blank=True, null=True)
     finished = models.BooleanField(default = False)
-    
+    # calculate mean score among all candidates of the following admission round
     def calculateMeanScore(self):
         candidates = self.candidatemodel_set.all()
-        sum_score = 0;
+        sum_score = 0
         for candidate in candidates:
             sum_score+=candidate.total_score
-       
+
         self.mean_score = sum_score/len(candidates)
         self.save()
 
@@ -154,14 +156,26 @@ class AdmissionRoundModel(models.Model):
             self.admission_year.end_year
             )
 
-'''Candidate models to store information about candidate
-    and evaluations related to particular candidate'''
 
+class WaitingList(models.Model):
+    admission_year = models.OneToOneField(AdmissionYearModel, on_delete=models.CASCADE)
+
+
+class RecomendedForAdmissionList(models.Model):
+    admission_round = models.OneToOneField(AdmissionRoundModel, on_delete=models.CASCADE)
+
+
+class RejectedList(models.Model):
+    admission_round = models.OneToOneField(AdmissionRoundModel, on_delete=models.CASCADE)
+
+"""Candidate models to store information about candidate
+    and evaluations related to particular candidate"""
+# sets path to the uploaded file to folder named using candidate data
 def file_directiry_path(instance, filename):
     return '{0}_{1}_{2}/{3}'.format(instance.first_name, instance.last_name,
     instance.date_created.strftime('%d_%m_%Y'),filename)
 
-
+# Returns active admission round
 def get_current_admission_round():
     try:
         admission_year = AdmissionYearModel.objects.get(active=True)
@@ -185,6 +199,11 @@ class CandidateModel(models.Model):
     total_score = MinMaxFloat(min_value=0, max_value=100, null=True, blank=True)
     candidate_status = models.IntegerField(blank = True, null=True, choices=CANDIDATE_STATUS)
     evaluation_finished = models.BooleanField(default=False)
+    # final lists
+    waiting_list = models.ForeignKey(WaitingList, null=True, blank=True, on_delete=models.CASCADE)
+    recomended_for_admission_list = models.ForeignKey(
+        RecomendedForAdmissionList, null=True, blank=True, on_delete=models.CASCADE)
+    rejected_list = models.ForeignKey(RejectedList, null=True, blank=True, on_delete=models.CASCADE)
     #candidate evaluation
     gpa = MinMaxFloat(min_value=0, max_value=4.0, null=True, blank=True)
     school_rating = MinMaxInt(min_value=0, max_value=5, null=True, blank=True)
@@ -207,10 +226,23 @@ class CandidateModel(models.Model):
     recomendation_1 = models.FileField(null = True, blank = True)
     recomendation_2 = models.FileField(null = True, blank = True)
 
+    # push from waiting list to recomended
+    def push_to_upward_list(self):
+        self.waiting_list = None
+        self.recomended_for_admission_list = self.admission_round.recomendedforadmissionlist
+        self.save()
+
+    # return total score if exists
+    def get_score(self):
+        if self.total_score is not None:
+            return self.total_score
+        else:
+            return "Evaluation is not finished yet"
+
     def __str__(self):
         return self.first_name+" "+self.last_name
 
-
+# Model storing data about candidate tests information
 class CandidateTestingInformationModel(models.Model):
     candidate = models.OneToOneField(CandidateModel, on_delete=models.CASCADE)
     ielts = MinMaxFloat(min_value=1.0, max_value=9.0, null=True, blank = True, help_text='IELTS')
@@ -220,7 +252,7 @@ class CandidateTestingInformationModel(models.Model):
     def __str__(self):
         return "Test infromation for "+self.candidate.first_name+" "+self.candidate.last_name
 
-
+# model storing data about candidate education
 class CandidateEducationModel(models.Model):
     candidate = models.ForeignKey(CandidateModel, on_delete=models.CASCADE)
     start_date = models.DateField()
@@ -234,7 +266,7 @@ class CandidateEducationModel(models.Model):
     def __str__(self):
         return self.candidate.first_name+" "+self.candidate.last_name
 
-
+# Class storing evaluation data
 class CandidateEvaluationModel(models.Model):
     not_evaluated = 'Not evaluated'
     in_progress = 'In progress'
@@ -284,10 +316,11 @@ class ApplicationEvaluationModel(models.Model):
         max_value=5,
         null=True,
         blank = True,
-        verbose_name='Other relevant academic degrees (if any), professional certification, academic distinction')
+        verbose_name='Other relevant academic degrees (if any),'    \
+        'professional certification, academic distinction')
     evaluation_comment = models.TextField(verbose_name='Comments by Evaluator(mandatory)')
 
-    def getField(self, field_name):
+    def get_field(self, field_name):
         return self._meta.get_field(field_name)
 
     def __str__(self):
@@ -334,7 +367,7 @@ class InterviewEvaluationModel(models.Model):
         return self.evaluation.candidate.first_name+" "+self.evaluation.candidate.last_name
 
 
-'''Model to store information for the support(information) page'''
+"""Model to store information for the support(information) page"""
 class InformationModel(models.Model):
     publication_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) 
     title = models.CharField(max_length=255)

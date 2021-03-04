@@ -12,7 +12,9 @@ from .models import (
     InformationModel,
     AdmissionYearModel,
     ApplicationEvaluationModel,
-    InterviewEvaluationModel)
+    InterviewEvaluationModel,
+    RecomendedForAdmissionList,
+    WaitingList)
 from .forms import (
     SecretaryEvaluationForm,
     AddCandidateForm,
@@ -30,6 +32,7 @@ from .forms import (
         mail send
         different dashboards for different users
         recent actions
+        change image profile
 '''
 
 ADMISSION_DEPARTMENT = 0
@@ -279,6 +282,35 @@ def ChairView(request):
             return render(request, 'mainapp/chair_template.html', context)
         if form.is_valid():
             form.save()
+            treshold = form.cleaned_data["threshold"]
+            compose_lists(treshold, candidates, admission_year, admission_round)
             return redirect('dashboard')
     return render(request, 'mainapp/chair_template.html', context)
 
+def compose_lists(threshold, candidates, admission_year, admission_round):
+    for candidate in candidates:
+        if candidate.total_score >= threshold:
+            candidate.recomended_for_admission_list = RecomendedForAdmissionList.objects.get(
+                admission_round = admission_round)
+        else:
+            candidate.waiting_list = WaitingList.objects.get(admission_year = admission_year)
+        candidate.save()
+
+
+@login_required(login_url = 'login')
+@check_permissions(allowed_pos=[COMMITIE_CHAIR])
+def SecretaryView(request):
+    admission_year, admission_round = getCurrentAdmissionsYearAndRound()
+    try:
+        waiting_list_candidates = admission_year.waitinglist.candidatemodel_set.all()
+        recomended_for_admission_list_candidates =  \
+            admission_round.recomendedforadmissionlist.candidatemodel_set.all()
+        rejected_list_candidates = admission_round.rejectedlist.candidatemodel_set.all()
+    except (ObjectDoesNotExist, AttributeError):
+        return redirect('dashboard')
+    context = {
+        'recomended_for_admission_list_candidates':recomended_for_admission_list_candidates,
+        'waiting_list_candidates':waiting_list_candidates,
+        'rejected_list_candidates':rejected_list_candidates,
+      }
+    return render(request, 'mainapp/secretary_template.html', context)

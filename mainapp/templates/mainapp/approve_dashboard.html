@@ -3,7 +3,7 @@
 
 <div class="candidates">
     <h3>List of evaluations</h3>
-    {% for instance in evaluations %}
+    {% comment %} {% for instance in evaluations %}
 
         <a href = "{% url 'approve_evaluation' instance.evaluation_id %}">
             <div class="candidate-eval">
@@ -13,5 +13,8 @@
                 <p id="status">Status: {{evaluation.evaluation_status}}</p>
             </div>
         </a>
+    {% endfor %} {% endcomment %}
+    {% for evaluation in evaluations %}
+        {% include 'mainapp/candidate_card.html' %}
     {% endfor %}
 </div>
