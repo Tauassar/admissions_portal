@@ -1,39 +1,34 @@
 {% extends 'mainapp/base.html' %}
 {% block content %}
-<style>
-    .chair-container {
-    display:flex;
-    justify-content: space-around;
-    padding: 40px;
-}
-</style>
 <main>
     <main>
-        <div class="chair-container">
-            <form class="filter-students" action='' method="POST" onsubmit="return confirm('Do you really want to submit the form?');">
-            {% csrf_token %}
-                <h2>Candidates' filtering</h2>
-              <label class="label-filter">Enter critical number of points to pass: {{form.threshold}} </label>
-              <input type="submit" class="button-create" value="Set">
-            </form>
-            {% for message in messages %}
-                    <div class="alert-message">
-                        <a class="close" href="#" data-dismiss="alert">×</a>
-                        {{ message }}
-
+        <div class="container chair-container">
+            <div class="statistics-filtering-wrapper">
+                <div class="stats">
+                    <h2>Total statistics</h2>
+                    <div class="total-candidates">
+                        <p>Total candidates: {{total_candidates}}</p>
                     </div>
-            {% endfor %}
-            <div class="stats">
-                <h2>Total statistics</h2>
-                <div class="total-candidates">
-                    <p>Total candidates: {{total_candidates}}</p>
+                    <div class="evaluated-candidates">
+                        <p>Evaluated candidates: {{evaluated_candidates_count}} </p>
+                    </div>
+                    <div class="inprocess-candidates">
+                        <p>Evaluation in progress: {{non_evaluated_candidates_count}} </p>
+                    </div>
                 </div>
-                <div class="evaluated-candidates">
-                    <p>Evaluated candidates: {{evaluated_candidates_count}} </p>
-                </div>
-                <div class="inprocess-candidates">
-                    <p>Evaluation in progress: {{non_evaluated_candidates_count}} </p>
-                </div>
+                <form class="filter-students" action='' method="POST" onsubmit="return confirm('Do you really want to submit the form?');">
+                {% csrf_token %}
+                    <h2>Candidates' filtering</h2>
+                  <label class="label-filter">Enter critical number of points to pass: {{form.threshold}} </label>
+                  <input type="submit" class="button-create" value="Set">
+                </form>
+                {% for message in messages %}
+                        <div class="alert-message">
+                            <a class="close" href="#" data-dismiss="alert">×</a>
+                            {{ message }}
+    
+                        </div>
+                {% endfor %}
             </div>
             <div class="student-list">
                 <h2>Candidates' list</h2>

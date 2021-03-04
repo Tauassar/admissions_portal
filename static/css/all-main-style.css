@@ -112,7 +112,7 @@ main {
   margin-right: 20px;
   padding: 12px 30px;
   max-width: 256px;
-  height: 80px;
+  height: 120px;
 }
 
 .contact-info-container {
@@ -121,7 +121,7 @@ main {
 
 .contact-img {
   width: 50%;
-  height: 50%;
+  border-radius: 50%;
 }
 
 .contact-link {
@@ -162,6 +162,16 @@ label {
   background-position: right;
 }
 
+.creation-link {
+  text-decoration: none;
+  color: #000;
+}
+
+.creation-link:hover {
+  color: #6c63ff;
+  transition: 0.3s;
+}
+
 /*committee profile*/
 
 .member-container, .member-password{
@@ -183,8 +193,14 @@ label {
   width: 30%;
 }
 
-.member-pic {
-  width: 100%;
+.member-info-wrapper {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  background: #f4f5f9;
+  border-radius: 5px;
+}
+
+.member-pic, .candidate-profile-pic {
+  width: 80%;
   border-radius: 50%;
 }
 
@@ -199,7 +215,7 @@ label {
 
 .button-password{
   display: block;
-  width: 100%;
+  width: 50%;
   height: 40px;
   border-radius: 25px;
   margin: 1rem 0;
@@ -269,6 +285,7 @@ h3 {
   display: flex;
   justify-content: space-evenly;
   margin-top: 20px;
+  align-items: center;
 }
 
 .candidate-results {
@@ -354,7 +371,7 @@ fieldset {
 
 .title-candidate {
   margin: 0;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .candidate-link {
@@ -372,4 +389,95 @@ fieldset {
 .member-container {
   flex-direction: row;
   justify-content: space-evenly;
+}
+
+
+/*chair page*/ 
+.chair-container {
+  display:flex;
+  justify-content: space-around;
+  flex-direction: column;
+  padding: 40px 20px;
+  background: #FFFFFF;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.statistics-filtering-wrapper {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 40px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  background: #f4f5f9;
+  border-radius: 5px;
+}
+
+.student-list {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  align-items: center;
+  width: 100%;
+}
+
+/*evaluation page*/
+.evaluation-container {
+  flex-direction: column;
+  background: #FFFFFF;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.evaluation {
+  width: 90%;
+  margin: 20px 40px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.evaluation-legend {
+  font-size: xx-large;
+}
+
+.evaluation-fields {
+  margin-left: 50px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  background: #f4f5f9;
+  border-radius: 5px;
+  padding: 20px;
+  width: 100%;
+}
+
+/*create new candidate page*/
+.creation-container {
+  flex-direction: column;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border-radius: 5px;
+}
+
+.candidate-general, .candidate-test, .candidate-other {
+  display: flex;
+  flex-wrap: wrap;
+  width: 60%;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border-radius: 5px;
+  margin-top: 20px;
+  padding: 50px;
+}
+
+.candidate-test {
+  flex-direction: column;
+}
+
+/*evaluation by secretary page*/
+.secretary-container {
+  flex-direction: column;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border-radius: 5px;
 }
