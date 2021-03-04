@@ -14,7 +14,7 @@
             {% if request.user.position == 3 %}
             <p>Evaluator: {{evaluation.evaluator.first_name}} {{evaluation.evaluator.last_name}}</p>
             {% endif %}
-            <p id="status">Status: {{evaluation.evaluation_status}}</p>
+            <p class="status">Status: {{evaluation.evaluation_status}}</p>
         </div>
     </a>
 
