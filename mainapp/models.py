@@ -200,10 +200,12 @@ class CandidateModel(models.Model):
     candidate_status = models.IntegerField(blank = True, null=True, choices=CANDIDATE_STATUS)
     evaluation_finished = models.BooleanField(default=False)
     # final lists
-    waiting_list = models.ForeignKey(WaitingList, null=True, blank=True, on_delete=models.CASCADE)
+    waiting_list = models.ForeignKey(
+        WaitingList, default=None, null=True, blank=True, on_delete=models.CASCADE)
     recomended_for_admission_list = models.ForeignKey(
-        RecomendedForAdmissionList, null=True, blank=True, on_delete=models.CASCADE)
-    rejected_list = models.ForeignKey(RejectedList, null=True, blank=True, on_delete=models.CASCADE)
+        RecomendedForAdmissionList, default=None, null=True, blank=True, on_delete=models.CASCADE)
+    rejected_list = models.ForeignKey(
+        RejectedList, default=None, null=True, blank=True, on_delete=models.CASCADE)
     #candidate evaluation
     gpa = MinMaxFloat(min_value=0, max_value=4.0, null=True, blank=True)
     school_rating = MinMaxInt(min_value=0, max_value=5, null=True, blank=True)

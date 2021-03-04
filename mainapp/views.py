@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
 from .decorators import auth_check,check_permissions
 from .models import (
     CustomUserModel,
@@ -16,6 +15,7 @@ from .models import (
     RecomendedForAdmissionList,
     WaitingList)
 from .forms import (
+    CustomPasswordChangeForm,
     SecretaryEvaluationForm,
     AddCandidateForm,
     ApprovementForm,
@@ -204,7 +204,7 @@ def contactsView(request):
 def personalView(request):
     if request.method == 'POST':
         print("\n\n\nPOST INIT")
-        form = PasswordChangeForm(request.user, request.POST)
+        form = CustomPasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
             print("\n\n\nPass changed")
@@ -215,7 +215,7 @@ def personalView(request):
             print("\n\n\nError")
             messages.error(request, 'Please correct the error below.')
     else:
-        form = PasswordChangeForm(request.user)
+        form = CustomPasswordChangeForm(request.user)
     context ={
         'position':POSITIONS[request.user.position],
         'form': form,
@@ -240,10 +240,10 @@ def loginView(request):
     context = {}
 
     if request.method=="POST":
-        username = request.POST.get('username')
+        email = request.POST.get('email')
         password = request.POST.get('password')
 
-        user = authenticate(request, username = username, password = password)
+        user = authenticate(request, email = email, password = password)
 
         if user is not None:
             login(request, user)

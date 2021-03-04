@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm, Form, Select
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.contrib.auth.models import User
 from django.forms import inlineformset_factory
 from .models import (
@@ -28,6 +28,13 @@ class NewUserForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+
+    def __init__(self, *args, **kwargs):
+        super(CustomPasswordChangeForm, self).__init__(*args, **kwargs)
+        self.fields['old_password'].widget.attrs.pop("autofocus", None)
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -62,7 +69,17 @@ for creation of a new candidate
 class AddCandidateForm(ModelForm):
     class Meta:
         model = CandidateModel
-        exclude = ['admission_round','gpa','school_rating','research_experience']
+        exclude = [
+            'admission_round',
+            'gpa',
+            'school_rating',
+            'research_experience',
+            'waiting_list',
+            'recomended_for_admission_list',
+            'rejected_list',
+            'evaluation_finished',
+            'candidate_status',
+            'total_score']
 
 TestingFormset = inlineformset_factory(
     CandidateModel, 
