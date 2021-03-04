@@ -3,11 +3,11 @@
 {% block content %}
  <main>
     {% for publication in publications%}
-        <div class="info-container" id="gen-info">
-            <h3>{{publication.title}}</h3>
-            <div class="info-container info-txt">
+        <div class="info-container">
+            <details class="info-container info-txt">
+                <summary class="info-summary">{{publication.title}}</summary>
                 <p>{{publication.text}}</p>
-            </div>
+            </details>
         </div>
     {% endfor %}
     </main>
