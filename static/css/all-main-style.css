@@ -363,6 +363,10 @@ fieldset {
   padding: 0;
 }
 
+.info-summary {
+  font-size: xx-large;
+}
+
 
 /*candidate dashboard*/
 .candidate-pic {
