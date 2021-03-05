@@ -34,8 +34,10 @@ CANDIDATE_STATUS = [
 #     (4, '4'),
 #     (5, '5'),
 # ]
-"""User profile model, for managing staff accounts"""
 class CustomUserModel(AbstractUser):
+    """
+    User profile model, for managing staff accounts
+    """
     username = None
     email = models.EmailField(_('email address'), unique=True)
     staff_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -67,9 +69,13 @@ class CustomUserModel(AbstractUser):
     def __str__(self):
         return self.email
 
-"""Models for changing the admission periods, including admission rounds and years"""
-# Stores data about particular admission year, changes once a year
+"""
+Models for changing the admission periods, including admission rounds and years
+"""
 class AdmissionYearModel(models.Model):
+    """
+    Stores data about particular admission year, changes once a year
+    """
     start_year = models.PositiveIntegerField(
             validators=[
                 MinValueValidator((datetime.datetime.now().year-2)), 
@@ -99,8 +105,10 @@ class AdmissionYearModel(models.Model):
     def getStaffList(self):
         return StaffListModel.objects.get(admission_year=self).staff.all()
 
-# Stores data about staff involved in particular admission year
 class StaffListModel(models.Model):
+    """
+    Stores information about staff involved in particular admission year
+    """
     admission_year = models.OneToOneField(AdmissionYearModel, on_delete=models.CASCADE)
     staff = models.ManyToManyField(CustomUserModel)
 
@@ -109,16 +117,21 @@ class StaffListModel(models.Model):
             self.admission_year.start_year,
             self.admission_year.end_year)
 
-# returns active admission year
 def get_current_admission_year():
+    """
+    returns active admission year
+    """
     try:
         admission_year = AdmissionYearModel.objects.get(active=True)
     except Exception:
         return
     return admission_year
 
-# sets default value for admission round count
 def set_round_number():
+    """
+    Sets default value for admission round count
+    (i.e. AdmissionRoundModel's round_number)
+    """
     try:
         current_round_number = get_current_admission_round().round_number
         if current_round_number == AdmissionRoundModel.max_rounds:
@@ -128,8 +141,10 @@ def set_round_number():
         return 1
     return current_round_number+1
 
-# stores information about current admission round
 class AdmissionRoundModel(models.Model):
+    """
+    stores information about current admission round
+    """
     max_rounds = 3
     admission_year = models.ForeignKey(
         AdmissionYearModel, 
@@ -139,8 +154,10 @@ class AdmissionRoundModel(models.Model):
     threshold=MinMaxInt(min_value=0, max_value=100, default=None, blank=True, null=True)
     mean_score = models.FloatField(default=None, blank=True, null=True)
     finished = models.BooleanField(default = False)
-    # calculate mean score among all candidates of the following admission round
     def calculateMeanScore(self):
+        """
+        calculate mean score among all candidates of the following admission round
+        """
         candidates = self.candidatemodel_set.all()
         sum_score = 0
         for candidate in candidates:
@@ -157,21 +174,25 @@ class AdmissionRoundModel(models.Model):
             )
 
 
-class WaitingList(models.Model):
-    admission_year = models.OneToOneField(AdmissionYearModel, on_delete=models.CASCADE)
-
-
-class RecomendedForAdmissionList(models.Model):
-    admission_round = models.OneToOneField(AdmissionRoundModel, on_delete=models.CASCADE)
-
-
-class RejectedList(models.Model):
+class StudentList(models.Model):
+    ACCEPTED = 'Accepted_students'
+    WAITING_LIST = 'Waiting_List'
+    REJECTED = 'Rejected_students'
+    LIST_CHOICES = [
+    (ACCEPTED, 'Accepted_students'),
+    (WAITING_LIST, 'Waiting_List'),
+    (REJECTED, 'Rejected_students'),
+    ]
+    list_type = models.CharField(max_length=30, choices=LIST_CHOICES)
     admission_round = models.OneToOneField(AdmissionRoundModel, on_delete=models.CASCADE)
 
 """Candidate models to store information about candidate
     and evaluations related to particular candidate"""
-# sets path to the uploaded file to folder named using candidate data
 def file_directiry_path(instance, filename):
+    """
+    sets path of the uploaded files of CandidateModel 
+    to a folder named using candidate data
+    """
     return '{0}_{1}_{2}/{3}'.format(instance.first_name, instance.last_name,
     instance.date_created.strftime('%d_%m_%Y'),filename)
 
@@ -200,12 +221,8 @@ class CandidateModel(models.Model):
     candidate_status = models.IntegerField(blank = True, null=True, choices=CANDIDATE_STATUS)
     evaluation_finished = models.BooleanField(default=False)
     # final lists
-    waiting_list = models.ForeignKey(
-        WaitingList, default=None, null=True, blank=True, on_delete=models.CASCADE)
-    recomended_for_admission_list = models.ForeignKey(
-        RecomendedForAdmissionList, default=None, null=True, blank=True, on_delete=models.CASCADE)
-    rejected_list = models.ForeignKey(
-        RejectedList, default=None, null=True, blank=True, on_delete=models.CASCADE)
+    student_list = models.ForeignKey(
+        StudentList, default=None, null=True, blank=True, on_delete=models.CASCADE)
     #candidate evaluation
     gpa = MinMaxFloat(min_value=0, max_value=4.0, null=True, blank=True)
     school_rating = MinMaxInt(min_value=0, max_value=5, null=True, blank=True)
@@ -218,15 +235,24 @@ class CandidateModel(models.Model):
 
     #files
     diploma = models.FileField(upload_to=file_directiry_path)
-    ielts_certificate = models.FileField(null = True, blank = True)
-    ielts_certificate = models.FileField(null = True, blank = True)
-    toefl_certificate = models.FileField(null = True, blank = True)
-    english_level_certificate = models.FileField(null = True, blank = True)
-    gmat_or_gre = models.FileField(null = True, blank = True)
-    statement_of_purpose = models.FileField(null = True, blank = True)
-    cv = models.FileField(null = True, blank = True)
-    recomendation_1 = models.FileField(null = True, blank = True)
-    recomendation_2 = models.FileField(null = True, blank = True)
+    ielts_certificate = models.FileField(
+        upload_to=file_directiry_path, null = True, blank = True)
+    ielts_certificate = models.FileField(
+        upload_to=file_directiry_path, null = True, blank = True)
+    toefl_certificate = models.FileField(
+        upload_to=file_directiry_path, null = True, blank = True)
+    english_level_certificate = models.FileField(
+        upload_to=file_directiry_path, null = True, blank = True)
+    gmat_or_gre = models.FileField(
+        upload_to=file_directiry_path, null = True, blank = True)
+    statement_of_purpose = models.FileField(
+        upload_to=file_directiry_path, null = True, blank = True)
+    cv = models.FileField(
+        upload_to=file_directiry_path, null = True, blank = True)
+    recomendation_1 = models.FileField(
+        upload_to=file_directiry_path, null = True, blank = True)
+    recomendation_2 = models.FileField(
+        upload_to=file_directiry_path, null = True, blank = True)
 
     # push from waiting list to recomended
     def push_to_upward_list(self):

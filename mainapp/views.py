@@ -1,19 +1,21 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
+from django.contrib.auth import (
+    authenticate, login, logout, get_user_model, update_session_auth_hash)
 from django.contrib.auth.decorators import login_required
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, generics
 from .decorators import auth_check,check_permissions
 from .models import (
-    CustomUserModel,
     CandidateModel,
     CandidateEvaluationModel,
     InformationModel,
     AdmissionYearModel,
     ApplicationEvaluationModel,
     InterviewEvaluationModel,
-    RecomendedForAdmissionList,
-    WaitingList)
+    StudentList)
 from .forms import (
     CustomPasswordChangeForm,
     SecretaryEvaluationForm,
@@ -24,6 +26,9 @@ from .forms import (
     InterviewFormset,
     TestingFormset,
     EducationFormset)
+from .serializers import(
+    CandidateSerializer,
+)
 
 '''
     TODO: add committie report error button
@@ -319,3 +324,26 @@ def SecretaryView(request):
         'rejected_list_candidates':rejected_list_candidates,
       }
     return render(request, 'mainapp/secretary_template.html', context)
+
+
+"""
+        API views
+"""
+class CandidateDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a Candidate instance.
+    """
+    lookup_url_kwarg = 'candidate_id'
+    lookup_field = 'candidate_id'
+    serializer_class = CandidateSerializer
+
+    def get_queryset(self):
+        return CandidateModel.objects.all()
+
+
+class CandidatesList(generics.ListCreateAPIView):
+    """
+        Returns all candidate objects that are stored in the database
+    """
+    queryset = CandidateModel.objects.all()
+    serializer_class = CandidateSerializer

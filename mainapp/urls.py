@@ -13,6 +13,9 @@ urlpatterns = [
     path('profile/<str:uuid>/', views.profileView, name='profile'),
     path('candidate_evaluate/<str:uuid>/', views.candidateEvaluateView, name='candidate_evaluate'),
     path('create_candidate/', views.createCandidateView, name='create_candidate'),
-    path('observe_candidate/<str:candidate_id>/', views.createCandidateView, name='observe_candidate'),
+    path('observe_candidate/<str:candidate_id>/',   \
+         views.createCandidateView, name='observe_candidate'),
     path('approve_evaluation/<str:uuid>/', views.approveEvalView, name='approve_evaluation'),
+    path('candidates/', views.CandidatesList.as_view()),
+    path('candidates/<str:candidate_id>/', views.CandidateDetail.as_view()),
 ]

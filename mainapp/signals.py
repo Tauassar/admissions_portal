@@ -9,7 +9,7 @@ from .models import (
     StaffListModel,
     ApplicationEvaluationModel,
     InterviewEvaluationModel,
-    WaitingList
+    StudentList
     )
 
 def candidate_evaluation(sender, instance, created, **kwargs):
