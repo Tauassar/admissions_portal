@@ -52,7 +52,7 @@ POSITIONS = [
 ]
 def getCurrentAdmissionsYearAndRound():
     admission_year = get_object_or_404(AdmissionYearModel, active=True)
-    admission_round = admission_year.getCurrentAdmissionRound()
+    admission_round = admission_year.get_current_admission_round()
     return [admission_year, admission_round]
 
 

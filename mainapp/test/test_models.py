@@ -11,7 +11,7 @@ class EntryModelTest(TestCase):
     def setUpTestData(cls):
         User = get_user_model()
         user = User.objects.create_user(
-            email = 'temporary@gmail.com', password = 'temporary', 
+            email = 'temporary@gmail.com', password = 'temporary',
             position = CustomUserModel.committiee_chair)
 
     def checkStr(self):
