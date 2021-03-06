@@ -33,7 +33,7 @@ CANDIDATE_STATUS = [
     and evaluations related to particular candidate"""
 def file_directiry_path(instance, filename):
     """
-    sets path of the uploaded files of CandidateModel 
+    sets path of the uploaded files of CandidateModel
     to a folder named using candidate data
     """
     return '{0}_{1}_{2}/{3}'.format(instance.first_name, instance.last_name,
@@ -57,7 +57,7 @@ class CandidateModel(models.Model):
     evaluation_finished = models.BooleanField(default=False)
     # final lists
     student_list = models.ForeignKey(
-        StudentList, default=None, null=True, blank=True, on_delete=models.CASCADE)
+        StudentList, null=True, blank=True, on_delete=models.CASCADE)
     #candidate evaluation
     gpa = MinMaxFloat(min_value=0, max_value=4.0, null=True, blank=True)
     school_rating = MinMaxInt(min_value=0, max_value=5, null=True, blank=True)

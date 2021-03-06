@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save, pre_save, post_init
 from django.contrib.auth.models import User
 from .models import (
     CandidateModel,
@@ -16,46 +16,46 @@ def candidate_evaluation(sender, instance, created, **kwargs):
     if created:
         evaluators = CustomUserModel.objects.filter(position__in = [1, 2])
         for person in evaluators:
-                CandidateEvaluationModel.objects.create(
+            CandidateEvaluationModel.objects.create(
                 evaluator = person,
                 candidate = instance
             )
-
-def create_profile(sender, instance, created, **kwargs):
-    if created:        
-        CustomUserModel.objects.create(user = instance)
-
 '''
     Set old admission years to inactive when new admission year is created
 '''
-def create_admission_year(sender, instance, created, **kwargs):
+def admission_year_created(sender, instance, created, **kwargs):
     if created:
         AdmissionRoundModel.objects.create(admission_year = instance, round_number=1)
         StaffListModel.objects.create(admission_year = instance)
-        WaitingList.objects.create(admission_year = instance)
         active_years = AdmissionYearModel.objects.filter(active =True).exclude(id=instance.id)
         for year in active_years:
             year.active = False
             year.save()
-'''
-    set old admission periods to false when new period is created
-'''
-def create_admission_round(sender, instance, created, **kwargs):
+
+def create_waiting_list(sender, created, instance, **kwargs):
     if created:
-        RecomendedForAdmissionList.objects.create(admission_round = instance)
-        RejectedList.objects.create(admission_round = instance)
+        instance.current_candidates = StudentList.objects.create(
+            list_type = StudentList.WAITING_LIST)
+        instance.save()
+
+def create_candidate_lists(sender, created, instance, **kwargs):
+    if created:
+        print("signal create_candidate_lists initiated")
+        instance.accepted_candidates_list = StudentList.objects.create(
+            list_type = StudentList.ACCEPTED)
+        instance.rejected_candidates_list = StudentList.objects.create(
+            list_type = StudentList.REJECTED)
+        instance.save()
+
+def admission_round_created(sender, instance, created, **kwargs):
+    '''
+        set old admission periods to false when new period is created
+    '''
+    if created:
         active_rounds = AdmissionRoundModel.objects.filter(finished = False).exclude(id=instance.id)
         for subject in active_rounds:
             subject.finished = True
             subject.save()
-
-'''
-    set new candidates admission period to current
-'''
-def create_candidate(sender, instance, **kwargs):
-    current_admission_year = AdmissionYearModel.objects.get(active=True)
-    current_admission_round = current_admission_year.admissionroundmodel_set.filter(finished=False)
-    instance.admission_round = current_admission_round[0]
 
 '''
     Create dependant models for evaluationmodel
@@ -130,10 +130,12 @@ def evaluation_finished_check(sender, instance, created, **kwargs):
             candidate.save()
 
 # CONNECTIONS
-pre_save.connect(create_candidate, sender=CandidateModel)
+# pre_save.connect(create_candidate, sender=CandidateModel)
+post_save.connect(create_waiting_list, sender=AdmissionYearModel)
+post_save.connect(create_candidate_lists, sender=AdmissionRoundModel)
+post_save.connect(admission_round_created, sender=AdmissionRoundModel)
 post_save.connect(create_evaluations, sender=CandidateEvaluationModel)
 post_save.connect(evaluation_finished_check, sender=CandidateEvaluationModel)
-post_save.connect(create_profile, sender=User)
-post_save.connect(create_admission_year, sender=AdmissionYearModel)
-post_save.connect(create_admission_round, sender=AdmissionRoundModel)
+post_save.connect(admission_year_created, sender=AdmissionYearModel)
+post_save.connect(admission_round_created, sender=AdmissionRoundModel)
 post_save.connect(candidate_evaluation, sender=CandidateModel)

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "crispy_tailwind",
     'django_filters',
     'phonenumber_field',
+    'rest_framework',
     'django_cleanup.apps.CleanupConfig', # should go after your apps
 ]
 

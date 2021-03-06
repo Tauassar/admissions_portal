@@ -173,9 +173,11 @@ def createCandidateView(request, candidate_id=None):
         testing_formset = TestingFormset(request.POST, instance=candidate)
         education_formset = EducationFormset(request.POST, instance=candidate)
         if form.is_valid() and testing_formset.is_valid() and education_formset.is_valid():
+            admission_year = get_object_or_404(AdmissionYearModel, active=True)
             form.save()
             testing_formset.save()
             education_formset.save()
+            candidate.student_list = admission_year.current_candidates
             return redirect('dashboard')
     context = {
         'form':form,
@@ -292,18 +294,30 @@ def ChairView(request):
             return render(request, 'mainapp/chair_template.html', context)
         if form.is_valid():
             form.save()
+            all_candidates = admission_year.current_candidates.candidatemodel_set.all()
             treshold = form.cleaned_data["threshold"]
-            compose_lists(treshold, candidates, admission_year, admission_round)
+            compose_lists(treshold, all_candidates, admission_year, admission_round)
             return redirect('dashboard')
     return render(request, 'mainapp/chair_template.html', context)
 
+def clear_list(candidates, admission_year):
+    for candidate in candidates:
+        candidate.student_list = admission_year.current_candidates
+        candidate.save()
+
+
 def compose_lists(threshold, candidates, admission_year, admission_round):
+    accepted_list = admission_round.accepted_candidates_list.candidatemodel_set.all()
+    rejected_list = admission_round.rejected_candidates_list.candidatemodel_set.all()
+    if accepted_list or rejected_list:
+        print("\n\n\n clearing lists")
+        clear_list(accepted_list, admission_year)
+        clear_list(rejected_list, admission_year)
     for candidate in candidates:
         if candidate.total_score >= threshold:
-            candidate.recomended_for_admission_list = RecomendedForAdmissionList.objects.get(
-                admission_round = admission_round)
+            candidate.student_list = admission_round.accepted_candidates_list
         else:
-            candidate.waiting_list = WaitingList.objects.get(admission_year = admission_year)
+            continue
         candidate.save()
 
 
@@ -312,12 +326,12 @@ def compose_lists(threshold, candidates, admission_year, admission_round):
 def SecretaryView(request):
     admission_year, admission_round = getCurrentAdmissionsYearAndRound()
     try:
-        waiting_list_candidates = admission_year.waitinglist.candidatemodel_set.all()
+        waiting_list_candidates = admission_year.current_candidates.candidatemodel_set.all()
         recomended_for_admission_list_candidates =  \
-            admission_round.recomendedforadmissionlist.candidatemodel_set.all()
-        rejected_list_candidates = admission_round.rejectedlist.candidatemodel_set.all()
-    except (ObjectDoesNotExist, AttributeError):
-        return redirect('dashboard')
+            admission_round.accepted_candidates_list.candidatemodel_set.all()
+        rejected_list_candidates = admission_round.rejected_candidates_list.candidatemodel_set.all()
+    except Exception as e:
+        print(e)
     context = {
         'recomended_for_admission_list_candidates':recomended_for_admission_list_candidates,
         'waiting_list_candidates':waiting_list_candidates,

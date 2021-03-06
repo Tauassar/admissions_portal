@@ -6,6 +6,22 @@ from mainapp.fields import MinMaxInt
 from .user_models import CustomUserModel
 
 
+class StudentList(models.Model):
+    ACCEPTED = 'Accepted_students'
+    WAITING_LIST = 'Waiting_List'
+    REJECTED = 'Rejected_students'
+    LIST_CHOICES = [
+    (ACCEPTED, 'Accepted_students'),
+    (WAITING_LIST, 'Waiting_List'),
+    (REJECTED, 'Rejected_students'),
+    ]
+    list_type = models.CharField(max_length=30, choices=LIST_CHOICES)
+
+    def __str__(self):
+        return "{0} {1}".format(self.list_type, str(self.id))
+
+
+
 class AdmissionYearModel(models.Model):
     """
     Stores data about particular admission year, changes once a year
@@ -25,6 +41,8 @@ class AdmissionYearModel(models.Model):
             unique = False if settings.DEBUG else True,
             help_text="Use the following format: <YYYY>")
     active = models.BooleanField(default=True)
+    current_candidates = models.OneToOneField(
+        StudentList, blank=True, null=True, on_delete=models.PROTECT)
 
     def __str__(self):
         return "Admissions year: {0}-{1}".format(str(self.start_year), str(self.end_year))
@@ -89,13 +107,18 @@ class AdmissionRoundModel(models.Model):
     """
     max_rounds = 3
     admission_year = models.ForeignKey(
-        AdmissionYearModel, 
-        default=get_current_admission_year, 
+        AdmissionYearModel,
+        default=get_current_admission_year,
         on_delete=models.CASCADE)
+    accepted_candidates_list = models.OneToOneField(
+        StudentList, blank=True, null=True, on_delete=models.PROTECT, related_name="accepted_list")
+    rejected_candidates_list = models.OneToOneField(
+        StudentList, blank=True, null=True, on_delete=models.PROTECT, related_name="rejected_list")
     round_number = MinMaxInt(min_value=1, max_value=max_rounds, default =set_round_number)
     threshold=MinMaxInt(min_value=0, max_value=100, default=None, blank=True, null=True)
     mean_score = models.FloatField(default=None, blank=True, null=True)
     finished = models.BooleanField(default = False)
+
     def calculateMeanScore(self):
         """
         calculate mean score among all candidates of the following admission round
@@ -114,16 +137,3 @@ class AdmissionRoundModel(models.Model):
             self.admission_year.start_year,
             self.admission_year.end_year
             )
-
-
-class StudentList(models.Model):
-    ACCEPTED = 'Accepted_students'
-    WAITING_LIST = 'Waiting_List'
-    REJECTED = 'Rejected_students'
-    LIST_CHOICES = [
-    (ACCEPTED, 'Accepted_students'),
-    (WAITING_LIST, 'Waiting_List'),
-    (REJECTED, 'Rejected_students'),
-    ]
-    list_type = models.CharField(max_length=30, choices=LIST_CHOICES)
-    admission_round = models.OneToOneField(AdmissionRoundModel, on_delete=models.CASCADE)
