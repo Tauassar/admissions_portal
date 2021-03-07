@@ -101,7 +101,7 @@ class CandidateModel(models.Model):
 
 # Model storing data about candidate tests information
 class CandidateTestingInformationModel(models.Model):
-    candidate = models.OneToOneField(CandidateModel, on_delete=models.CASCADE)
+    candidate = models.OneToOneField(CandidateModel, on_delete=models.CASCADE, related_name="testing_info")
     ielts = MinMaxFloat(min_value=1.0, max_value=9.0, null=True, blank = True, help_text='IELTS')
     toefl = MinMaxInt(min_value=0, max_value=120, null=True, blank = True, help_text='TOEFL')
     gre = MinMaxInt(min_value=0, max_value=340, null=True, blank = True, help_text='GRE')
@@ -111,7 +111,7 @@ class CandidateTestingInformationModel(models.Model):
 
 # model storing data about candidate education
 class CandidateEducationModel(models.Model):
-    candidate = models.ForeignKey(CandidateModel, on_delete=models.CASCADE)
+    candidate = models.ForeignKey(CandidateModel, on_delete=models.CASCADE, related_name="education_info")
     start_date = models.DateField()
     end_date = models.DateField()
     grad_date = models.DateField()

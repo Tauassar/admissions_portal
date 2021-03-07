@@ -12,7 +12,7 @@ from .models import (
     StudentList
     )
 
-def candidate_evaluation(sender, instance, created, **kwargs):
+def create_candidate_evaluations(sender, instance, created, **kwargs):
     if created:
         evaluators = CustomUserModel.objects.filter(position__in = [1, 2])
         for person in evaluators:
@@ -20,6 +20,15 @@ def candidate_evaluation(sender, instance, created, **kwargs):
                 evaluator = person,
                 candidate = instance
             )
+
+def set_candidate_list(sender, instance, created, **kwargs):
+    if created:
+        try:
+            current_admission_year = AdmissionYearModel.objects.get(active=True)
+        except:
+            raise Exception("No active admission year found")
+        instance.student_list = current_admission_year.current_candidates
+        instance.save()
 '''
     Set old admission years to inactive when new admission year is created
 '''
@@ -60,7 +69,7 @@ def admission_round_created(sender, instance, created, **kwargs):
 '''
     Create dependant models for evaluationmodel
 '''
-def create_evaluations(sender, instance, created, **kwargs):
+def create_subevaluations(sender, instance, created, **kwargs):
     if created:
         application_evaluation = ApplicationEvaluationModel.objects.create(
             evaluation=instance)
@@ -134,8 +143,9 @@ def evaluation_finished_check(sender, instance, created, **kwargs):
 post_save.connect(create_waiting_list, sender=AdmissionYearModel)
 post_save.connect(create_candidate_lists, sender=AdmissionRoundModel)
 post_save.connect(admission_round_created, sender=AdmissionRoundModel)
-post_save.connect(create_evaluations, sender=CandidateEvaluationModel)
+post_save.connect(create_subevaluations, sender=CandidateEvaluationModel)
 post_save.connect(evaluation_finished_check, sender=CandidateEvaluationModel)
 post_save.connect(admission_year_created, sender=AdmissionYearModel)
 post_save.connect(admission_round_created, sender=AdmissionRoundModel)
-post_save.connect(candidate_evaluation, sender=CandidateModel)
+post_save.connect(create_candidate_evaluations, sender=CandidateModel)
+post_save.connect(set_candidate_list, sender=CandidateModel)

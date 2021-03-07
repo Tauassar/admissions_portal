@@ -1,0 +1,42 @@
+
+#contacts-page {
+    display: flex;
+    flex-direction: column;
+}
+
+.contacts-container {
+    border: 4px inset rgba(108,99,255,0.4766281512605042);
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+}
+
+img.contact-info-admission, img.contact-info-committee, img.contact-info-chair{
+    width: 100px;
+    height: 100px;
+}
+
+.contact-info-chair, h1 {
+    align-self: center;
+}
+
+.contact-info-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+a.tel-num{
+    text-decoration: none;
+    color: whitesmoke;
+  }
+  
+  a.tel-num:hover {
+    color: #6c63ff;
+    transition: .3s;
+  }
+  
+  
+  

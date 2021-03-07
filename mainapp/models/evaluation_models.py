@@ -40,7 +40,8 @@ class CandidateEvaluationModel(models.Model):
 
 
 class ApplicationEvaluationModel(models.Model):
-    evaluation = models.OneToOneField(CandidateEvaluationModel, on_delete=models.CASCADE)
+    evaluation = models.OneToOneField(
+        CandidateEvaluationModel, on_delete=models.CASCADE, related_name='application_evaluation')
     relevancy = MinMaxInt(
         min_value=0,
         max_value=30,

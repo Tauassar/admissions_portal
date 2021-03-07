@@ -1,6 +1,9 @@
+from openpyxl import workbook, load_workbook
+from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.templatetags.static import static
 from django.contrib.auth import (
     authenticate, login, logout, get_user_model, update_session_auth_hash)
 from django.contrib.auth.decorators import login_required
@@ -58,7 +61,7 @@ def getCurrentAdmissionsYearAndRound():
 
 @login_required(login_url = 'login')
 def dashboardView(request):
-    admission_year, admission_round = getCurrentAdmissionsYearAndRound()    
+    admission_year, admission_round = getCurrentAdmissionsYearAndRound()  
     try:
         candidates = admission_round.candidatemodel_set.all()
         if request.user.position not in [1,2]:
@@ -272,24 +275,25 @@ def logoutView(request):
 @check_permissions(allowed_pos=[COMMITIE_CHAIR])
 def ChairView(request):
     admission_year, admission_round = getCurrentAdmissionsYearAndRound()
-
     try:
-        candidates = admission_round.candidatemodel_set.all()
+        candidates_waiting_list =  admission_year.current_candidates.candidatemodel_set.all()
+        candidates_accepted =  admission_round.accepted_candidates_list.candidatemodel_set.all()
+        candidates = candidates_waiting_list|candidates_accepted
         evaluated_candidates_count = len(candidates.filter(evaluation_finished=True))
         non_evaluated_candidates_count = len(candidates.exclude(evaluation_finished=True))
     except (ObjectDoesNotExist, AttributeError):
         return redirect('dashboard')
-    form = AdmissionRoundForm()
+    form = AdmissionRoundForm(instance = admission_round)
     context = {
         'form':form,
-        'candidates':candidates,
+        'candidates':candidates.order_by("-total_score"),
         'total_candidates':len(candidates),
         'evaluated_candidates_count':evaluated_candidates_count,
         'non_evaluated_candidates_count':non_evaluated_candidates_count
       }
     if request.method == "POST":
         form = AdmissionRoundForm(request.POST, instance = admission_round)
-        if non_evaluated_candidates_count!=0:
+        if non_evaluated_candidates_count:
             messages.error(request,'Evaluation of candidates is not finished yet')
             return render(request, 'mainapp/chair_template.html', context)
         if form.is_valid():
@@ -339,6 +343,63 @@ def SecretaryView(request):
       }
     return render(request, 'mainapp/secretary_template.html', context)
 
+@login_required(login_url = 'login')
+@check_permissions(allowed_pos=[COMMITIE_CHAIR])
+def GetApplicationEvaluationAsExcellView(request, evaluation_id):
+    DEGREE = {
+        0: 'BSc',
+        1: 'MSc',
+        2: 'PhD',
+    }
+    evaluation = CandidateEvaluationModel.objects.get(evaluation_id = evaluation_id)
+    candidate = evaluation.candidate
+    evaluator = evaluation.evaluator
+    # set response type to excell file
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="application_evaluation_{0}_{1}.xls"'.format(candidate.first_name, candidate.last_name)
+    # open excell template
+    url = 'static/xlsx/application_template.xlsx'
+    wb = load_workbook(url)
+    sheets = wb.sheetnames
+    Sheet1 = wb[sheets[0]]
+    # candidate general info
+    Sheet1['B4']=candidate.first_name
+    Sheet1['C4']=candidate.last_name
+    Sheet1['D4']=candidate.candidate_id
+    Sheet1['F4']=DEGREE[candidate.applying_degree]
+    # evaluator general info
+    Sheet1['B5']=evaluator.first_name
+    Sheet1['C5']=evaluator.last_name
+    Sheet1['D5']=str(evaluator.staff_id)
+    # candidate education information
+    for instance in candidate.education_info.all():
+        row_list = [instance.start_date, instance.end_date, 
+        instance.grad_date, instance.degree_type, instance.institution, 
+        instance.study_field, instance.gpa]
+        row_num=8
+        for col_num, value in enumerate(row_list):
+            Sheet1.cell(row = row_num, column = col_num+1).value = value
+            print(value)
+            print(str(row_num)+" "+str(col_num+1))
+            print("\n")
+        row_num = row_num+1
+    # candidate testing information
+    Sheet1['B12']=candidate.testing_info.ielts
+    Sheet1['E12']=candidate.testing_info.gre
+    Sheet1['B13']=candidate.testing_info.toefl
+    #evaluated by secretary
+    Sheet1['F16']=candidate.gpa
+    Sheet1['F17']=candidate.school_rating
+    Sheet1['F18']=candidate.research_experience
+    #evaluated by evaluator
+    Sheet1['F19']=evaluation.application_evaluation.relevancy
+    Sheet1['F20']=evaluation.application_evaluation.statement_of_purpose
+    Sheet1['F21']=evaluation.application_evaluation.recommendation_1
+    Sheet1['F22']=evaluation.application_evaluation.recommendation_2
+    Sheet1['F23']=evaluation.application_evaluation.relevant_degrees
+    Sheet1['B24']=evaluation.application_evaluation.evaluation_comment
+    wb.save(response)
+    return response
 
 """
         API views
