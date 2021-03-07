@@ -344,7 +344,7 @@ def SecretaryView(request):
     return render(request, 'mainapp/secretary_template.html', context)
 
 @login_required(login_url = 'login')
-@check_permissions(allowed_pos=[COMMITIE_CHAIR])
+@check_permissions(allowed_pos=[SECRETARY])
 def GetApplicationEvaluationAsExcellView(request, evaluation_id):
     DEGREE = {
         0: 'BSc',
@@ -356,7 +356,8 @@ def GetApplicationEvaluationAsExcellView(request, evaluation_id):
     evaluator = evaluation.evaluator
     # set response type to excell file
     response = HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename="application_evaluation_{0}_{1}.xls"'.format(candidate.first_name, candidate.last_name)
+    response['Content-Disposition'] = 'attachment; filename="application_evaluation_{0}_{1}.xls"'   \
+        .format(candidate.first_name, candidate.last_name)
     # open excell template
     url = 'static/xlsx/application_template.xlsx'
     wb = load_workbook(url)
@@ -401,6 +402,45 @@ def GetApplicationEvaluationAsExcellView(request, evaluation_id):
     wb.save(response)
     return response
 
+@login_required(login_url = 'login')
+@check_permissions(allowed_pos=[SECRETARY])
+def GetInterviewEvaluationAsExcellView(request, evaluation_id):
+    DEGREE = {
+        0: 'BSc',
+        1: 'MSc',
+        2: 'PhD',
+    }
+    evaluation = CandidateEvaluationModel.objects.get(evaluation_id = evaluation_id)
+    candidate = evaluation.candidate
+    evaluator = evaluation.evaluator
+    # set response type to excell file
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="interview_evaluation_{0}_{1}.xls"' \
+        .format(candidate.first_name, candidate.last_name)
+    # open excell template
+    url = 'static/xlsx/interview_template.xlsx'
+    wb = load_workbook(url)
+    sheets = wb.sheetnames
+    Sheet1 = wb[sheets[0]]
+    # candidate general info
+    Sheet1['B4']=candidate.first_name
+    Sheet1['C4']=candidate.last_name
+    Sheet1['D4']=candidate.candidate_id
+    Sheet1['F4']=DEGREE[candidate.applying_degree]
+    # evaluator general info
+    Sheet1['B5']=evaluator.first_name
+    Sheet1['C5']=evaluator.last_name
+    Sheet1['D5']=str(evaluator.staff_id)
+    #evaluated by evaluator
+    Sheet1['F8']=evaluation.intervew_evaluation.work_experience_goals
+    Sheet1['F9']=evaluation.intervew_evaluation.research_interest_and_motivation
+    Sheet1['F10']=evaluation.intervew_evaluation.understanding_of_major
+    Sheet1['F11']=evaluation.intervew_evaluation.community_involvement
+    Sheet1['F12']=evaluation.intervew_evaluation.interpersonal_skills
+    Sheet1['F13']=evaluation.intervew_evaluation.english_level
+    Sheet1['B14']=evaluation.intervew_evaluation.interview_comment
+    wb.save(response)
+    return response
 """
         API views
 """

@@ -68,7 +68,8 @@ class ApplicationEvaluationModel(models.Model):
 
 
 class InterviewEvaluationModel(models.Model):
-    evaluation = models.OneToOneField(CandidateEvaluationModel, on_delete=models.CASCADE)
+    evaluation = models.OneToOneField(
+        CandidateEvaluationModel, on_delete=models.CASCADE, related_name='intervew_evaluation')
     work_experience_goals = MinMaxInt(
         min_value=0,
         max_value=10,
