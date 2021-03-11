@@ -9,7 +9,7 @@ from django.contrib.auth import (
 from django.contrib.auth.decorators import login_required
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, generics
+from rest_framework import status, generics, permissions
 from .decorators import auth_check,check_permissions
 from .models import (
     CandidateModel,
@@ -34,7 +34,8 @@ from .serializers import(
 )
 
 '''
-    TODO: add committie report error button
+    TODO: 
+        add committie report error button
         secretary comments
         forgot pass
         mail send
@@ -54,6 +55,9 @@ POSITIONS = [
     'School Secretary'
 ]
 def getCurrentAdmissionsYearAndRound():
+    """
+        get active admission year and round from database
+    """
     admission_year = get_object_or_404(AdmissionYearModel, active=True)
     admission_round = admission_year.get_current_admission_round()
     return [admission_year, admission_round]
@@ -61,7 +65,7 @@ def getCurrentAdmissionsYearAndRound():
 
 @login_required(login_url = 'login')
 def dashboardView(request):
-    admission_year, admission_round = getCurrentAdmissionsYearAndRound()  
+    admission_year, admission_round = getCurrentAdmissionsYearAndRound() 
     try:
         candidates = admission_round.candidatemodel_set.all()
         if request.user.position not in [1,2]:
@@ -105,7 +109,6 @@ def candidateEvaluateView(request,uuid):
         'application_formset':application_formset,
         'interview_formset':interview_formset,
         'candidate':candidate}
-
     return render(request, 'mainapp/evaluate_candidate.html', context)
 
 def queryset_to_dict(queryset, exclude=None):
@@ -162,7 +165,6 @@ def approveEvalView(request,uuid):
 @check_permissions(allowed_pos=[ADMISSION_DEPARTMENT])
 def createCandidateView(request, candidate_id=None):
     if candidate_id is not None:
-        pass
         candidate = get_object_or_404(CandidateModel, candidate_id=candidate_id)
         form = AddCandidateForm(instance=candidate)
         testing_formset = TestingFormset(instance=candidate)
@@ -248,7 +250,6 @@ def profileView(request, uuid):
 @auth_check
 def loginView(request):
     context = {}
-
     if request.method=="POST":
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -343,9 +344,40 @@ def SecretaryView(request):
       }
     return render(request, 'mainapp/secretary_template.html', context)
 
+"""
+        API views
+"""
+class CandidateDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a Candidate instance.
+    """
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_url_kwarg = 'candidate_id'
+    lookup_field = 'candidate_id'
+    serializer_class = CandidateSerializer
+
+    def get_queryset(self):
+        return CandidateModel.objects.all()
+
+
+class CandidatesList(generics.ListCreateAPIView):
+    """
+        Returns all candidate objects that are stored in the database
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = CandidateModel.objects.all()
+    serializer_class = CandidateSerializer
+
+
+"""
+    RENDER EXCELL FILES AND SEND BACK AS A RESPONSE
+"""
 @login_required(login_url = 'login')
 @check_permissions(allowed_pos=[SECRETARY])
 def GetApplicationEvaluationAsExcellView(request, evaluation_id):
+    """
+        Render application evaluation into excell and send back to client
+    """
     DEGREE = {
         0: 'BSc',
         1: 'MSc',
@@ -405,6 +437,9 @@ def GetApplicationEvaluationAsExcellView(request, evaluation_id):
 @login_required(login_url = 'login')
 @check_permissions(allowed_pos=[SECRETARY])
 def GetInterviewEvaluationAsExcellView(request, evaluation_id):
+    """
+        Render interview evaluation into excell and send back to client
+    """
     DEGREE = {
         0: 'BSc',
         1: 'MSc',
@@ -441,24 +476,3 @@ def GetInterviewEvaluationAsExcellView(request, evaluation_id):
     Sheet1['B14']=evaluation.intervew_evaluation.interview_comment
     wb.save(response)
     return response
-"""
-        API views
-"""
-class CandidateDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Retrieve, update or delete a Candidate instance.
-    """
-    lookup_url_kwarg = 'candidate_id'
-    lookup_field = 'candidate_id'
-    serializer_class = CandidateSerializer
-
-    def get_queryset(self):
-        return CandidateModel.objects.all()
-
-
-class CandidatesList(generics.ListCreateAPIView):
-    """
-        Returns all candidate objects that are stored in the database
-    """
-    queryset = CandidateModel.objects.all()
-    serializer_class = CandidateSerializer

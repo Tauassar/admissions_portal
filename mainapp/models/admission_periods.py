@@ -5,7 +5,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from mainapp.fields import MinMaxInt
 from .user_models import CustomUserModel
 
-
 class StudentList(models.Model):
     ACCEPTED = 'Accepted_students'
     WAITING_LIST = 'Waiting_List'
@@ -35,7 +34,7 @@ class AdmissionYearModel(models.Model):
             help_text="Use the following format: <YYYY>")
     end_year = models.PositiveIntegerField(
             validators=[
-                MinValueValidator((datetime.datetime.now().year-2)), 
+                MinValueValidator((datetime.datetime.now().year-2)),
                 MaxValueValidator((datetime.datetime.now().year+2))],
             default = datetime.datetime.now().year+1,
             unique = False if settings.DEBUG else True,
@@ -55,7 +54,7 @@ class AdmissionYearModel(models.Model):
             print(e)
 
     def getStaffList(self):
-        return StaffListModel.objects.get(admission_year=self).staff.all()
+        return self.stafflistmodel
 
 class StaffListModel(models.Model):
     """

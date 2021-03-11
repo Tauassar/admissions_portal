@@ -18,6 +18,8 @@ urlpatterns = [
     path('approve_evaluation/<str:uuid>/', views.approveEvalView, name='approve_evaluation'),
     path('candidates/', views.CandidatesList.as_view()),
     path('candidates/<str:candidate_id>/', views.CandidateDetail.as_view()),
-    path('excell_application/<str:evaluation_id>/', views.GetApplicationEvaluationAsExcellView, name='excell_application'),
-    path('excell_interview/<str:evaluation_id>/', views.GetInterviewEvaluationAsExcellView, name='excell_interview')
+    path('excell_application/<str:evaluation_id>/',
+    views.GetApplicationEvaluationAsExcellView, name='excell_application'),
+    path('excell_interview/<str:evaluation_id>/', 
+    views.GetInterviewEvaluationAsExcellView, name='excell_interview')
 ]
