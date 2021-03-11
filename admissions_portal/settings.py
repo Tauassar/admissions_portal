@@ -38,15 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'mainapp.apps.MainappConfig',
-    
+    'django_extensions',
     'crispy_forms',
     "crispy_tailwind",
     'django_filters',
     'phonenumber_field',
     'rest_framework',
-    'django_cleanup.apps.CleanupConfig', # should go after your apps
+    'django_cleanup.apps.CleanupConfig',  # should go after your apps
 ]
 
 MIDDLEWARE = [

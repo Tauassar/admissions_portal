@@ -2,7 +2,8 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login, logout
 
-from mainapp.models import *
+import mainapp.models
+
 
 class ProjectTests(TestCase):
 
@@ -15,7 +16,7 @@ class ProjectTests(TestCase):
         User = get_user_model()
         self.client.login(username='temporary@gmail.com', password='temporary')
         response = self.client.get('/', follow=True)
-        user = CustomUserModel.objects.get(email='temporary@gmail.com')
+        user = mainapp.models.CustomUserModel.objects.get(email='temporary@gmail.com')
         # dashboard check
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['user'].email, 'temporary@gmail.com')
