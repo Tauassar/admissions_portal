@@ -3,6 +3,9 @@
     <main>
           <h3 class="round-title">Round number #{{admission_round}}</h3>
           <div class="container main-container">
+              <div class="candidate-filter">
+                  
+              </div>
                 {%if request.user.position == 2 or request.user.position == 1 %}
                     {% include 'mainapp/eval_dashboard.html' %}
                 {%elif request.user.position == 0  %}
