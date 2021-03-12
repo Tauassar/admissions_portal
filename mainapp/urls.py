@@ -6,7 +6,7 @@ from evaluations_app.views import approveEvalView, candidateEvaluateView
 from mainapp.views import SecretaryView, ChairView, dashboardView
 from render_excel_app.views import (GetApplicationEvaluationAsExcelView,
                                     GetInterviewEvaluationAsExcelView)
-from help_information_app.views import infoView
+from help_information_app.views import InfoView
 
 
 urlpatterns = [
@@ -15,7 +15,7 @@ urlpatterns = [
     path('chair/', ChairView, name='chair'),
     path('secretary/', SecretaryView, name='secretary'),
     # info_app
-    path('info/', infoView, name='info'),
+    path('info/', InfoView.as_view(), name='info'),
     # auth_app
     path('contacts/', ContactsView.as_view(), name='contacts'),
     path('personal/', PersonalView.as_view(), name='personal'),

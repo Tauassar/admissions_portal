@@ -1,11 +1,10 @@
+from django.db import models
 from django.db.models.fields.files import FieldFile
 from admission_periods_app.models import (
     AdmissionRoundModel,
     StudentList,
 )
 from admission_periods_app.utils import get_current_admission_round
-from django.db import models
-
 from candidates_app.utils import file_directory_path
 from mainapp.fields import MinMaxInt, MinMaxFloat
 

@@ -1,5 +1,8 @@
 from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
+# from django.urls import reverse_lazy
+# from django.views.generic import CreateView
 
 from admission_periods_app.models import AdmissionYearModel
 from auth_app.decorators import check_permissions
@@ -8,6 +11,13 @@ from candidates_app.forms import (TestingFormset,
                                   EducationFormset,
                                   AddCandidateForm)
 from candidates_app.models import CandidateModel
+#
+#
+# class CreateCandidateView(LoginRequiredMixin, CreateView):
+#     template_name = 'candidates_app/create_candidate.html'
+#     model = CandidateModel
+#     success_url = reverse_lazy('dashboard')
+#
 
 
 @login_required(login_url='login')

@@ -1,11 +1,9 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView
 from help_information_app.models import InformationModel
 
 
-@login_required(login_url='login')
-def infoView(request):
-    publications = InformationModel.objects.all()
-    context = {'publications': publications}
-    return render(request, 'help_information_app/info.html', context)
+class InfoView(LoginRequiredMixin, ListView):
+    model = InformationModel
+    context_object_name = 'publications'
+    template_name = 'help_information_app/info.html'
