@@ -6,6 +6,15 @@ from django.contrib.auth.models import User
 from .models import CustomUserModel
 
 
+class AuthForm(forms.Form):
+    email = forms.EmailField(
+        label='Email',
+        widget=forms.TextInput(attrs={'class': 'input'}))
+    password = forms.CharField(
+        required=True,
+        widget=forms.PasswordInput(attrs={'class': 'input'}))
+
+
 class NewUserForm(UserCreationForm):
     email = forms.EmailField(required=True)
 

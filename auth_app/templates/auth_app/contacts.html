@@ -5,7 +5,7 @@
           <div class="contacts-container">
               <h1 class="contact-info-chair">Chair of Admission Committee</h1>
 
-              {%for person in chairs%}
+              {%for person in users.chairs%}
                 {% include "auth_app/contact_card.html" with person=person %}
               {% endfor %}
 
@@ -13,15 +13,17 @@
           <div class="contacts-container" id="admission-dep">
               <h1>Admission Department</h1>
               <div class="contact-info-container">
-                {%for person in dept_members%}
+
+                {%for person in users.dept_members%}
                   {% include "auth_app/contact_card.html" with person=person %}
                 {% endfor %}
+
               </div>
           </div>
           <div class="contacts-container">
               <h1>Members of Admission Committee</h1>
               <div class="contact-info-container">
-                  {%for person in committee%}
+                  {%for person in users.committee%}
                     {% include "auth_app/contact_card.html" with person=person %}
                   {% endfor %}
               </div>
@@ -29,7 +31,7 @@
           <div class="contacts-container">
               <h1>School Secretaries </h1>
               <div class="contact-info-container">
-                  {%for person in secretaries%}
+                  {%for person in users.secretaries%}
                     {% include "auth_app/contact_card.html" with person=person %}
                   {% endfor %}
               </div>

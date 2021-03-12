@@ -1,6 +1,6 @@
 from django.urls import path
 
-from auth_app.views import profileView, personalView, contactsView
+from auth_app.views import ContactsView, PersonalView, ProfileView
 from candidates_app.views import createCandidateView
 from evaluations_app.views import approveEvalView, candidateEvaluateView
 from mainapp.views import SecretaryView, ChairView, dashboardView
@@ -17,9 +17,9 @@ urlpatterns = [
     # info_app
     path('info/', infoView, name='info'),
     # auth_app
-    path('contacts/', contactsView, name='contacts'),
-    path('personal/', personalView, name='personal'),
-    path('profile/<str:uuid>/', profileView, name='profile'),
+    path('contacts/', ContactsView.as_view(), name='contacts'),
+    path('personal/', PersonalView.as_view(), name='personal'),
+    path('profile/<str:uuid>/', ProfileView.as_view(), name='profile'),
     # evaluate_app
     path('candidate_evaluate/<str:uuid>/', candidateEvaluateView,
          name='candidate_evaluate'),
