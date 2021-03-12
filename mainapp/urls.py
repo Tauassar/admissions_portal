@@ -1,29 +1,39 @@
 from django.urls import path
-from . import views
+
+from auth_app.views import profileView, personalView, contactsView
+from candidates_app.views import createCandidateView
+from evaluations_app.views import approveEvalView, candidateEvaluateView
+from mainapp.views import SecretaryView, ChairView, dashboardView
+from render_excel_app.views import (GetApplicationEvaluationAsExcelView,
+                                    GetInterviewEvaluationAsExcelView)
+from help_information_app.views import infoView
+
 
 urlpatterns = [
-    path('', views.dashboardView, name='dashboard'),
-    path('login/', views.loginView, name='login'),
-    path('logout/', views.logoutView, name='logout'),
-    path('info/', views.infoView, name='info'),
-    path('contacts/', views.contactsView, name='contacts'),
-    path('personal/', views.personalView, name='personal'),
-    path('chair/', views.ChairView, name='chair'),
-    path('secretary/', views.SecretaryView, name='secretary'),
-    path('profile/<str:uuid>/', views.profileView, name='profile'),
-    path('candidate_evaluate/<str:uuid>/', views.candidateEvaluateView,
+    # mainapp
+    path('', dashboardView, name='dashboard'),
+    path('chair/', ChairView, name='chair'),
+    path('secretary/', SecretaryView, name='secretary'),
+    # info_app
+    path('info/', infoView, name='info'),
+    # auth_app
+    path('contacts/', contactsView, name='contacts'),
+    path('personal/', personalView, name='personal'),
+    path('profile/<str:uuid>/', profileView, name='profile'),
+    # evaluate_app
+    path('candidate_evaluate/<str:uuid>/', candidateEvaluateView,
          name='candidate_evaluate'),
-    path('create_candidate/', views.createCandidateView,
+    path('approve_evaluation/<str:uuid>/', approveEvalView,
+         name='approve_evaluation'),
+    # candidate_app
+    path('create_candidate/', createCandidateView,
          name='create_candidate'),
     path('observe_candidate/<str:candidate_id>/',
-         views.createCandidateView, name='observe_candidate'),
-    path('approve_evaluation/<str:uuid>/', views.approveEvalView,
-         name='approve_evaluation'),
-    path('candidates/', views.CandidatesList.as_view()),
-    path('candidates/<str:candidate_id>/', views.CandidateDetail.as_view()),
+         createCandidateView, name='observe_candidate'),
+    # excel_app
     path('excell_application/<str:evaluation_id>/',
-         views.GetApplicationEvaluationAsExcelView,
-         name='excell_application'),
+         GetApplicationEvaluationAsExcelView,
+         name='excel_application'),
     path('excell_interview/<str:evaluation_id>/',
-         views.GetInterviewEvaluationAsExcellView, name='excell_interview')
+         GetInterviewEvaluationAsExcelView, name='excel_interview')
 ]

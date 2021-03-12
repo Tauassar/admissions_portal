@@ -38,7 +38,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # custom applications
     'mainapp.apps.MainappConfig',
+    'auth_app.apps.AuthAppConfig',
+    'admission_periods_app.apps.AdmissionPeriodsAppConfig',
+    'api_app',
+    'candidates_app.apps.CandidatesAppConfig',
+    'evaluations_app.apps.EvaluationsAppConfig',
+    'help_information_app',
+    'render_excel_app',
+    # 3rd party
     'django_extensions',
     'crispy_forms',
     "crispy_tailwind",
@@ -71,7 +80,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # 'mainapp.context_processors.add_variable_to_context'
             ],
         },
     },
@@ -123,7 +131,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-AUTH_USER_MODEL = 'mainapp.CustomUserModel'
+AUTH_USER_MODEL = 'auth_app.CustomUserModel'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
