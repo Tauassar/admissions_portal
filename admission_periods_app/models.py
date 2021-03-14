@@ -9,7 +9,7 @@ from admission_periods_app.utils import (get_current_admission_year,
 from mainapp.models import CreateAndUpdateRoutine
 
 
-class StudentList(models.Model):
+class StudentList(CreateAndUpdateRoutine):
     ACCEPTED = 'Accepted_students'
     WAITING_LIST = 'Waiting_List'
     REJECTED = 'Rejected_students'

@@ -103,7 +103,7 @@ class CandidateModel(CreateAndUpdateRoutine):
 
 
 # Model storing data about candidate tests information
-class CandidateTestingInformationModel(models.Model):
+class CandidateTestingInformationModel(CreateAndUpdateRoutine):
     candidate = models.OneToOneField(CandidateModel,
                                      on_delete=models.CASCADE,
                                      related_name="testing_info")
