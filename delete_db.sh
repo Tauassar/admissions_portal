@@ -3,6 +3,5 @@ find . -path "*/migrations/*.pyc"  -delete
 find . -path "*.sqlite3"  -delete
 python manage.py makemigrations
 python manage.py migrate
-python manage.py migrate
-python manage.py shell -c "from mainapp.models import CustomUserModel; CustomUserModel.objects.create_superuser('admin@admin.com', '1223')"
+python manage.py shell -c "from auth_app.models import CustomUserModel; CustomUserModel.objects.create_superuser('admin@admin.com', '1223')"
 

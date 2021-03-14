@@ -1,36 +1,18 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import PasswordChangeView
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-import django.contrib.auth
+from django.contrib.auth.views import PasswordChangeView, LoginView
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView
 
 from admission_periods_app.models import AdmissionYearModel
-from auth_app.decorators import auth_check
 from auth_app.forms import CustomPasswordChangeForm, AuthForm
 from auth_app.models import CustomUserModel
 
 
-@auth_check
-def loginView(request):
-    context = {'form': AuthForm}
-    if request.method == "POST":
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-
-        user = django.contrib.auth.authenticate(
-            request, email=email, password=password)
-
-        if user is not None:
-            django.contrib.auth.login(request, user)
-            return redirect('dashboard')
-        else:
-            messages.error(request, "Please check username and password")
-            return render(request, 'auth_app/login.html', context)
-
-    return render(request, 'auth_app/login.html', context)
+class AppLoginView(LoginView):
+    template_name = 'auth_app/login.html'
+    authentication_form = AuthForm
 
 
 # show staff profiles

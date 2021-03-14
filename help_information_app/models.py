@@ -1,8 +1,10 @@
 import uuid
 from django.db import models
 
+from mainapp.models import CreateAndUpdateRoutine
 
-class InformationModel(models.Model):
+
+class InformationModel(CreateAndUpdateRoutine):
     """
     Model to store information for the support(information) page
     """

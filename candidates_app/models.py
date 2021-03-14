@@ -7,6 +7,7 @@ from admission_periods_app.models import (
 from admission_periods_app.utils import get_current_admission_round
 from candidates_app.utils import file_directory_path
 from mainapp.fields import MinMaxInt, MinMaxFloat
+from mainapp.models import CreateAndUpdateRoutine
 
 BACHELOR = 0
 MASTER = 1
@@ -32,7 +33,7 @@ CANDIDATE_STATUS = [
     and evaluations related to particular candidate"""
 
 
-class CandidateModel(models.Model):
+class CandidateModel(CreateAndUpdateRoutine):
     # information
     candidate_id = models.AutoField(primary_key=True,
                                     editable=False,
@@ -56,7 +57,11 @@ class CandidateModel(models.Model):
     evaluation_finished = models.BooleanField(default=False)
     # final lists
     student_list = models.ForeignKey(
-        StudentList, null=True, blank=True, on_delete=models.CASCADE)
+        StudentList,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name='candidates')
     # candidate evaluation
     gpa = MinMaxFloat(min_value=0, max_value=4.0, null=True, blank=True)
     school_rating = MinMaxInt(min_value=0, max_value=5, null=True, blank=True)
@@ -126,7 +131,7 @@ class CandidateTestingInformationModel(models.Model):
 
 
 # model storing data about candidate education
-class CandidateEducationModel(models.Model):
+class CandidateEducationModel(CreateAndUpdateRoutine):
     candidate = models.ForeignKey(
         CandidateModel,
         on_delete=models.CASCADE,

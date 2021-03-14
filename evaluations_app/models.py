@@ -8,7 +8,10 @@ from admission_periods_app.utils import get_current_admission_round
 
 
 # Class storing evaluation data
-class CandidateEvaluationModel(models.Model):
+from mainapp.models import CreateAndUpdateRoutine
+
+
+class CandidateEvaluationModel(CreateAndUpdateRoutine):
     not_evaluated = 'Not evaluated'
     in_progress = 'In progress'
     approved = 'Approved'
@@ -47,7 +50,7 @@ class CandidateEvaluationModel(models.Model):
             self.evaluator.last_name)
 
 
-class ApplicationEvaluationModel(models.Model):
+class ApplicationEvaluationModel(CreateAndUpdateRoutine):
     evaluation = models.OneToOneField(
         CandidateEvaluationModel,
         on_delete=models.CASCADE,
@@ -89,7 +92,7 @@ class ApplicationEvaluationModel(models.Model):
             self.evaluation.candidate.last_name)
 
 
-class InterviewEvaluationModel(models.Model):
+class InterviewEvaluationModel(CreateAndUpdateRoutine):
     evaluation = models.OneToOneField(
         CandidateEvaluationModel,
         on_delete=models.CASCADE,

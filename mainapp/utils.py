@@ -5,13 +5,14 @@ def clear_list(candidates, admission_year):
         candidate.save()
 
 
-def compose_lists(threshold, candidates, admission_year, admission_round):
+def compose_lists(threshold, admission_year, admission_round):
     accepted_list = admission_round. \
-        accepted_candidates_list.candidatemodel_set.all()
+        accepted_candidates_list.candidates.all()
     rejected_list = admission_round. \
-        rejected_candidates_list.candidatemodel_set.all()
+        rejected_candidates_list.candidates.all()
+    candidates = admission_year. \
+        current_candidates.candidates.all()
     if accepted_list or rejected_list:
-        print("\n\n\n clearing lists")
         clear_list(accepted_list, admission_year)
         clear_list(rejected_list, admission_year)
     for candidate in candidates:

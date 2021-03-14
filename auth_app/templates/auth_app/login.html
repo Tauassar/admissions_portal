@@ -17,7 +17,7 @@
                     </div>
                     <div>
                         <h5>Email</h5>
-                        <input type="input" type="text" name="email" class="input">
+                        {{ form.username }}
                     </div>
                 </div>
                 <div class="div_input two">
@@ -26,13 +26,17 @@
                     </div>
                     <div>
                         <h5>Password</h5>
-                        <input type="password" name="password" class="input">
+                        {{ form.password }}
                     </div>
                 </div>
-                {%for message in messages%}
-                    <p class="error_message"> {{message}}<p>
-                {% endfor %}
                 <a href="#">Forgot Password?</a>
+                {% if form.non_field_errors %}
+                  <div class="non-field-errors">
+                    {% for err in form.non_field_errors %}
+                      <p class="form-error">{{ err }}</p>
+                    {% endfor %}
+                  </div>
+                {% endif %}
                 <input type="submit" class="button" value="Log In">
             </form>
         </div>

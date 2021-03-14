@@ -12,8 +12,9 @@ from help_information_app.views import InfoView
 urlpatterns = [
     # mainapp
     path('', dashboardView, name='dashboard'),
-    path('chair/', ChairView, name='chair'),
-    path('secretary/', SecretaryView, name='secretary'),
+    path('chair/', ChairView.as_view(), name='chair'),
+    # path('chair/', ChairViewfunc, name='chair'),
+    path('secretary/', SecretaryView.as_view(), name='secretary'),
     # info_app
     path('info/', InfoView.as_view(), name='info'),
     # auth_app

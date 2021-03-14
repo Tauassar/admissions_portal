@@ -6,6 +6,7 @@ from mainapp.fields import MinMaxInt
 from auth_app.models import CustomUserModel
 from admission_periods_app.utils import (get_current_admission_year,
                                          set_round_number)
+from mainapp.models import CreateAndUpdateRoutine
 
 
 class StudentList(models.Model):
@@ -23,7 +24,7 @@ class StudentList(models.Model):
         return "{0} {1}".format(self.list_type, str(self.id))
 
 
-class AdmissionYearModel(models.Model):
+class AdmissionYearModel(CreateAndUpdateRoutine):
     """
     Stores data about particular admission year, changes once a year
     """
@@ -61,7 +62,7 @@ class AdmissionYearModel(models.Model):
         return self.stafflistmodel.staff
 
 
-class StaffListModel(models.Model):
+class StaffListModel(CreateAndUpdateRoutine):
     """
     Stores information about staff involved in particular admission year
     """
@@ -75,7 +76,7 @@ class StaffListModel(models.Model):
             self.admission_year.end_year)
 
 
-class AdmissionRoundModel(models.Model):
+class AdmissionRoundModel(CreateAndUpdateRoutine):
     """
     stores information about current admission round
     """
