@@ -1,4 +1,3 @@
-from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
@@ -13,7 +12,7 @@ def get_current_admission_round():
         return models.AdmissionYearModel.objects \
             .filter(active=True).prefetch_related("rounds")[0] \
             .rounds.get(finished=False)
-    except ObjectDoesNotExist:
+    except models.AdmissionYearModel.ObjectDoesNotExist:
         raise Http404("No {0} found matching the query".format(
             models.AdmissionYearModel._meta.verbose_name
         ))
@@ -26,11 +25,11 @@ def get_current_admission_year():
     pass
     try:
         admission_year = models.AdmissionYearModel.objects.get(active=True)
-    except ObjectDoesNotExist:
+    except models.AdmissionYearModel.ObjectDoesNotExist:
         raise Http404("No {0} found matching the query".format(
             models.AdmissionYearModel._meta.verbose_name
         ))
-    return admission_year
+    return admission_year.id
 
 
 def set_round_number():
@@ -46,7 +45,7 @@ def set_round_number():
             raise Exception(
                 'Number of admissions rounds exceeded its max value')
         return current_round_number + 1
-    except ObjectDoesNotExist:
+    except models.AdmissionYearModel.ObjectDoesNotExist:
         raise Http404("No {0} found matching the query".format(
             models.AdmissionYearModel._meta.verbose_name
         ))
@@ -65,7 +64,7 @@ def get_current_year_and_round():
 def access_candidates_db(queryset):
     try:
         return queryset.candidates.all()
-    except ObjectDoesNotExist:
+    except queryset.ObjectDoesNotExist:
         raise Http404("No {0} found matching the query".format(
             queryset._meta.verbose_name
         ))
@@ -75,8 +74,6 @@ def get_candidates(admission_year, admission_round):
     waiting_list = access_candidates_db(admission_year.current_candidates)
     accepted = access_candidates_db(admission_round.accepted_candidates_list)
     candidates = waiting_list | accepted
-    evaluated_count = len(
-        candidates.filter(evaluation_finished=True))
-    non_evaluated_count = len(
-        candidates.exclude(evaluation_finished=True))
+    evaluated_count = candidates.filter(evaluation_finished=True).count()
+    non_evaluated_count = candidates.exclude(evaluation_finished=True).count()
     return candidates, evaluated_count, non_evaluated_count

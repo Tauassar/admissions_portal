@@ -6,11 +6,15 @@ from admission_periods_app.models import (AdmissionYearModel,
                                           StudentList)
 
 
+def create_staff_list(sender, instance):
+    if not instance.staff_list:
+        StaffListModel.objects.create(admission_year=instance)
+
+
 def admission_year_created(sender, instance, created, **kwargs):
     if created:
         AdmissionRoundModel.objects.create(admission_year=instance,
                                            round_number=1)
-        StaffListModel.objects.create(admission_year=instance)
         active_years = AdmissionYearModel.objects.filter(active=True).exclude(
             id=instance.id)
         for year in active_years:

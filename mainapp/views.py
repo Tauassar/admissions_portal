@@ -70,7 +70,8 @@ class ChairView(LoginRequiredMixin, PositionMixin, UpdateView):
             return super(ChairView, self).form_valid(form)
 
     def get_object(self, queryset=None):
-        self.admission_year, self.admission_round = get_current_year_and_round()
+        self.admission_year, self.admission_round =\
+            get_current_year_and_round()
         return self.admission_round
 
     def get_context_data(self, **kwargs):
@@ -79,7 +80,7 @@ class ChairView(LoginRequiredMixin, PositionMixin, UpdateView):
             get_candidates(self.admission_year, self.admission_round)
         self.non_evaluated_count = non_evaluated_count
         context['candidates'] = candidates
-        context['total'] = len(candidates)
+        context['total'] = candidates.count()
         context['evaluated_count'] = evaluated_count
         context['non_evaluated_count'] = non_evaluated_count
         return context
