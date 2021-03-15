@@ -54,4 +54,4 @@ buttonUpload.addEventListener("click", function() {
     .then(json => console.log(json))
     .catch(err => console.error(err));
 }
-});
+);
