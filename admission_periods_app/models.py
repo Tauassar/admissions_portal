@@ -67,7 +67,9 @@ class StaffListModel(CreateAndUpdateRoutine):
     Stores information about staff involved in particular admission year
     """
     admission_year = models.OneToOneField(
-        AdmissionYearModel, on_delete=models.CASCADE)
+        AdmissionYearModel,
+        on_delete=models.CASCADE,
+        related_name='staff_list')
     staff = models.ManyToManyField(CustomUserModel)
 
     def __str__(self):

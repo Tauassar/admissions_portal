@@ -117,4 +117,6 @@ media/
 
 # Ignore media files uploaded by user
 media/*
-assets/* 
+assets/*
+.vscode/
+.idea/ 

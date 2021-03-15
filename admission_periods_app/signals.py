@@ -1,8 +1,7 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 
 from admission_periods_app.models import (AdmissionYearModel,
                                           AdmissionRoundModel,
-                                          StaffListModel,
                                           StudentList)
 
 
@@ -10,14 +9,11 @@ def admission_year_created(sender, instance, created, **kwargs):
     if created:
         AdmissionRoundModel.objects.create(admission_year=instance,
                                            round_number=1)
-        StaffListModel.objects.create(admission_year=instance)
         active_years = AdmissionYearModel.objects.filter(active=True).exclude(
             id=instance.id)
         for year in active_years:
             year.active = False
             year.save()
-
-
 
 
 def create_waiting_list(sender, created, instance, **kwargs):
@@ -49,6 +45,17 @@ def admission_round_created(sender, instance, created, **kwargs):
             subject.save()
 
 
+def remove_waiting_list(sender, instance, **kwargs):
+    instance.current_candidates.delete()
+
+
+def remove_round_lists(sender, instance, **kwargs):
+    instance.rejected_candidates_list.delete()
+    instance.accepted_candidates_list.delete()
+
+
+post_delete.connect(remove_waiting_list, sender=AdmissionYearModel)
+post_delete.connect(remove_round_lists, sender=AdmissionRoundModel)
 post_save.connect(admission_year_created, sender=AdmissionYearModel)
 post_save.connect(create_waiting_list, sender=AdmissionYearModel)
 post_save.connect(create_candidate_lists, sender=AdmissionRoundModel)
