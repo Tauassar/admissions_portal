@@ -4,7 +4,6 @@ from django.http import HttpResponse
 
 from auth_app.decorators import check_permissions
 from auth_app.models import CustomUserModel
-from evaluations_app.models import CandidateEvaluationModel
 from render_excel_app.utils import (write_candidate_evaluator_data,
                                     get_evaluation_data)
 

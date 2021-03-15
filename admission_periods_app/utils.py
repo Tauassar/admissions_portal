@@ -1,7 +1,8 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
-import admission_periods_app.models
+import admission_periods_app.models as models
 
 
 def get_current_admission_round():
@@ -9,22 +10,26 @@ def get_current_admission_round():
     returns active admission year
     """
     try:
-        return admission_periods_app.models.AdmissionYearModel.objects \
-            .filter(active=True).prefetch_related("rounds")[0]\
+        return models.AdmissionYearModel.objects \
+            .filter(active=True).prefetch_related("rounds")[0] \
             .rounds.get(finished=False)
-    except Exception:
-        return
+    except ObjectDoesNotExist:
+        raise Http404("No {0} found matching the query".format(
+            models.AdmissionYearModel._meta.verbose_name
+        ))
 
 
 def get_current_admission_year():
     """
     returns active admission year
     """
+    pass
     try:
-        admission_year = admission_periods_app.models.\
-            AdmissionYearModel.objects.get(active=True)
-    except Exception:
-        return
+        admission_year = models.AdmissionYearModel.objects.get(active=True)
+    except ObjectDoesNotExist:
+        raise Http404("No {0} found matching the query".format(
+            models.AdmissionYearModel._meta.verbose_name
+        ))
     return admission_year
 
 
@@ -34,26 +39,25 @@ def set_round_number():
     (i.e. AdmissionRoundModel's round_number)
     """
     try:
-        current_round_number = admission_periods_app.\
-            AdmissionYearModel.objects.filter(active=True).\
-            prefetch_related("rounds").round_number
-        if current_round_number == admission_periods_app.\
-                AdmissionRoundModel.MAX_ROUNDS:
+        current_round_number = models.AdmissionYearModel.objects\
+            .filter(active=True).prefetch_related("rounds")[0]\
+            .rounds.get(finished=False).round_number
+        if current_round_number == models.AdmissionRoundModel.MAX_ROUNDS:
             raise Exception(
                 'Number of admissions rounds exceeded its max value')
         return current_round_number + 1
-    except Exception as e:
-        print(e)
-        return None
+    except ObjectDoesNotExist:
+        raise Http404("No {0} found matching the query".format(
+            models.AdmissionYearModel._meta.verbose_name
+        ))
 
 
 def get_current_year_and_round():
     """
         get active admission year and round from database
     # """
-    pass
     admission_year = get_object_or_404(
-        admission_periods_app.models.AdmissionYearModel, active=True)
+        models.AdmissionYearModel, active=True)
     admission_round = admission_year.get_current_admission_round
     return [admission_year, admission_round]
 
@@ -61,9 +65,9 @@ def get_current_year_and_round():
 def access_candidates_db(queryset):
     try:
         return queryset.candidates.all()
-    except queryset.model.ObjectDoesNotExist:
+    except ObjectDoesNotExist:
         raise Http404("No {0} found matching the query".format(
-            queryset.model._meta.verbose_name
+            queryset._meta.verbose_name
         ))
 
 

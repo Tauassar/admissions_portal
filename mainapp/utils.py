@@ -6,6 +6,8 @@ def clear_list(candidates, admission_year):
 
 
 def compose_lists(threshold, admission_year, admission_round):
+    accepted_list = admission_round.select_related('accepted_candidates_list').\
+        select_related('candidates').all()
     accepted_list = admission_round. \
         accepted_candidates_list.candidates.all()
     rejected_list = admission_round. \
