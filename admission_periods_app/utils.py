@@ -62,7 +62,9 @@ def access_candidates_db(queryset):
     try:
         return queryset.candidates.all()
     except queryset.model.ObjectDoesNotExist:
-        raise Http404("No found matching the query")
+        raise Http404("No {0} found matching the query".format(
+            queryset.model._meta.verbose_name
+        ))
 
 
 def get_candidates(admission_year, admission_round):

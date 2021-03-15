@@ -4,8 +4,6 @@ from auth_app.views import ContactsView, PersonalView, ProfileView
 from candidates_app.views import createCandidateView
 from evaluations_app.views import approveEvalView, candidateEvaluateView
 from mainapp.views import SecretaryView, ChairView, dashboardView
-from render_excel_app.views import (GetApplicationEvaluationAsExcelView,
-                                    GetInterviewEvaluationAsExcelView)
 from help_information_app.views import InfoView
 
 
@@ -31,10 +29,4 @@ urlpatterns = [
          name='create_candidate'),
     path('observe_candidate/<str:candidate_id>/',
          createCandidateView, name='observe_candidate'),
-    # excel_app
-    path('excell_application/<str:evaluation_id>/',
-         GetApplicationEvaluationAsExcelView,
-         name='excel_application'),
-    path('excell_interview/<str:evaluation_id>/',
-         GetInterviewEvaluationAsExcelView, name='excel_interview')
 ]

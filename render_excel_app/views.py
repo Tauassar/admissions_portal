@@ -5,23 +5,21 @@ from django.http import HttpResponse
 from auth_app.decorators import check_permissions
 from auth_app.models import CustomUserModel
 from evaluations_app.models import CandidateEvaluationModel
+from render_excel_app.utils import (write_candidate_evaluator_data,
+                                    get_evaluation_data)
 
 
 @login_required(login_url='login')
 @check_permissions(allowed_pos=[CustomUserModel.SECRETARY])
-def GetApplicationEvaluationAsExcelView(request, evaluation_id):
+def ApplicationEvalAsExcelView(request, evaluation_id):
     """
         Render application evaluation into excel and send back to client
     """
-    DEGREE = {
-        0: 'BSc',
-        1: 'MSc',
-        2: 'PhD',
-    }
-    evaluation = CandidateEvaluationModel.objects.get(
-        evaluation_id=evaluation_id)
+    evaluation = get_evaluation_data(evaluation_id,
+                                     'application_evaluation')
     candidate = evaluation.candidate
     evaluator = evaluation.evaluator
+    application_evaluation = evaluation.application_evaluation
     # set response type to excel file
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = \
@@ -33,15 +31,7 @@ def GetApplicationEvaluationAsExcelView(request, evaluation_id):
     wb = load_workbook(url)
     sheets = wb.sheetnames
     work_sheet = wb[sheets[0]]
-    # candidate general info
-    work_sheet['B4'] = candidate.first_name
-    work_sheet['C4'] = candidate.last_name
-    work_sheet['D4'] = candidate.candidate_id
-    work_sheet['F4'] = DEGREE[candidate.applying_degree]
-    # evaluator general info
-    work_sheet['B5'] = evaluator.first_name
-    work_sheet['C5'] = evaluator.last_name
-    work_sheet['D5'] = str(evaluator.staff_id)
+    write_candidate_evaluator_data(work_sheet, candidate, evaluator)
     # candidate education information
     for instance in candidate.education_info.all():
         row_list = [instance.start_date, instance.end_date,
@@ -51,10 +41,7 @@ def GetApplicationEvaluationAsExcelView(request, evaluation_id):
         row_num = 8
         for col_num, value in enumerate(row_list):
             work_sheet.cell(row=row_num, column=col_num + 1).value = value
-            print(value)
-            print(str(row_num) + " " + str(col_num + 1))
-            print("\n")
-        row_num = row_num + 1
+        row_num += 1
     # candidate testing information
     work_sheet['B12'] = candidate.testing_info.ielts
     work_sheet['E12'] = candidate.testing_info.gre
@@ -64,31 +51,27 @@ def GetApplicationEvaluationAsExcelView(request, evaluation_id):
     work_sheet['F17'] = candidate.school_rating
     work_sheet['F18'] = candidate.research_experience
     # evaluated by evaluator
-    work_sheet['F19'] = evaluation.application_evaluation.relevancy
-    work_sheet['F20'] = evaluation.application_evaluation.statement_of_purpose
-    work_sheet['F21'] = evaluation.application_evaluation.recommendation_1
-    work_sheet['F22'] = evaluation.application_evaluation.recommendation_2
-    work_sheet['F23'] = evaluation.application_evaluation.relevant_degrees
-    work_sheet['B24'] = evaluation.application_evaluation.evaluation_comment
+    work_sheet['F19'] = application_evaluation.relevancy
+    work_sheet['F20'] = application_evaluation.statement_of_purpose
+    work_sheet['F21'] = application_evaluation.recommendation_1
+    work_sheet['F22'] = application_evaluation.recommendation_2
+    work_sheet['F23'] = application_evaluation.relevant_degrees
+    work_sheet['B24'] = application_evaluation.evaluation_comment
     wb.save(response)
     return response
 
 
 @login_required(login_url='login')
 @check_permissions(allowed_pos=[CustomUserModel.SECRETARY])
-def GetInterviewEvaluationAsExcelView(request, evaluation_id):
+def InterviewEvalAsExcelView(request, evaluation_id):
     """
         Render interview evaluation into excel and send back to client
     """
-    degree = {
-        0: 'BSc',
-        1: 'MSc',
-        2: 'PhD',
-    }
-    evaluation = CandidateEvaluationModel.objects.get(
-        evaluation_id=evaluation_id)
+    evaluation = get_evaluation_data(evaluation_id,
+                                     'interview_evaluation')
     candidate = evaluation.candidate
     evaluator = evaluation.evaluator
+    interview_evaluation = evaluation.interview_evaluation
     # set response type to excel file
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = \
@@ -99,23 +82,15 @@ def GetInterviewEvaluationAsExcelView(request, evaluation_id):
     wb = load_workbook(url)
     sheets = wb.sheetnames
     work_sheet = wb[sheets[0]]
-    # candidate general info
-    work_sheet['B4'] = candidate.first_name
-    work_sheet['C4'] = candidate.last_name
-    work_sheet['D4'] = candidate.candidate_id
-    work_sheet['F4'] = degree[candidate.applying_degree]
-    # evaluator general info
-    work_sheet['B5'] = evaluator.first_name
-    work_sheet['C5'] = evaluator.last_name
-    work_sheet['D5'] = str(evaluator.staff_id)
+    write_candidate_evaluator_data(work_sheet, candidate, evaluator)
     # evaluated by evaluator
-    work_sheet['F8'] = evaluation.intervew_evaluation.work_experience_goals
-    work_sheet['F9'] = evaluation.intervew_evaluation. \
+    work_sheet['F8'] = interview_evaluation.work_experience_goals
+    work_sheet['F9'] = interview_evaluation. \
         research_interest_and_motivation
-    work_sheet['F10'] = evaluation.intervew_evaluation.understanding_of_major
-    work_sheet['F11'] = evaluation.intervew_evaluation.community_involvement
-    work_sheet['F12'] = evaluation.intervew_evaluation.interpersonal_skills
-    work_sheet['F13'] = evaluation.intervew_evaluation.english_level
-    work_sheet['B14'] = evaluation.intervew_evaluation.interview_comment
+    work_sheet['F10'] = interview_evaluation.understanding_of_major
+    work_sheet['F11'] = interview_evaluation.community_involvement
+    work_sheet['F12'] = interview_evaluation.interpersonal_skills
+    work_sheet['F13'] = interview_evaluation.english_level
+    work_sheet['B14'] = interview_evaluation.interview_comment
     wb.save(response)
     return response

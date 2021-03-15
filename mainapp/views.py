@@ -9,6 +9,8 @@ from django.views.generic import ListView, UpdateView
 from admission_periods_app.forms import AdmissionRoundForm
 from admission_periods_app.utils import (get_current_year_and_round,
                                          get_candidates)
+from auth_app.models import CustomUserModel
+from mainapp.mixins import PositionMixin
 from mainapp.utils import compose_lists
 
 """
@@ -44,7 +46,8 @@ def dashboardView(request):
     return render(request, 'mainapp/main_dashboard.html', context)
 
 
-class ChairView(LoginRequiredMixin, UpdateView):
+class ChairView(LoginRequiredMixin, PositionMixin, UpdateView):
+    permission_groups = [CustomUserModel.COMMITTEE_CHAIR]
     form_class = AdmissionRoundForm
     template_name = 'mainapp/chair_template.html'
     context_object_name = 'candidates'
@@ -82,9 +85,10 @@ class ChairView(LoginRequiredMixin, UpdateView):
         return context
 
 
-class SecretaryView(LoginRequiredMixin, ListView):
+class SecretaryView(LoginRequiredMixin, PositionMixin, ListView):
     template_name = 'mainapp/secretary_template.html'
     context_object_name = 'candidates'
+    permission_groups = [CustomUserModel.SECRETARY]
 
     def get_queryset(self):
         admission_year, admission_round = get_current_year_and_round()

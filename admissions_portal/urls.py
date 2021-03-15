@@ -7,6 +7,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('auth_app.urls')),
     path('api/', include('api_app.urls')),
+    path('excel/', include('render_excel_app.urls')),
     path('', include('mainapp.urls')),
 ]
 

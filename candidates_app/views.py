@@ -1,8 +1,6 @@
 from django.contrib.auth.decorators import login_required
 # from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
-# from django.urls import reverse_lazy
-# from django.views.generic import CreateView
 
 from admission_periods_app.models import AdmissionYearModel
 from auth_app.decorators import check_permissions

@@ -114,3 +114,7 @@ media/
 **/migrations/**
 !**/migrations
 !**/migrations/__init__.py
+
+# Ignore media files uploaded by user
+media/*
+assets/* 
