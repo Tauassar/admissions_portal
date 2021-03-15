@@ -12,7 +12,7 @@ def get_current_admission_round():
         return models.AdmissionYearModel.objects \
             .filter(active=True).prefetch_related("rounds")[0] \
             .rounds.get(finished=False)
-    except models.AdmissionYearModel.ObjectDoesNotExist:
+    except models.AdmissionYearModel.DoesNotExist:
         raise Http404("No {0} found matching the query".format(
             models.AdmissionYearModel._meta.verbose_name
         ))
@@ -24,12 +24,12 @@ def get_current_admission_year():
     """
     pass
     try:
-        admission_year = models.AdmissionYearModel.objects.get(active=True)
-    except models.AdmissionYearModel.ObjectDoesNotExist:
+        return models.AdmissionYearModel.objects.get(active=True).id
+    except models.AdmissionYearModel.DoesNotExist:
+        return None
         raise Http404("No {0} found matching the query".format(
             models.AdmissionYearModel._meta.verbose_name
         ))
-    return admission_year.id
 
 
 def set_round_number():
@@ -45,7 +45,9 @@ def set_round_number():
             raise Exception(
                 'Number of admissions rounds exceeded its max value')
         return current_round_number + 1
-    except models.AdmissionYearModel.ObjectDoesNotExist:
+    except IndexError:
+        return 1
+    except models.AdmissionYearModel.DoesNotExist:
         raise Http404("No {0} found matching the query".format(
             models.AdmissionYearModel._meta.verbose_name
         ))
@@ -64,7 +66,7 @@ def get_current_year_and_round():
 def access_candidates_db(queryset):
     try:
         return queryset.candidates.all()
-    except queryset.ObjectDoesNotExist:
+    except queryset.DoesNotExist:
         raise Http404("No {0} found matching the query".format(
             queryset._meta.verbose_name
         ))
