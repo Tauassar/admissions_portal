@@ -478,7 +478,7 @@ fieldset {
   justify-content: space-around;
 }
 
-.candidate-test, .candidate-other, .candidate-general-name, .candidate-general-docs {
+.candidate-test, .candidate-other, .candidate-general-name, .candidate-general-docs{
   display: flex;
   flex-direction: column;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -490,7 +490,18 @@ fieldset {
   width: 45%;
 }
 
-.candidate-other {
+#candidate-other-add {
+  flex-direction: column;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border-radius: 5px;
+  margin-top: 20px;
+  align-items:center;
+  width: 76%;
+  padding: 40px 20px 40px 90px;
+}
+
+.candidate-other{
   width: 76%;
   padding: 40px;
 }
@@ -534,6 +545,7 @@ select:hover {
   width: 90%;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 10px;
 }
 
 .edu-info {
@@ -553,9 +565,6 @@ select:hover {
   width: 40vw;
 }
 
-.candidate-other-add {
-  display: none;
-}
 
 /*evaluation by secretary page*/
 .secretary-container {

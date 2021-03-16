@@ -19,7 +19,14 @@ const comDeg = document.getElementById("com-degree");
 const inst = document.getElementById("institution");
 const studField = document.getElementById("study-field");
 const gpa = document.getElementById("gpa");
-const buttonUpload = document.getElementById("btn-upload");
+const startDateAdd = document.getElementById("start-date-add");
+const endDateAdd = document.getElementById("end-date-add");
+const gradDateAdd = document.getElementById("grad-date-add");
+const comDegAdd = document.getElementById("com-degree-add");
+const instAdd = document.getElementById("institution-add");
+const studFieldAdd = document.getElementById("study-field-add");
+const gpaAdd = document.getElementById("gpa-add");
+const buttonUploadAdd = document.getElementById("btn-upload");
 
 buttonUpload.addEventListener("click", function() {
     const formData = new FormData();
@@ -45,6 +52,13 @@ buttonUpload.addEventListener("click", function() {
     formData.append("institution", inst);
     formData.append("study field", studField);
     formData.append("gpa", gpa);
+    formData.append("start date additional", startDateAdd);
+    formData.append("end date additional", endDateAdd);
+    formData.append("grad date additional", gradDateAdd);
+    formData.append("completed deg additional", comDegAdd);
+    formData.append("institution additional", instAdd);
+    formData.append("study field additional", studFieldAdd);
+    formData.append("gpa additional", gpaAdd);
 
     fetch('', {
         method: 'POST',

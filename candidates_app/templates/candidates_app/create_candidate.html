@@ -53,8 +53,55 @@
                   </div>
                 </div>
                 <div class="candidate-other">
+                        <h3>Candidate's Education</h3>
+                        <div class="edu-dates">
+                          <label for="start-date">Start Date:<input type="date" name="start-date" id="start-date" class="create-cand-item"></label>
+                          <label for="end-date">End Date:<input type="date" name="end-date" id="end-date" class="create-cand-item"></label>
+                          <label for="grad-date">Grad Date:<input type="date" name="grad-date" id="grad-date" class="create-cand-item"></label>
+                        </div>
+                        <div class="edu-info">
+                          <div class="edu-wrap">
+                            <label for="com-degree">Completed Degree:                      
+                              <select name="com-degree" id="com-degree" class="create-cand-item"> 
+                              <option value="bsc">BSc</option>
+                              <option value="msc">MSc</option>
+                            </select></label>
+                            <label for="institution">Institution:<input type="text" name="institution" id="institution" class="create-cand-item"></label>
+                          </div>
+                          <div class="edu-wrap">
+                            <label for="study-field">Study Field:<input type="text" name="study-field" id="study-field" class="create-cand-item"></label>
+                            <label for="gpa">GPA:<input type="text" name="gpa" id="gpa" class="create-cand-item"></label>
+                          </div>
+                        </div>
+                </div>
+                <div id="candidate-other-add" class="panel" hidden>
+                  <h3>Candidate's Education (additional)</h3>
+                  <div class="edu-dates">
+                    <label for="start-date-add">Start Date:<input type="date" name="start-date-add" id="start-date-add" class="create-cand-item-add " disabled></label>
+                    <label for="end-date-add">End Date:<input type="date" name="end-date-add" id="end-date-add" class="create-cand-item-add " disabled></label>
+                    <label for="grad-date-add">Grad Date:<input type="date" name="grad-date-add" id="grad-date-add" class="create-cand-item-add " disabled></label>
+                  </div>
+                  <div class="edu-info">
+                    <div class="edu-wrap">
+                      <label for="com-degree-add">Completed Degree:                      
+                        <select name="com-degree-add" id="com-degree-add" class="create-cand-item " disabled> 
+                        <option value="bsc">BSc</option>
+                        <option value="msc">MSc</option>
+                      </select></label>
+                      <label for="institution-add">Institution:<input type="text" name="institution-add" id="institution-add" class="create-cand-item " disabled></label>
+                    </div>
+                    <div class="edu-wrap">
+                      <label for="study-field-add">Study Field:<input type="text" name="study-field-add" id="study-field-add" class="create-cand-item " disabled></label>
+                      <label for="gpa-add">GPA:<input type="text" name="gpa-add" id="gpa-add" class="create-cand-item " disabled></label>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="button-add" id="button-add">Add Education</button>
+                <input type="submit" id="btn-upload" class="button-create" value="Create New Candidate">
+              </div>
+                <!-- <div class="candidate-other">
                   <div id="readroot" style="display: none">
-                    <button type="button" onclick="this.parentNode.parentNode.removeChild(this.parentNode);" class="button-add" >Remove Education</button>
+                    <button type="button" onclick="this.parentNode.parentNode.removeChild(this.parentNode);" class="button-add" >Remove</button>
                         <h3>Candidate's Education</h3>
                         <div class="edu-dates">
                           <label for="start-date">Start Date:<input type="date" name="start-date" id="start-date" class="create-cand-item"></label>
@@ -79,8 +126,7 @@
                   <span id="writeroot"></span>
                 </div>
                 <button type="button" class="button-add" id="btn-add"  onclick="moreFields()">Add additional education</button>
-                <div id="writeroot"></div>
-                <input type="submit" id="btn-upload" class="button-create" value="Create New Candidate">
+                <div id="writeroot"></div> -->
                <!-- {% csrf_token %}
                 <div class="candidate-general">
                   {{ form.as_p }} 
@@ -95,9 +141,8 @@
                 </div>
               <input type="submit" class="button-create" value="Create New Candidate">  -->
               </form>
-            
           </div>
-          <script src="{%static 'js/create_candidate_script.js'%}"></script>
-          <script src="{%static 'js/add-edu.js'%}"></script>
       </main>
+      <script src="{%static 'js/create_candidate_script.js'%}"></script>
+      <script src="{%static 'js/add-edu.js'%}"></script>
 {% endblock %}
