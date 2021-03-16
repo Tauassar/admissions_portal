@@ -42,8 +42,9 @@ def set_round_number():
             .filter(active=True).prefetch_related("rounds")[0]\
             .rounds.get(finished=False).round_number
         if current_round_number == models.AdmissionRoundModel.MAX_ROUNDS:
-            raise Exception(
-                'Number of admissions rounds exceeded its max value')
+            # raise Exception(
+            #     'Number of admissions rounds exceeded its max value')
+            pass
         return current_round_number + 1
     except IndexError:
         return 1

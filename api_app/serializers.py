@@ -1,9 +1,31 @@
 from rest_framework import serializers
 
-from candidates_app.models import CandidateModel
+from auth_app.models import CustomUserModel
+from candidates_app.models import (CandidateModel,
+                                   CandidateEducationModel,
+                                   CandidateTestsModel)
+from evaluations_app.models import (ApplicationEvaluationModel,
+                                    InterviewEvaluationModel,
+                                    CandidateEvaluationModel)
+
+
+# access candidate model
+class CandidateEducationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CandidateEducationModel
+        exclude = ['candidate']
+
+
+class CandidateTestsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CandidateTestsModel
+        exclude = ['candidate']
 
 
 class CandidateSerializer(serializers.ModelSerializer):
+    testing_info = CandidateTestsSerializer()
+    education_info = CandidateEducationSerializer(many=True)
+
     class Meta:
         model = CandidateModel
         exclude = ['total_score',
@@ -11,3 +33,70 @@ class CandidateSerializer(serializers.ModelSerializer):
                    'evaluation_finished',
                    'student_list',
                    'admission_round']
+
+
+# access candidate model
+class CandidateDashboardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CandidateModel
+        fields = ['first_name',
+                  'last_name',
+                  'candidate_id',
+                  'applying_degree',
+                  'admission_round']
+
+
+# dashboard serializers
+class ApplicationEvaluationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ApplicationEvaluationModel
+        exclude = ['evaluation']
+
+
+class InterviewEvaluationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InterviewEvaluationModel
+        exclude = ['evaluation']
+
+
+class EvaluatorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUserModel
+        fields = ['first_name',
+                  'last_name',
+                  'staff_id'
+                  ]
+        read_only_fields = (
+            'first_name',
+            'last_name',
+            'staff_id')
+
+
+class CandidateDashboard(serializers.ModelSerializer):
+    class Meta:
+        model = CandidateModel
+        fields = [
+            'first_name',
+            'last_name',
+            'candidate_id'
+        ]
+        read_only_fields = (
+            'first_name',
+            'last_name',
+            'candidate_id')
+
+
+class EvaluationSerializer(serializers.ModelSerializer):
+    candidate = CandidateDashboard()
+    evaluator = EvaluatorSerializer()
+
+    class Meta:
+        model = CandidateEvaluationModel
+        fields = ['evaluation_id',
+                  'evaluation_status',
+                  'candidate',
+                  'evaluator', ]
+        read_only_fields = ('evaluation_id',
+                            'evaluation_status',
+                            'candidate',
+                            'evaluator',)

@@ -1,13 +1,13 @@
 from django.contrib import admin
 from candidates_app.models import (
-    CandidateTestingInformationModel,
+    CandidateTestsModel,
     CandidateEducationModel,
     CandidateModel
 )
 
 
 class CandidateTestingInformationAdmin(admin.TabularInline):
-    model = CandidateTestingInformationModel
+    model = CandidateTestsModel
 
 
 class CandidateEducationAdmin(admin.TabularInline):

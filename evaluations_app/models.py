@@ -35,12 +35,12 @@ class CandidateEvaluationModel(CreateAndUpdateRoutine):
     admission_round = models.ForeignKey(
         AdmissionRoundModel,
         on_delete=models.CASCADE,
-        default=get_current_admission_round)
+        default=get_current_admission_round,
+        related_name='evaluations')
 
     evaluation_status = models.CharField(max_length=20,
                                          choices=STATUS,
                                          default=not_evaluated)
-    approved_by_secretary = models.BooleanField(default=False)
 
     def __str__(self):
         return "{0} {1} ({2} {3})".format(

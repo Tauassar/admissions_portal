@@ -2,7 +2,7 @@ from django.db.models.signals import post_save, post_delete
 
 from admission_periods_app.models import (AdmissionYearModel,
                                           AdmissionRoundModel,
-                                          StudentList)
+                                          StudentList, StaffListModel)
 
 
 def admission_year_created(sender, instance, created, **kwargs):
@@ -15,6 +15,10 @@ def admission_year_created(sender, instance, created, **kwargs):
             year.active = False
             year.save()
 
+
+def create_staff_list(sender, instance, *args, **kwargs):
+    if not instance.staff_list:
+        StaffListModel.objects.create(admission_year=instance)
 
 def create_waiting_list(sender, created, instance, **kwargs):
     if created:

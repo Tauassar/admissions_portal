@@ -1,13 +1,20 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, viewsets
+from rest_framework.generics import ListAPIView
 
+from admission_periods_app.models import AdmissionYearModel
+from auth_app.models import CustomUserModel
 from candidates_app.models import CandidateModel
-from .serializers import CandidateSerializer
+from mainapp.mixins import PositionMixin
+from .serializers import (CandidateSerializer,
+                          EvaluationSerializer,
+                          CandidateDashboardSerializer)
 
 
-class CandidateDetail(generics.RetrieveUpdateDestroyAPIView):
+class CandidateDetail(PositionMixin, generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a Candidate instance.
     """
+    permission_groups = [CustomUserModel.ADMISSION_DEPARTMENT]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_url_kwarg = 'candidate_id'
     lookup_field = 'candidate_id'
@@ -17,10 +24,20 @@ class CandidateDetail(generics.RetrieveUpdateDestroyAPIView):
         return CandidateModel.objects.all()
 
 
-class CandidatesList(generics.ListCreateAPIView):
-    """
-        Returns all candidate objects that are stored in the database
-    """
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = CandidateModel.objects.all()
-    serializer_class = CandidateSerializer
+# DASHBOARD VIEWS
+class RoundCandidates(PositionMixin, ListAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_groups = [CustomUserModel.ADMISSION_DEPARTMENT]
+    queryset = AdmissionYearModel.objects.get(active=True).rounds.get(finished=False).candidates.all()
+    serializer_class = CandidateDashboardSerializer
+
+
+class RoundEvaluationsViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_groups = [CustomUserModel.COMMITTEE_MEMBER,
+                         CustomUserModel.COMMITTEE_CHAIR,
+                         CustomUserModel.SECRETARY]
+    queryset = AdmissionYearModel.objects.get(active=True) \
+        .rounds.get(finished=False).evaluations.all()
+    serializer_class = EvaluationSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]

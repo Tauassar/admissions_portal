@@ -11,11 +11,13 @@ from .utils import calculate_total_score
 def create_candidate_evaluations(sender, instance, created, **kwargs):
     if created:
         evaluators = CustomUserModel.objects.filter(position__in=[1, 2])
-        for person in evaluators:
-            CandidateEvaluationModel.objects.create(
+        evaluations = [
+            CandidateEvaluationModel(
                 evaluator=person,
                 candidate=instance
-            )
+            ) for person in evaluators
+        ]
+        CandidateEvaluationModel.objects.bulk_create(evaluations)
 
 
 '''

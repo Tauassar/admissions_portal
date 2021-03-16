@@ -30,13 +30,15 @@ from mainapp.utils import compose_lists
 def dashboardView(request):
     admission_year, admission_round = get_current_year_and_round()
     try:
-        candidates = admission_round.candidatemodel_set.all()
-        if request.user.position not in [1, 2]:
-            evaluations = admission_round.candidateevaluationmodel_set.all()
+        candidates = admission_round.candidates.all()
+        if request.user.position not in [CustomUserModel.COMMITTEE_CHAIR,
+                                         CustomUserModel.COMMITTEE_MEMBER]:
+            evaluations = admission_round.evaluations.all()
         else:
-            evaluations = admission_round.candidateevaluationmodel_set.filter(
+            evaluations = admission_round.evaluations.filter(
                 evaluator=request.user)
     except (ObjectDoesNotExist, AttributeError):
+        print("ERROR")
         return render(request, 'mainapp/main_dashboard.html')
     context = {
         'candidates': candidates,

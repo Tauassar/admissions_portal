@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from candidates_app.models import (CandidateModel,
-                                   CandidateTestingInformationModel,
+                                   CandidateTestsModel,
                                    CandidateEducationModel)
 from django.forms import inlineformset_factory
 
@@ -21,7 +21,7 @@ class AddCandidateForm(ModelForm):
 
 TestingFormset = inlineformset_factory(
     CandidateModel,
-    CandidateTestingInformationModel,
+    CandidateTestsModel,
     fields='__all__',
     max_num=1,
     min_num=1,

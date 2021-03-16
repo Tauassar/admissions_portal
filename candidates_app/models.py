@@ -46,7 +46,9 @@ class CandidateModel(CreateAndUpdateRoutine):
         AdmissionRoundModel,
         editable=False,
         default=get_current_admission_round,
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE,
+        related_name='candidates'
+    )
     total_score = MinMaxFloat(min_value=0,
                               max_value=100,
                               null=True,
@@ -103,7 +105,7 @@ class CandidateModel(CreateAndUpdateRoutine):
 
 
 # Model storing data about candidate tests information
-class CandidateTestingInformationModel(CreateAndUpdateRoutine):
+class CandidateTestsModel(CreateAndUpdateRoutine):
     candidate = models.OneToOneField(CandidateModel,
                                      on_delete=models.CASCADE,
                                      related_name="testing_info")
