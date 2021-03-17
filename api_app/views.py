@@ -1,9 +1,9 @@
-from rest_framework import generics, permissions, viewsets
-from rest_framework.decorators import api_view
+from rest_framework import permissions, viewsets
 from rest_framework.generics import ListAPIView
-from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, UpdateModelMixin
-from rest_framework.response import Response
-from rest_framework.reverse import reverse
+from rest_framework.mixins import (CreateModelMixin,
+                                   RetrieveModelMixin,
+                                   DestroyModelMixin,
+                                   UpdateModelMixin)
 from rest_framework.viewsets import GenericViewSet
 
 from admission_periods_app.models import AdmissionYearModel
@@ -36,7 +36,6 @@ class CandidateDetail(PositionMixin,
 class RoundCandidates(PositionMixin, ListAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     permission_groups = [CustomUserModel.ADMISSION_DEPARTMENT]
-    # queryset = AdmissionYearModel.objects.get(active=True).rounds.get(finished=False).candidates.all()
     serializer_class = CandidateDashboardSerializer
 
     def get_queryset(self):

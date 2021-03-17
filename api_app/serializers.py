@@ -32,7 +32,10 @@ class CandidateSerializer(serializers.ModelSerializer):
                    'candidate_status',
                    'evaluation_finished',
                    'student_list',
-                   'admission_round']
+                   'admission_round',
+                   'gpa',
+                   'school_rating',
+                   'research_experience']
 
 
 # access candidate model
