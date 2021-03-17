@@ -31,8 +31,12 @@ class CandidateDetail(PositionMixin, generics.RetrieveUpdateDestroyAPIView):
 class RoundCandidates(PositionMixin, ListAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     permission_groups = [CustomUserModel.ADMISSION_DEPARTMENT]
-    queryset = AdmissionYearModel.objects.get(active=True).rounds.get(finished=False).candidates.all()
+    # queryset = AdmissionYearModel.objects.get(active=True).rounds.get(finished=False).candidates.all()
     serializer_class = CandidateDashboardSerializer
+
+    def get_queryset(self):
+        return AdmissionYearModel.objects.get(active=True)\
+            .rounds.get(finished=False).candidates.all()
 
 
 class RoundEvaluationsViewSet(viewsets.ReadOnlyModelViewSet):
@@ -40,7 +44,10 @@ class RoundEvaluationsViewSet(viewsets.ReadOnlyModelViewSet):
     permission_groups = [CustomUserModel.COMMITTEE_MEMBER,
                          CustomUserModel.COMMITTEE_CHAIR,
                          CustomUserModel.SECRETARY]
-    queryset = AdmissionYearModel.objects.get(active=True) \
-        .rounds.get(finished=False).evaluations.all()
+    queryset = AdmissionYearModel.objects.all()
     serializer_class = EvaluationSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        return AdmissionYearModel.objects.get(active=True)\
+            .rounds.get(finished=False).evaluations.all()

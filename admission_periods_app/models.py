@@ -85,7 +85,7 @@ class AdmissionRoundModel(CreateAndUpdateRoutine):
     MAX_ROUNDS = 3
     admission_year = models.ForeignKey(
         AdmissionYearModel,
-        default=get_current_admission_year(),
+        default=get_current_admission_year,
         on_delete=models.CASCADE,
         related_name='rounds')
     accepted_candidates_list = models.OneToOneField(
