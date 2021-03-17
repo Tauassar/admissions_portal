@@ -1,8 +1,10 @@
 from rest_framework import generics, permissions, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
+from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, UpdateModelMixin
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from rest_framework.viewsets import GenericViewSet
 
 from admission_periods_app.models import AdmissionYearModel
 from auth_app.models import CustomUserModel
@@ -13,18 +15,21 @@ from .serializers import (CandidateSerializer,
                           CandidateDashboardSerializer)
 
 
-class CandidateDetail(PositionMixin, generics.RetrieveUpdateDestroyAPIView):
+class CandidateDetail(PositionMixin,
+                      CreateModelMixin,
+                      RetrieveModelMixin,
+                      DestroyModelMixin,
+                      UpdateModelMixin,
+                      GenericViewSet):
     """
-    Retrieve, update or delete a Candidate instance.
+    Retrieve, create, update or delete a Candidate instance.
     """
     permission_groups = [CustomUserModel.ADMISSION_DEPARTMENT]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_url_kwarg = 'candidate_id'
     lookup_field = 'candidate_id'
     serializer_class = CandidateSerializer
-
-    def get_queryset(self):
-        return CandidateModel.objects.all()
+    queryset = CandidateModel.objects.all()
 
 
 # DASHBOARD VIEWS
