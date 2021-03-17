@@ -10,7 +10,10 @@ router.register('evaluations', views.RoundEvaluationsViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('candidates/', views.RoundCandidates.as_view()),
+    path('candidates/',
+         views.RoundCandidates.as_view(),
+         name='candidates_api'),
     path('candidates/<str:candidate_id>/',
-         views.CandidateDetail.as_view())
+         views.CandidateDetail.as_view(),
+         name='candidate_detail_api')
 ]

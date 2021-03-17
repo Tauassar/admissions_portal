@@ -1,7 +1,9 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
+from django.shortcuts import redirect, get_object_or_404
+from django.views.generic import TemplateView
+from rest_framework.reverse import reverse_lazy
 
-from auth_app.decorators import check_permissions
 from auth_app.models import CustomUserModel
 from candidates_app.models import CandidateModel
 from evaluations_app.forms import InterviewFormset, ApplicationFormset
@@ -10,73 +12,102 @@ from evaluations_app.models import (CandidateEvaluationModel,
                                     InterviewEvaluationModel)
 from evaluations_app.utils import queryset_to_dict
 from mainapp.forms import SecretaryEvaluationForm, ApprovementForm
+from mainapp.mixins import PositionMixin
 
 
-@login_required(login_url='login')
-@check_permissions(allowed_pos=[CustomUserModel.COMMITTEE_MEMBER,
-                                CustomUserModel.COMMITTEE_CHAIR])
-def candidateEvaluateView(request, uuid):
-    evaluator = request.user
-    candidate = get_object_or_404(CandidateModel, candidate_id=uuid)
-    evaluation = get_object_or_404(
-        CandidateEvaluationModel,
-        evaluator=evaluator,
-        candidate=candidate)
-    application_formset = ApplicationFormset(instance=evaluation)
-    interview_formset = InterviewFormset(instance=evaluation)
-    if request.method == "POST":
-        application_formset = ApplicationFormset(
-            request.POST, instance=evaluation)
-        interview_formset = InterviewFormset(
-            request.POST, instance=evaluation)
+class CandidateEvaluateView(LoginRequiredMixin,
+                            PositionMixin,
+                            TemplateView):
+    permission_groups = [CustomUserModel.COMMITTEE_CHAIR,
+                         CustomUserModel.COMMITTEE_MEMBER]
+    template_name = 'evaluations_app/evaluate_candidate.html'
+    slug_url_kwarg = 'uuid'
+    slug_field = 'candidate_id'
+    context_object_name = 'candidate'
+
+    def get(self, request, *args, **kwargs):
+        candidate = get_object_or_404(
+            CandidateModel,
+            candidate_id=self.kwargs['uuid'])
+        evaluation = get_object_or_404(
+            CandidateEvaluationModel,
+            evaluator=self.request.user,
+            candidate=candidate)
+        application_formset = ApplicationFormset(instance=evaluation)
+        interview_formset = InterviewFormset(instance=evaluation)
+        context = super(CandidateEvaluateView, self).get_context_data(**kwargs)
+        context['application_formset'] = application_formset
+        context['interview_formset'] = interview_formset
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        candidate = get_object_or_404(
+            CandidateModel,
+            candidate_id=self.kwargs['uuid'])
+        evaluation = get_object_or_404(
+            CandidateEvaluationModel,
+            evaluator=self.request.user,
+            candidate=candidate)
+        application_formset = ApplicationFormset(request.POST,
+                                                 instance=evaluation)
+        interview_formset = InterviewFormset(request.POST,
+                                             instance=evaluation)
         if application_formset.is_valid() and interview_formset.is_valid():
-            evaluation.evaluation_status = CandidateEvaluationModel.in_progress
+            evaluation.evaluation_status = \
+                CandidateEvaluationModel.in_progress
             application_formset.save()
             interview_formset.save()
             evaluation.save()
-            return redirect('dashboard')
-    context = {
-        'application_formset': application_formset,
-        'interview_formset': interview_formset,
-        'candidate': candidate}
-    return render(request, 'evaluations_app/evaluate_candidate.html', context)
+            return redirect(reverse_lazy('dashboard'))
+        return HttpResponse('ERROR')
 
 
-@login_required(login_url='login')
-@check_permissions(allowed_pos=[CustomUserModel.SECRETARY])
-def approveEvalView(request, uuid):
-    evaluation = get_object_or_404(
-        CandidateEvaluationModel, evaluation_id=uuid)
-    application_evaluation = get_object_or_404(
-        ApplicationEvaluationModel, evaluation=evaluation)
-    interview_evaluation = get_object_or_404(
-        InterviewEvaluationModel, evaluation=evaluation)
-    application_evaluation_dict = queryset_to_dict(
-        application_evaluation,
-        exclude=['evaluation', 'id'])
-    if not interview_evaluation.skip_evaluation:
-        interview_evaluation_dict = queryset_to_dict(
-            interview_evaluation,
+class ApproveEvaluationView(LoginRequiredMixin,
+                            PositionMixin,
+                            TemplateView):
+    permission_groups = [CustomUserModel.SECRETARY]
+    template_name = 'evaluations_app/approve_evaluation.html'
+
+    def get_objects(self):
+        evaluation = get_object_or_404(
+            CandidateEvaluationModel,
+            evaluation_id=self.kwargs['uuid'])
+        application_evaluation = get_object_or_404(
+            ApplicationEvaluationModel, evaluation=evaluation)
+        interview_evaluation = get_object_or_404(
+            InterviewEvaluationModel, evaluation=evaluation)
+        return evaluation, application_evaluation, interview_evaluation
+
+    def get(self, request, *args, **kwargs):
+        evaluation, application_evaluation, interview_evaluation = \
+            self.get_objects()
+        application_evaluation_dict = queryset_to_dict(
+            application_evaluation,
             exclude=['evaluation', 'id'])
-    else:
-        interview_evaluation_dict = None
-    approve_form = ApprovementForm()
-    evaluate_form = SecretaryEvaluationForm(instance=evaluation.candidate)
-    if request.method == "POST":
-        approve_form = ApprovementForm(request.POST)
+        if not interview_evaluation.skip_evaluation:
+            interview_evaluation_dict = queryset_to_dict(
+                interview_evaluation,
+                exclude=['evaluation', 'id'])
+        else:
+            interview_evaluation_dict = None
+        approve_form = ApprovementForm()
+        evaluate_form = SecretaryEvaluationForm(instance=evaluation.candidate)
+        context = super(ApproveEvaluationView, self).get_context_data(**kwargs)
+        context['evaluate_form'] = evaluate_form
+        context['approve_form'] = approve_form
+        context['application_evaluation_dict'] = application_evaluation_dict
+        context['interview_evaluation_dict'] = interview_evaluation_dict
+        context['evaluation'] = evaluation
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        evaluation, application_evaluation, interview_evaluation = \
+            self.get_objects()
+        approve_form = ApprovementForm(self.request.POST)
         evaluate_form = SecretaryEvaluationForm(
             request.POST, instance=evaluation.candidate)
         if approve_form.is_valid() and evaluate_form.is_valid():
             evaluation.evaluation_status = approve_form.cleaned_data['status']
             evaluate_form.save()
             evaluation.save()
-            return redirect('dashboard')
-
-    context = {
-        'evaluate_form': evaluate_form,
-        'approve_form': approve_form,
-        'application_evaluation_dict': application_evaluation_dict,
-        'interview_evaluation_dict': interview_evaluation_dict,
-        'evaluation': evaluation}
-
-    return render(request, 'evaluations_app/approve_evaluation.html', context)
+            return redirect(reverse_lazy('dashboard'))

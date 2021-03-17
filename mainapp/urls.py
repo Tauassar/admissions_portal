@@ -2,7 +2,7 @@ from django.urls import path
 
 from auth_app.views import ContactsView, PersonalView, ProfileView
 from candidates_app.views import createCandidateView
-from evaluations_app.views import approveEvalView, candidateEvaluateView
+from evaluations_app.views import ApproveEvaluationView, CandidateEvaluateView
 from mainapp.views import SecretaryView, ChairView, dashboardView
 from help_information_app.views import InfoView
 
@@ -11,7 +11,6 @@ urlpatterns = [
     # mainapp
     path('', dashboardView, name='dashboard'),
     path('chair/', ChairView.as_view(), name='chair'),
-    # path('chair/', ChairViewfunc, name='chair'),
     path('secretary/', SecretaryView.as_view(), name='secretary'),
     # info_app
     path('info/', InfoView.as_view(), name='info'),
@@ -20,9 +19,11 @@ urlpatterns = [
     path('personal/', PersonalView.as_view(), name='personal'),
     path('profile/<str:uuid>/', ProfileView.as_view(), name='profile'),
     # evaluate_app
-    path('candidate_evaluate/<str:uuid>/', candidateEvaluateView,
+    path('candidate_evaluate/<str:uuid>/', CandidateEvaluateView.as_view(),
          name='candidate_evaluate'),
-    path('approve_evaluation/<str:uuid>/', approveEvalView,
+    # path('evaluate_candidate/<str:uuid>/', candidateEvaluateView,
+    #           name='candidate_evaluate'),
+    path('approve_evaluation/<str:uuid>/', ApproveEvaluationView.as_view(),
          name='approve_evaluation'),
     # candidate_app
     path('create_candidate/', createCandidateView,
