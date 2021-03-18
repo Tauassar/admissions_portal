@@ -6,18 +6,18 @@
       <main>
           <div class="container creation-container">
               <h2 class="title">Create New Candidate Profile</h2>
-              <form action = "" method = "POST" enctype="multipart/form-data">
+              <form enctype="multipart/form-data" id="myForm">
                 {% csrf_token %}
                 <div class="candidate-general">
                   <div class="wrap-candidate-creation">
                     <div class="candidate-general-name">
                       <h3>Candidate's Name</h3>
-                      <label for="name">Candidate Name:</label>
-                      <input type="text" name="name" id="name" class="create-cand-item">
-                      <label for="surname">Candidate Surname:</label>
-                      <input type="text" name="surname" id="surname" class="create-cand-item" >
+                      <label for="first_name">Candidate Name:</label>
+                      <input type="text" name="first_name" id="first_name" class="create-cand-item">
+                      <label for="last_name">Candidate Surname:</label>
+                      <input type="text" name="last_name" id="last_name" class="create-cand-item" >
                       <label for="app-degree">Applying Degree:</label>
-                      <select name="app-degree" id="app-degree" class="create-cand-item" >
+                      <select name="app-degree" id="app_degree" class="create-cand-item" >
                       <option value="msc">MSc</option>
                       <option value="phd">PhD</option>
                     </select>
@@ -99,34 +99,6 @@
                 <button type="button" class="button-add" id="button-add">Add Education</button>
                 <input type="submit" id="btn-upload" class="button-create" value="Create New Candidate">
               </div>
-                <!-- <div class="candidate-other">
-                  <div id="readroot" style="display: none">
-                    <button type="button" onclick="this.parentNode.parentNode.removeChild(this.parentNode);" class="button-add" >Remove</button>
-                        <h3>Candidate's Education</h3>
-                        <div class="edu-dates">
-                          <label for="start-date">Start Date:<input type="date" name="start-date" id="start-date" class="create-cand-item"></label>
-                          <label for="end-date">End Date:<input type="date" name="end-date" id="end-date" class="create-cand-item"></label>
-                          <label for="grad-date">Grad Date:<input type="date" name="grad-date" id="grad-date" class="create-cand-item"></label>
-                        </div>
-                        <div class="edu-info">
-                          <div class="edu-wrap">
-                            <label for="com-degree">Completed Degree:                      
-                              <select name="com-degree" id="com-degree" class="create-cand-item"> 
-                              <option value="bsc">BSc</option>
-                              <option value="msc">MSc</option>
-                            </select></label>
-                            <label for="institution">Institution:<input type="text" name="institution" id="institution" class="create-cand-item"></label>
-                          </div>
-                          <div class="edu-wrap">
-                            <label for="study-field">Study Field:<input type="text" name="study-field" id="study-field" class="create-cand-item"></label>
-                            <label for="gpa">GPA:<input type="text" name="gpa" id="gpa" class="create-cand-item"></label>
-                          </div>
-                        </div>
-                  </div>
-                  <span id="writeroot"></span>
-                </div>
-                <button type="button" class="button-add" id="btn-add"  onclick="moreFields()">Add additional education</button>
-                <div id="writeroot"></div> -->
                <!-- {% csrf_token %}
                 <div class="candidate-general">
                   {{ form.as_p }} 

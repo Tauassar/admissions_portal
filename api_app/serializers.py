@@ -23,8 +23,8 @@ class CandidateTestsSerializer(serializers.ModelSerializer):
 
 
 class CandidateSerializer(serializers.ModelSerializer):
-    testing_info = CandidateTestsSerializer()
-    education_info = CandidateEducationSerializer(many=True)
+    testing_info = CandidateTestsSerializer(source="testing")
+    education_info = CandidateEducationSerializer(many=True, source="education")
 
     class Meta:
         model = CandidateModel
