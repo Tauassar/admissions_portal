@@ -50,6 +50,14 @@ class CandidateSerializer(serializers.ModelSerializer):
         # create dependant models
         CandidateTestsModel.objects.create(candidate=candidate,
                                            **testing_info)
+        objs = [
+            CandidateEducationModel(
+                CandidateEducationModel.objects.create(candidate=candidate,
+                                                       **education_instance)
+            )
+            for education_instance in education_info
+        ]
+        CandidateEducationModel.objects.bulk_create(objs)
         CandidateEducationModel.objects.create(candidate=candidate,
                                                **education_info)
         # Return a candidate instance

@@ -4,6 +4,7 @@ from rest_framework.mixins import (CreateModelMixin,
                                    RetrieveModelMixin,
                                    DestroyModelMixin,
                                    UpdateModelMixin)
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.viewsets import GenericViewSet
 
 from admission_periods_app.models import AdmissionYearModel
@@ -28,6 +29,7 @@ class CandidateDetail(PositionMixin,
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_url_kwarg = 'candidate_id'
     lookup_field = 'candidate_id'
+    parser_classes = [FormParser, MultiPartParser]
     serializer_class = CandidateSerializer
     queryset = CandidateModel.objects.all()
 
