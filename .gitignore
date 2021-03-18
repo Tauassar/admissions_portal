@@ -119,4 +119,5 @@ media/
 media/*
 assets/*
 .vscode/
-.idea/ 
+.idea/
+logs/ 

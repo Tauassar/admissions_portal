@@ -37,6 +37,21 @@ class CandidateSerializer(serializers.ModelSerializer):
                    'school_rating',
                    'research_experience']
 
+    # Custom create()
+    def create(self, validated_data):
+        # retrieve dependant models data from validated data
+        testing_info = validated_data.pop('testing_info')
+        education_info = validated_data.pop('education_info')
+        # create candidate
+        candidate = CandidateModel.objects.create(**validated_data)
+        # create dependant models
+        CandidateTestsModel.objects.create(candidate=candidate,
+                                           **testing_info)
+        CandidateEducationModel.objects.create(candidate=candidate,
+                                               **education_info)
+        # Return a candidate instance
+        return candidate
+
 
 # access candidate model
 class CandidateDashboardSerializer(serializers.ModelSerializer):
