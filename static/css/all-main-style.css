@@ -573,3 +573,35 @@ select:hover {
   background: #ffffff;
   border-radius: 5px;
 }
+
+
+/*dashboard filtering*/
+.candidate-filter {
+  display: flex;
+  justify-content: center;
+  background: white;
+}
+
+.filter-title {
+  align-self: center;
+}
+
+.btn {
+  border: none;
+  outline: none;
+  padding: 12px 16px;
+  background-color: #f4f5f9;
+  cursor: pointer;
+  margin: 20px;
+  border-radius: 5px;
+  transition: .3s;
+}
+
+.btn:hover {
+  background-color: #ddd;
+}
+
+.btn.active {
+  background-color: #666;
+   color: white;
+}
