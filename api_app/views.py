@@ -29,7 +29,7 @@ class CandidateDetail(PositionMixin,
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_url_kwarg = 'candidate_id'
     lookup_field = 'candidate_id'
-    parser_classes = [FormParser, MultiPartParser]
+    parser_classes = [MultiPartParser]
     serializer_class = CandidateSerializer
     queryset = CandidateModel.objects.all()
 
