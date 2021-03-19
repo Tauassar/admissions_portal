@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
@@ -24,6 +26,8 @@ from mainapp.utils import compose_lists
         change image profile
         write permissions mixin
 """
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 
 @login_required(login_url='login')

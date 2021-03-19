@@ -1,8 +1,12 @@
+import logging
+
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 import admission_periods_app.models as models
 
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 def get_current_admission_round():
     """

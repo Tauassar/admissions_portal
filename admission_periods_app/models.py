@@ -1,12 +1,20 @@
 import datetime
+import logging
+
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models import Avg
+
 from mainapp.fields import MinMaxInt
 from auth_app.models import CustomUserModel
 from admission_periods_app.utils import (get_current_admission_year,
                                          set_round_number)
 from mainapp.models import CreateAndUpdateRoutine
+
+
+logger = logging.getLogger(__name__)
 
 
 class StudentList(CreateAndUpdateRoutine):
@@ -53,13 +61,15 @@ class AdmissionYearModel(CreateAndUpdateRoutine):
     @property
     def get_current_admission_round(self):
         try:
-            output = self.rounds.get(finished=False)
-            return output
-        except Exception as e:
-            print(e)
+            return self.rounds.get(finished=False)
+        except ObjectDoesNotExist as e:
+            logger.warning(e)
 
     def get_staff_list(self):
-        return self.stafflistmodel.staff
+        try:
+            return self.staff_list.staff
+        except ObjectDoesNotExist as e:
+            logger.warning(e)
 
 
 class StaffListModel(CreateAndUpdateRoutine):
@@ -112,13 +122,7 @@ class AdmissionRoundModel(CreateAndUpdateRoutine):
         calculate mean score among all candidates
         of the following admission round
         """
-        candidates = self.candidatemodel_set.all()
-        sum_score = 0
-        for candidate in candidates:
-            sum_score += candidate.total_score
-
-        self.mean_score = sum_score / len(candidates)
-        self.save()
+        return self.candidates.all().aggregate(Avg('total_score'))
 
     def __str__(self):
         return "Round #{0} year: {1}-{2}".format(
