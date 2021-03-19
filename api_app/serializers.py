@@ -23,11 +23,8 @@ class CandidateTestsSerializer(serializers.ModelSerializer):
 
 
 class CandidateSerializer(serializers.ModelSerializer):
-    testing_info = CandidateTestsSerializer(source="testing",
-                                            read_only=True)
-    education_info = CandidateEducationSerializer(many=True,
-                                                  source="education",
-                                                  read_only=True)
+    testing_info = CandidateTestsSerializer(source="testing")
+    education_info = CandidateEducationSerializer(many=True, source="education")
 
     class Meta:
         model = CandidateModel
@@ -43,21 +40,13 @@ class CandidateSerializer(serializers.ModelSerializer):
     # Custom create()
     def create(self, validated_data):
         # retrieve dependant models data from validated data
-        testing_info = validated_data.pop('testing')
-        education_info = validated_data.pop('education')
+        testing_info = validated_data.pop('testing_info')
+        education_info = validated_data.pop('education_info')
         # create candidate
         candidate = CandidateModel.objects.create(**validated_data)
         # create dependant models
         CandidateTestsModel.objects.create(candidate=candidate,
                                            **testing_info)
-        objs = [
-            CandidateEducationModel(
-                CandidateEducationModel.objects.create(candidate=candidate,
-                                                       **education_instance)
-            )
-            for education_instance in education_info
-        ]
-        CandidateEducationModel.objects.bulk_create(objs)
         CandidateEducationModel.objects.create(candidate=candidate,
                                                **education_info)
         # Return a candidate instance

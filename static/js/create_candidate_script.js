@@ -1,9 +1,86 @@
-function getCookie(name) {
-    let cookieValue = null;
+//   function getCookie(name) {
+//     var cookieValue = null;
+//     if (document.cookie && document.cookie !== '') {
+//         var cookies = document.cookie.split(';');
+//         for (var i = 0; i < cookies.length; i++) {
+//             var cookie = cookies[i].trim();
+//             // Does this cookie string begin with the name we want?
+//             if (cookie.substring(0, name.length + 1) === (name + '=')) {
+//                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+//                 break;
+//             }
+//         }
+//     }
+//     return cookieValue;
+// }
+// let csrftoken = getCookie('csrftoken');
+//     $("#btn-upload").click(function (event) {
+//         //stop submit the form, we will post it manually.
+
+        
+        
+//         event.preventDefault();
+
+//         // Get form
+//         let form = $('#myForm')[0];
+
+//         // Create an FormData object 
+//         let data = new FormData(form);
+//         const ieltsScore = document.getElementById("ielts-score") ;
+//         const toeflScore = document.getElementById("toefl-score") ;
+//         const gregmatScore = document.getElementById("toefl-score") ;
+//         let  testing = {};
+//         testing["ielts"] = ieltsScore.value;
+//         testing["toefl"] =toeflScore.value;
+//         testing["gre"] =gregmatScore.value;
+//         console.log( testing);
+//         // If you want to add an extra field for the FormData
+//         data.append("CustomField", "This is some extra data, testing");
+//         data.append("testing", testing);
+//         // disabled the submit button
+//         $("#btn-upload").prop("disabled", true);
+//         console.log(JSON.stringify(data));
+//         $.ajax({
+//             type: "POST",
+//             enctype: 'multipart/form-data',
+//             url: "http://127.0.0.1:8000/api/candidate/",
+//             headers: { "X-CSRFToken": csrftoken },
+//             data: JSON.stringify(data),
+//             processData: false,
+//             cache: false,
+//             timeout: 600000,
+//             success: function (data) {
+
+//                 console.log(data);
+//                 console.log("SUCCESS : ", data);
+//                 $("#btn-upload").prop("disabled", false);
+
+//             },
+//             error: function (e) {
+
+//                 console.log(e.responseText);
+//                 console.log("ERROR : ", e);
+//                 $("#btn-upload").prop("disabled", false);
+
+//             }
+//         });
+
+//     });
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    document
+      .getElementById('myForm')
+      .addEventListener('submit', handleForm);
+  });
+
+  function getCookie(name) {
+    var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
             // Does this cookie string begin with the name we want?
             if (cookie.substring(0, name.length + 1) === (name + '=')) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
@@ -13,14 +90,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
-const csrftoken = getCookie('csrftoken');
-document.addEventListener('DOMContentLoaded', () => {
-    document
-      .getElementById('myForm')
-      .addEventListener('submit', handleForm);
-  });
-
+let csrftoken = getCookie('csrftoken');
   function handleForm(ev) {
     ev.preventDefault(); //stop the page reloading
     //console.dir(ev.target);
@@ -38,28 +108,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const ieltsScore = document.getElementById("ielts-score") ;
     const toeflScore = document.getElementById("toefl-score") ;
     const gregmatScore = document.getElementById("toefl-score") ;
-    let testing_info = {};
-    testing_info["ielts"] = ieltsScore.value;
-    testing_info["toefl"] =toeflScore.value;
-    testing_info["gre"] =gregmatScore.value;
-    console.log(testing_info);
-    let testingInfoJson = JSON.stringify(testing_info);
-     fd.append('testing_info', testing_info);
+    let  testing = {};
+     testing["ielts"] = ieltsScore.value;
+     testing["toefl"] =toeflScore.value;
+     testing["gre"] =gregmatScore.value;
+    console.log( testing);
+    let testingInfoJson = JSON.stringify( testing);
+     fd.append('testing',  testing);
     let json = convertFD2JSON(fd);
     console.log(json);
     //send the request with the formdata
     let url = 'http://127.0.0.1:8000/api/candidate/';
-    let h = new Headers();
-    h.append('Content-type', 'application/json');
-    h.append('X-CSRFToken', csrftoken);
+    // let h = new Headers();
+    // // h.append('Content-type', 'multipart/form-data', 'boundary="gc0pJq0M:08jU534c0p"');
+    // h.append('X-CSRFToken', csrftoken);
 
-    let req = new Request(url, {
-      headers: h,
-      body: json,
-      method: 'POST',
-    });
+//     let req = new Request({  
+//         url: 'http://127.0.0.1:8000/api/candidate/',
+//         method: 'POST',  
+//         headers: {  
+//           'Content-type': 'multipart/form-data; charset=UTF-8; boundary="gc0pJq0M:08jU534c0p"',
+//           'X-CSRFToken': csrftoken
+//         },
+//         body: json
+// });
     //console.log(req);
-    fetch(req)
+    fetch(url, {
+        method: 'POST',  
+        headers: {  
+          'Content-type': 'multipart/form-data; charset=UTF-8; boundary="gc0pJq0M:08jU534c0p"',
+          "X-CSRFToken": csrftoken 
+        },
+        body: json
+    })
       .then((res) => res.json())
       .then((data) => {
         console.log('Response from server');
@@ -122,9 +203,9 @@ document.addEventListener('DOMContentLoaded', () => {
 //     formData.append("cv", cv.files[0]);
 //     formData.append("recomendation_1", recom1.files[0]);
 //     formData.append("recomendation_2", recom2.files[0]);
-//     formData.append("testing_info[ielts]", ieltsScore.value);
-//     formData.append("testing_info[toefl]", toeflScore.value);
-//     formData.append("testing_info[gre]", gregmatScore.value);
+//     formData.append(" testing[ielts]", ieltsScore.value);
+//     formData.append(" testing[toefl]", toeflScore.value);
+//     formData.append(" testing[gre]", gregmatScore.value);
 //     formData.append("education_info[start_date]", startDate.value);
 //     formData.append("education_info[end_date]", endDate.value);
 //     formData.append("education_info[grad_date]", gradDate.value);

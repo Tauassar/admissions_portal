@@ -1,10 +1,11 @@
+import logging
 from rest_framework import permissions, viewsets
 from rest_framework.generics import ListAPIView
 from rest_framework.mixins import (CreateModelMixin,
                                    RetrieveModelMixin,
                                    DestroyModelMixin,
                                    UpdateModelMixin)
-from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.parsers import FormParser, MultiPartParser, JSONParser
 from rest_framework.viewsets import GenericViewSet
 
 from admission_periods_app.models import AdmissionYearModel
@@ -15,6 +16,8 @@ from .serializers import (CandidateSerializer,
                           EvaluationSerializer,
                           CandidateDashboardSerializer)
 
+
+logger = logging.getLogger(__name__)
 
 class CandidateDetail(PositionMixin,
                       CreateModelMixin,
@@ -29,9 +32,14 @@ class CandidateDetail(PositionMixin,
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_url_kwarg = 'candidate_id'
     lookup_field = 'candidate_id'
-    parser_classes = [FormParser, MultiPartParser]
+    parser_classes = [MultiPartParser,FormParser]
     serializer_class = CandidateSerializer
     queryset = CandidateModel.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        logger.info(request)
+        return super(CandidateDetail, self).create(request, *args, **kwargs)
+    
 
 
 # DASHBOARD VIEWS
@@ -57,3 +65,4 @@ class RoundEvaluationsViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         return AdmissionYearModel.objects.get(active=True)\
             .rounds.get(finished=False).evaluations.all()
+
