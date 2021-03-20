@@ -4,7 +4,7 @@ from rest_framework.mixins import (CreateModelMixin,
                                    RetrieveModelMixin,
                                    DestroyModelMixin,
                                    UpdateModelMixin)
-from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.viewsets import GenericViewSet
 
 from admission_periods_app.models import AdmissionYearModel
@@ -29,7 +29,7 @@ class CandidateDetail(PositionMixin,
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_url_kwarg = 'candidate_id'
     lookup_field = 'candidate_id'
-    parser_classes = [MultiPartParser]
+    parser_classes = [JSONParser, FormParser, MultiPartParser]
     serializer_class = CandidateSerializer
     queryset = CandidateModel.objects.all()
 
@@ -41,7 +41,7 @@ class RoundCandidates(PositionMixin, ListAPIView):
     serializer_class = CandidateDashboardSerializer
 
     def get_queryset(self):
-        return AdmissionYearModel.objects.get(active=True)\
+        return AdmissionYearModel.objects.get(active=True) \
             .rounds.get(finished=False).candidates.all()
 
 
@@ -55,5 +55,5 @@ class RoundEvaluationsViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        return AdmissionYearModel.objects.get(active=True)\
+        return AdmissionYearModel.objects.get(active=True) \
             .rounds.get(finished=False).evaluations.all()
