@@ -6,7 +6,7 @@
       <main>
           <div class="container creation-container">
               <h2 class="title">Create New Candidate Profile</h2>
-              <form enctype="multipart/form-data" id="myForm">
+              <form  id="myForm" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="candidate-general">
                   <div class="wrap-candidate-creation">
@@ -115,6 +115,7 @@
               </form>
           </div>
       </main>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
       <script src="{%static 'js/create_candidate_script.js'%}"></script>
       <script src="{%static 'js/add-edu.js'%}"></script>
 {% endblock %}
