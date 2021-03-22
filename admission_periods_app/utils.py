@@ -8,6 +8,7 @@ import admission_periods_app.models as models
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
+
 def get_current_admission_round():
     """
     returns active admission year
