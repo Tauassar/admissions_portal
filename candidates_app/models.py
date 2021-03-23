@@ -5,6 +5,7 @@ from admission_periods_app.models import (
     StudentList,
 )
 from admission_periods_app.utils import get_current_admission_round
+from auth_app.models import CustomUserModel
 from candidates_app.utils import file_directory_path
 from mainapp.fields import MinMaxInt, MinMaxFloat
 from mainapp.models import CreateAndUpdateRoutine
@@ -35,6 +36,10 @@ CANDIDATE_STATUS = [
 
 class CandidateModel(CreateAndUpdateRoutine):
     # information
+    created_by = models.ForeignKey(
+        CustomUserModel,
+        editable=False,
+        on_delete=models.DO_NOTHING)
     candidate_id = models.AutoField(primary_key=True,
                                     editable=False,
                                     unique=True)

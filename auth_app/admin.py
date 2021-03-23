@@ -3,6 +3,8 @@ from auth_app import models
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from django.contrib.auth.admin import UserAdmin
 
+from .models import AuditEntry
+
 
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
@@ -40,6 +42,12 @@ class CustomUserAdmin(UserAdmin):
     )
     search_fields = ('email',)
     ordering = ('email',)
+
+
+@admin.register(AuditEntry)
+class AuditEntryAdmin(admin.ModelAdmin):
+    list_display = ['action', 'username', 'ip']
+    list_filter = ['action']
 
 
 admin.site.register(models.CustomUserModel, CustomUserAdmin)
