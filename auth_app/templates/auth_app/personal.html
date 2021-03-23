@@ -39,6 +39,15 @@
                         </div>
                 </div>
             {%endif%}
+
+        {% if login_actions %}
+            <div>
+            Login history:
+                {% for action in  login_actions%}
+                    <p>{{ action }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
         </div>
       </main>
 {% endblock %}

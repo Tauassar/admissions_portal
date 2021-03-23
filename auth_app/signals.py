@@ -9,22 +9,22 @@ from auth_app.models import AuditEntry
 @receiver(user_logged_in)
 def user_logged_in_callback(sender, request, user, **kwargs):
     ip = request.META.get('REMOTE_ADDR')
-    AuditEntry.objects.create(action='user_logged_in',
+    AuditEntry.objects.create(action='Logged in',
                               ip=ip,
-                              username=user.email)
+                              email=user.email)
 
 
 @receiver(user_logged_out)
 def user_logged_out_callback(sender, request, user, **kwargs):
     ip = request.META.get('REMOTE_ADDR')
-    AuditEntry.objects.create(action='user_logged_out',
+    AuditEntry.objects.create(action='Logged out',
                               ip=ip,
-                              username=user.email)
+                              email=user.email)
 
 
 @receiver(user_login_failed)
 def user_login_failed_callback(sender, credentials, request, **kwargs):
     ip = request.META.get('REMOTE_ADDR')
-    AuditEntry.objects.create(action='user_login_failed',
-                              username=credentials.get('username', None),
+    AuditEntry.objects.create(action='Login failed',
+                              email=credentials.get('username', None),
                               ip=ip)

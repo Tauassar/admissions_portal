@@ -43,10 +43,15 @@ class CustomUserModel(AbstractUser):
 class AuditEntry(models.Model):
     action = models.CharField(max_length=64)
     ip = models.GenericIPAddressField(null=True)
-    username = models.CharField(max_length=256, null=True)
+    email = models.CharField(max_length=10)
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        editable=False)
 
     def __unicode__(self):
-        return '{0} - {1} - {2}'.format(self.action, self.username, self.ip)
+        return '{0} IP: {1} at: {2}'.format(
+            self.action, self.ip, self.created_at.strftime('%d.%m.%Y %H:%M'))
 
     def __str__(self):
-        return '{0} - {1} - {2}'.format(self.action, self.username, self.ip)
+        return '{0} IP: {1} at: {2}'.format(
+            self.action, self.ip, self.created_at.strftime('%d.%m.%Y %H:%M'))

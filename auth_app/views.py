@@ -7,7 +7,7 @@ from django.views.generic import ListView, DetailView
 
 from admission_periods_app.models import AdmissionYearModel
 from auth_app.forms import CustomPasswordChangeForm, AuthForm
-from auth_app.models import CustomUserModel
+from auth_app.models import CustomUserModel, AuditEntry
 
 
 class AppLoginView(LoginView):
@@ -50,6 +50,8 @@ class PersonalView(LoginRequiredMixin, PasswordChangeView):
         context['position'] = CustomUserModel.POSITIONS[
                                   self.request.user.position][1]
         context['user'] = self.request.user
+        context['login_actions'] = AuditEntry.objects.filter(
+            email=self.request.user.email).order_by("created_at").reverse()[:5]
         return context
 
 
