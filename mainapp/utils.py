@@ -1,4 +1,3 @@
-
 def clear_list(candidates, admission_year):
     for candidate in candidates:
         candidate.student_list = admission_year.current_candidates

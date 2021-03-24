@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views.generic import ListView, UpdateView
 
+from actions_api.models import Action
 from admission_periods_app.forms import AdmissionRoundForm
 from admission_periods_app.utils import (get_current_year_and_round,
                                          get_candidates)
@@ -24,8 +25,8 @@ from mainapp.utils import compose_lists
         different dashboards for different users
         recent actions
         change image profile
-        write permissions mixin
 """
+
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
@@ -35,6 +36,7 @@ def dashboardView(request):
     admission_year, admission_round = get_current_year_and_round()
     try:
         candidates = admission_round.candidates.all()
+        actions = Action.objects.filter(user=request.user).order_by('created_at')
         if request.user.position not in [CustomUserModel.COMMITTEE_CHAIR,
                                          CustomUserModel.COMMITTEE_MEMBER]:
             evaluations = admission_round.evaluations.all()
@@ -47,7 +49,8 @@ def dashboardView(request):
     context = {
         'candidates': candidates,
         'evaluations': evaluations,
-        'admission_round': admission_round.round_number
+        'admission_round': admission_round.round_number,
+        'actions': actions
     }
     return render(request, 'mainapp/main_dashboard.html', context)
 
@@ -76,7 +79,7 @@ class ChairView(LoginRequiredMixin, PositionMixin, UpdateView):
             return super(ChairView, self).form_valid(form)
 
     def get_object(self, queryset=None):
-        self.admission_year, self.admission_round =\
+        self.admission_year, self.admission_round = \
             get_current_year_and_round()
         return self.admission_round
 

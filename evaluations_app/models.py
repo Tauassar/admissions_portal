@@ -1,5 +1,7 @@
 import uuid
 from django.db import models
+from django_currentuser.db.models import CurrentUserField
+
 from mainapp.fields import MinMaxInt
 from candidates_app.models import CandidateModel
 from auth_app.models import CustomUserModel
@@ -23,7 +25,9 @@ class CandidateEvaluationModel(CreateAndUpdateRoutine):
         (approved, 'Approved'),
         (rejected, 'Rejected'),
     ]
-
+    last_updated_by = CurrentUserField(
+        on_update=True,
+        related_name='updated_by')
     evaluation_id = models.UUIDField(primary_key=True,
                                      default=uuid.uuid4,
                                      editable=False)

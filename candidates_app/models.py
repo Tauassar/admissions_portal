@@ -1,5 +1,7 @@
 from django.db import models
 from django.db.models.fields.files import FieldFile
+from django_currentuser.db.models import CurrentUserField
+
 from admission_periods_app.models import (
     AdmissionRoundModel,
     StudentList,
@@ -36,10 +38,10 @@ CANDIDATE_STATUS = [
 
 class CandidateModel(CreateAndUpdateRoutine):
     # information
-    created_by = models.ForeignKey(
-        CustomUserModel,
-        editable=False,
-        on_delete=models.DO_NOTHING)
+    created_by = CurrentUserField(related_name='created_by')
+    last_updated_by = CurrentUserField(
+        on_update=True,
+        related_name='last_updated')
     candidate_id = models.AutoField(primary_key=True,
                                     editable=False,
                                     unique=True)
