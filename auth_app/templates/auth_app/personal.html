@@ -20,8 +20,8 @@
                     <p class="general-member">Email: <a href="mailto:{{user.email}}" class="contact-info-member">{{user.email}}</a></p>
                 </div>
             </div>
-
-            {%if form %}
+            <div class="log-wrapper">
+                {%if form %}
                 <div class="member-password">
                     <h2>Change Password</h2>
                         <div>
@@ -41,13 +41,14 @@
             {%endif%}
 
         {% if login_actions %}
-            <div>
-            Login history:
+            <div class="log-history"> 
+            <h2>Login history:</h2>
                 {% for action in  login_actions%}
                     <p>{{ action }}</p>
                 {% endfor %}
             </div>
         {% endif %}
+            </div>
         </div>
       </main>
 {% endblock %}

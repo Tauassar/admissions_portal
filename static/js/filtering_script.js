@@ -12,8 +12,7 @@ for (var i = 0; i < btns.length; i++) {
 }
 filterSelection("all") // Execute the function and show all columns
 function filterSelection(filterParam) {
-    filterParam = 
-    for (let i = 0; i < candidate.length; i++) {
+    for(let i = 0; i < candidate.length; i++) {
         if (textContent.innerText == "Status: In progress") {
             candidate[i].style.display = "";
         } else {

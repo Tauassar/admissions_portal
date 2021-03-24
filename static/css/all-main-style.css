@@ -165,7 +165,7 @@ form {
 
 /*committee profile*/
 
-.member-container, .member-password{
+.member-container, .member-password, .log-history{
   margin: 20px;
   display: flex;
   flex-direction: column;
@@ -184,10 +184,16 @@ form {
   width: 30%;
 }
 
-.member-info-wrapper {
+.member-info-wrapper, .log-history, .member-password {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   background: #f4f5f9;
   border-radius: 5px;
+}
+
+.log-history, .member-password {
+  margin: 0;
+  margin-top: 40px;
+  padding: 20px;
 }
 
 .member-pic, .candidate-profile-pic {
@@ -225,6 +231,19 @@ form {
 
 .button-password:hover{
 background-position: right;
+}
+
+/* .member-password {
+  margin: 0;
+  margin-right: 10px;
+} */
+
+.log-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.log-history {
 }
 
 /*main page*/
