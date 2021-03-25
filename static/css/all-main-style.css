@@ -607,7 +607,7 @@ select:hover {
   font-size: 15px;
   outline: none;
   border: none;
-  background-image: linear-gradient(to right, #bd6d6d, #f5ff63, #bd6d71);
+  background-image: linear-gradient(to right, #ec0a0a, #f5ff63, #f01d28);
   cursor: pointer;
   color: #ffffff;
   font-family: 'Poppins', sans-serif;
@@ -633,7 +633,18 @@ select:hover {
 }
 
 .move-txt {
+  display: inline-block;
   font-size: 18px;
+  width: 200px;
+}
+
+.list-card {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border-radius: 5px;
+  margin-top: 20px;
+  padding: 20px;
+  align-items:center;
 }
 
 
