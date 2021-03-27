@@ -2,9 +2,8 @@
 {% block content %}
     <main class="main-dashboard">
           <h3 class="round-title">Round number #{{admission_round}}</h3>
-          
           <div class="container main-container">
-              
+            <div class="candidates">
                 {%if request.user.position == 2 or request.user.position == 1 %}
                     {% include 'mainapp/eval_dashboard.html' %}
                 {%elif request.user.position == 0  %}
@@ -12,6 +11,16 @@
                 {%elif request.user.position == 3  %}
                     {% include 'mainapp/approve_dashboard.html' %}
                 {% endif %}
+                <div class="page-links">
+                    {% if page.has_previous %}
+                        <a href="{% url 'dashboard' %}?page={{ page.previous_page_number }}">Previous page</a>
+                    {% endif %}
+                        {{ page.number }}
+                    {% if page.has_next %}
+                        <a href="{% url 'dashboard' %}?page={{ page.next_page_number }}">Next page</a>
+                    {% endif %}
+                </div>
+            </div>
 
             <div class="events">
                 <h3>User actions history</h3>
@@ -20,6 +29,7 @@
                 {% if actions %}
                     {% for action in actions %}
                         <p>{{ action }}</p>
+                        </hr>
                     {% endfor %}
                 {% else %}
                     <p>No actions</p>

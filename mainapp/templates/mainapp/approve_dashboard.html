@@ -1,7 +1,6 @@
 
 {% load static %}
 
-<div class="candidates">
     <h3>List of evaluations</h3>
     {% comment %} {% for instance in evaluations %}
     <div class="candidate-filter">
@@ -19,8 +18,8 @@
             </div>
         </a>
     {% endfor %} {% endcomment %}
-    {% for evaluation in evaluations %}
+    {% for evaluation in page.object_list %}
         {% include 'mainapp/candidate_card.html' %}
     {% endfor %}
-</div>
+
 <script src="{%static 'js/filtering_script.js'%}"></script>

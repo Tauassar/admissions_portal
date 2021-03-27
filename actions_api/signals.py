@@ -1,6 +1,6 @@
 import logging
 
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, pre_delete
 
 from actions_api.models import Action
 from auth_app.models import CustomUserModel
@@ -33,13 +33,14 @@ def admissions_add(sender, instance, created, **kwargs):
 
 
 def admissions_remove(sender, instance, *args, **kwargs):
-    Action.objects.create(
-        user=instance.created_by,
-        name="{0} {1}".format(
-            instance.first_name,
-            instance.last_name),
-        action_type=Action.DELETED)
-    logger.debug("{0} deleted new candidate".format(instance.created_by))
+    if instance.created_by:
+        Action.objects.create(
+            user=instance.created_by,
+            name="{0} {1}".format(
+                instance.first_name,
+                instance.last_name),
+            action_type=Action.DELETED)
+        logger.debug("{0} deleted new candidate".format(instance.created_by))
 
 
 def committie_evaluated(sender, instance, *args, **kwargs):
@@ -50,7 +51,7 @@ def committie_evaluated(sender, instance, *args, **kwargs):
                 instance.candidate.first_name,
                 instance.candidate.last_name),
             action_type=Action.EDITED)
-        logger.debug("{0} edited evaluation".format(instance.created_by))
+        logger.debug("{0} edited evaluation".format(instance.evaluator))
 
 
 def secretary_checked(sender, instance, *args, **kwargs):
@@ -72,4 +73,4 @@ def secretary_checked(sender, instance, *args, **kwargs):
 post_save.connect(admissions_add, sender=CandidateModel)
 post_save.connect(committie_evaluated, sender=CandidateEvaluationModel)
 post_save.connect(secretary_checked, sender=CandidateEvaluationModel)
-post_delete.connect(admissions_remove, sender=CandidateModel)
+pre_delete.connect(admissions_remove, sender=CandidateModel)

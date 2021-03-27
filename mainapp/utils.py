@@ -20,3 +20,10 @@ def compose_lists(threshold, admission_year, admission_round):
         else:
             continue
         candidate.save()
+
+
+def check_valid_queryparameter(param):
+    return param != '' and param is not None
+
+def dashboard_filters(request, qs):
+    pass

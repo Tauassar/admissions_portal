@@ -2,6 +2,7 @@ import logging
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -35,22 +36,32 @@ logger = logging.getLogger(__name__)
 def dashboardView(request):
     admission_year, admission_round = get_current_year_and_round()
     try:
-        candidates = admission_round.candidates.all()
-        actions = Action.objects.filter(user=request.user).order_by('created_at')
-        if request.user.position not in [CustomUserModel.COMMITTEE_CHAIR,
-                                         CustomUserModel.COMMITTEE_MEMBER]:
-            evaluations = admission_round.evaluations.all()
-        else:
+        actions = Action.objects.filter(
+            user=request.user).order_by('created_at')
+        if request.user.position is CustomUserModel.ADMISSION_DEPARTMENT:
+            candidates = admission_round.candidates.all()
+            dashboard_paginator = Paginator(candidates, 10)
+        elif request.user.position not in [CustomUserModel.COMMITTEE_CHAIR,
+                                           CustomUserModel.COMMITTEE_MEMBER]:
             evaluations = admission_round.evaluations.filter(
                 evaluator=request.user)
+            dashboard_paginator = Paginator(evaluations, 10)
+        else:
+            evaluations = admission_round.evaluations.all()
+            dashboard_paginator = Paginator(evaluations, 10)
     except (ObjectDoesNotExist, AttributeError):
-        print("ERROR")
+        logger.warning(
+            'Candidates or evaluations are not found in dashboard view')
         return render(request, 'mainapp/main_dashboard.html')
+
+    page_number = request.GET.get('page')
+    page = dashboard_paginator.get_page(page_number)
+
     context = {
-        'candidates': candidates,
-        'evaluations': evaluations,
         'admission_round': admission_round.round_number,
-        'actions': actions
+        'actions': actions,
+        'page': page,
+        'count': dashboard_paginator.count
     }
     return render(request, 'mainapp/main_dashboard.html', context)
 
