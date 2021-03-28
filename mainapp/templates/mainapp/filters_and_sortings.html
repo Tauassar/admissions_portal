@@ -1,39 +1,44 @@
 {#name and surname#}
-<div class="input-group">
-    <input class="create-cand-item" type="text" name="firstname" placeholder="First name" />
-    <i class="fa fa-search"></i>
-</div>
-<div class="input-group">
-    <input class="create-cand-item" type="text" name="surname" placeholder="Last name" />
-    <i class="fa fa-search"></i>
-</div>
 
-{#degree#}
-<label for="degree">Degree</label>
-<select id="degree" class="form-control" name="degree">
-  <option selected>Choose...</option>
-  <option value="MSc">MSc</option>
-  <option value="PhD">PhD</option>
-</select>
+<form method="GET" action=".">
+    <div class="input-group">
+        <input class="create-cand-item" type="text" name="firstname" placeholder="First name" />
+        <i class="fa fa-search"></i>
+    </div>
+    <div class="input-group">
+        <input class="create-cand-item" type="text" name="surname" placeholder="Last name" />
+        <i class="fa fa-search"></i>
+    </div>
 
-{#status#}
-<label for="degree">Status</label>
-<select id="status" class="form-control" name="status">
-  <option selected>Choose...</option>
-  <option value="not_evaluated">Not evaluated</option>
-  <option value="in_progress">In progress</option>
-  <option value="approved">Approved</option>
-  <option value="rejected">Rejected</option>
-</select>
+    {#degree#}
+    <label for="degree">Degree</label>
+    <select id="degree" class="form-control" name="degree">
+      <option selected>Choose...</option>
+      <option value="MSc">MSc</option>
+      <option value="PhD">PhD</option>
+    </select>
+    {% if request.user.position != 0 %}
+        {#status#}
+        <label for="status">Status</label>
+        <select id="status" class="form-control" name="status">
+          <option selected>Choose...</option>
+          <option value="not_evaluated">Not evaluated</option>
+          <option value="in_progress">In progress</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+    {% endif %}
+    {#SORTINGS#}
+    <label for="sorting">Sort by</label>
+    <select id="sorting" class="form-control" name="sorting">
+      <option selected>Choose...</option>
+      <option value="-major">Major: MSc</option>
+      <option value="major">Major: PhD</option>
+      <option value="-name">Name: A-Z</option>
+      <option value="name">Name: Z-A</option>
+    </select>
 
-{#SORTINGS#}
-<label for="degree">Sort by</label>
-<select id="status" class="form-control" name="status">
-  <option selected>Choose...</option>
-  <option value="-major">Major: MSc</option>
-  <option value="major">Major: PhD</option>
-  <option value="-name">Name: A-Z</option>
-  <option value="name">Name: Z-A</option>
-</select>
+    <a href="{% url 'dashboard' %}" class="refresh-button"><i class="fa fa-refresh" aria-hidden="true"></i></a>
 
-<a href="{% url 'dashboard' %}" class="refresh-button"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+<button type="submit" class="btn btn-primary">Search</button>
+</form>
