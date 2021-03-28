@@ -3,7 +3,6 @@ import os
 import names
 from django.core.files import File
 from django.core.management.base import BaseCommand
-from django.utils.encoding import get_system_encoding
 
 from auth_app.models import CustomUserModel
 from candidates_app.models import CandidateModel, MASTER

@@ -49,6 +49,8 @@ class CandidateDetail(PositionMixin,
     def raise_up(self, request, *args, **kwargs):
         instance = self.get_object()
         try:
+            if not instance.evaluation_finished:
+                raise TypeError('Evaluation is not finished yet')
             admission_year, admission_round = get_current_year_and_round()
             curr_list = instance.student_list
             if curr_list.list_type == StudentList.ACCEPTED:
@@ -78,7 +80,7 @@ class CandidateDetail(PositionMixin,
         except TypeError as e:
             logger.warning(e)
             return Response(
-                "Either threshold or candidate evaluation is not finished",
+                "Either threshold is not set or candidate evaluation is not finished",
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(status=status.HTTP_200_OK)
 
