@@ -1,23 +1,6 @@
 
 {% load static %}
 
-    <h3>List of evaluations</h3>
-    {% comment %} {% for instance in evaluations %}
-    <div class="candidate-filter">
-        <span class="filter-title">Filter candidates:</span>
-        <button class="btn active" onclick=""> Show all</button>
-        <button class="btn" onclick=""> In progress</button>
-        <button class="btn" onclick=""> Not evaluated</button>
-      </div>
-        <a href = "{% url 'approve_evaluation' instance.evaluation_id %}">
-            <div class="candidate-eval">
-                <img src="{%static 'img/default_user_avatar.png'%}" alt="candidate avatar">
-                <p>{{instance.candidate.first_name}} {{instance.candidate.last_name}}</p>
-                <h5>Evaluator: {{instance.evaluator.first_name}} {{instance.evaluator.last_name}}</h5>
-                <p id="status">Status: {{evaluation.evaluation_status}}</p>
-            </div>
-        </a>
-    {% endfor %} {% endcomment %}
     {% for evaluation in page.object_list %}
         {% include 'mainapp/candidate_card.html' %}
     {% endfor %}

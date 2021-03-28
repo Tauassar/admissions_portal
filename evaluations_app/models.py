@@ -14,10 +14,10 @@ from mainapp.models import CreateAndUpdateRoutine
 
 
 class CandidateEvaluationModel(CreateAndUpdateRoutine):
-    not_evaluated = 'Not evaluated'
-    in_progress = 'In progress'
-    approved = 'Approved'
-    rejected = 'Rejected'
+    not_evaluated = 'not_evaluated'
+    in_progress = 'in_progress'
+    approved = 'approved'
+    rejected = 'rejected'
 
     STATUS = [
         (not_evaluated, 'Not evaluated'),

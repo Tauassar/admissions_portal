@@ -1,9 +1,15 @@
 {% extends 'mainapp/base.html' %}
 {% block content %}
     <main class="main-dashboard">
-          <h3 class="round-title">Round number #{{admission_round}}</h3>
           <div class="container main-container">
             <div class="candidates">
+                <h3 class="round-title">Round {{admission_round}}</h3>
+                {% if request.user.position == 0  %}
+                    <a href = ' {%url "create_candidate" %} ' class="creation-link"><h3>Add candidate +</h3></a>
+                {% endif %}
+
+                {% include 'mainapp/filters_and_sortings.html'%}
+
                 {%if request.user.position == 2 or request.user.position == 1 %}
                     {% include 'mainapp/eval_dashboard.html' %}
                 {%elif request.user.position == 0  %}

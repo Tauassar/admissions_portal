@@ -1,10 +1,6 @@
 
 {% load static %}
 
-    <h3>List of candidates</h3>
-    
-    <a href = ' {%url "create_candidate" %} ' class="creation-link"><h3>Add new candidate</h3></a>
-
 {% for candidate in page.object_list %}
     {% include 'mainapp/candidate_card.html' %}
 {% endfor %}
