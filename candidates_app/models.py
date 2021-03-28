@@ -8,7 +8,7 @@ from admission_periods_app.models import (
 )
 from admission_periods_app.utils import get_current_admission_round
 from auth_app.models import CustomUserModel
-from candidates_app.utils import file_directory_path
+from candidates_app.utils import file_directory_path, get_current_candidates
 from mainapp.fields import MinMaxInt, MinMaxFloat
 from mainapp.models import CreateAndUpdateRoutine
 
@@ -67,6 +67,7 @@ class CandidateModel(CreateAndUpdateRoutine):
     # final lists
     student_list = models.ForeignKey(
         StudentList,
+        default=get_current_candidates,
         null=True,
         blank=True,
         on_delete=models.CASCADE,

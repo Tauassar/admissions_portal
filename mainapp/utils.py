@@ -1,6 +1,12 @@
+import logging
+
 from django.db.models import Q
 
 from candidates_app.models import DEGREE
+
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 
 def clear_list(candidates, admission_year):
@@ -74,7 +80,8 @@ def dashboard_filters(request, qs, is_eval):
     # check status
     if is_eval:
         if check_valid_queryparameter(status):
-            qs = qs.filter(status=status).distinct()
+            logger.debug(qs[0].evaluation_status)
+            qs = qs.filter(evaluation_status=status)
     # sort
     if not is_eval:
         if check_valid_queryparameter(sorting):

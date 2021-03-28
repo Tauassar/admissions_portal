@@ -1,13 +1,5 @@
 
 {% load static %}
-
-    <!-- <h3 class="title-candidate">List of candidates</h3>
-    <div class="candidate-filter">
-        <span class="filter-title">Filter candidates:</span>
-        <button class="btn active" onclick=""> Show all</button>
-        <button class="btn" onclick=""> In progress</button>
-        <button class="btn" onclick=""> Not evaluated</button>
-      </div> -->
     {% for evaluation in page.object_list %}
         {% include 'mainapp/candidate_card.html' %}
     {% endfor %}

@@ -14,10 +14,10 @@ from mainapp.models import CreateAndUpdateRoutine
 
 
 class CandidateEvaluationModel(CreateAndUpdateRoutine):
-    not_evaluated = 'not_evaluated'
-    in_progress = 'in_progress'
-    approved = 'approved'
-    rejected = 'rejected'
+    not_evaluated = 'Not evaluated'
+    in_progress = 'In progress'
+    approved = 'Approved'
+    rejected = 'Rejected'
 
     STATUS = [
         (not_evaluated, 'Not evaluated'),
@@ -41,7 +41,6 @@ class CandidateEvaluationModel(CreateAndUpdateRoutine):
         on_delete=models.CASCADE,
         default=get_current_admission_round,
         related_name='evaluations')
-
     evaluation_status = models.CharField(max_length=20,
                                          choices=STATUS,
                                          default=not_evaluated)

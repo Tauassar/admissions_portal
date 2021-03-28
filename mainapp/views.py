@@ -14,6 +14,7 @@ from admission_periods_app.forms import AdmissionRoundForm
 from admission_periods_app.utils import (get_current_year_and_round,
                                          get_candidates)
 from auth_app.models import CustomUserModel
+from evaluations_app.models import CandidateEvaluationModel
 from mainapp.mixins import PositionMixin
 from mainapp.utils import compose_lists, dashboard_filters
 
@@ -37,7 +38,7 @@ def dashboardView(request):
     admission_year, admission_round = get_current_year_and_round()
     try:
         actions = Action.objects.filter(
-            user=request.user).order_by('created_at')
+            user=request.user).order_by('created_at')[0:10]
         if request.user.position is CustomUserModel.ADMISSION_DEPARTMENT:
             candidates = admission_round.candidates.all()
             dashboard_paginator = Paginator(
@@ -46,6 +47,7 @@ def dashboardView(request):
                                            CustomUserModel.COMMITTEE_MEMBER]:
             evaluations = admission_round.evaluations.filter(
                 evaluator=request.user)
+            logger.debug(evaluations[0].evaluation_status)
             dashboard_paginator = Paginator(
                 dashboard_filters(request, evaluations, True), 10)
         else:
