@@ -19,14 +19,32 @@
                 {% endif %}
                 <div class="page-links">
                     {% if page.has_previous %}
-                        <a href="{% url 'dashboard' %}?page={{ page.previous_page_number }}">Previous page</a>
+                        <button onclick="getURL({{ page.previous_page_number }})">Prev</button>
                     {% endif %}
                         {{ page.number }}
                     {% if page.has_next %}
-                        <a href="{% url 'dashboard' %}?page={{ page.next_page_number }}">Next page</a>
+                        <button onclick="getURL({{ page.next_page_number }})">Next</button>
                     {% endif %}
                 </div>
             </div>
+
+            <script>
+                function getURL(page_num) {
+                    var url = window.location.href;
+                    if(url.includes('page=')){
+                        url = url.slice(0, -1);
+                        url=url.concat(String(page_num));
+                    }else{
+                        if(url.includes('?')) {
+                            url=url.concat("&page=", String(page_num));
+                        }else{
+                            url=url.concat("/?page=", String(page_num));
+                        }
+                    }
+                    console.log(url)
+                    window.location.assign(url);
+                }
+            </script>
 
             <div class="events">
                 <h3>User actions history</h3>

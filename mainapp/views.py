@@ -15,7 +15,7 @@ from admission_periods_app.utils import (get_current_year_and_round,
                                          get_candidates)
 from auth_app.models import CustomUserModel
 from mainapp.mixins import PositionMixin
-from mainapp.utils import compose_lists
+from mainapp.utils import compose_lists, dashboard_filters
 
 """
     TODO: 
@@ -40,15 +40,18 @@ def dashboardView(request):
             user=request.user).order_by('created_at')
         if request.user.position is CustomUserModel.ADMISSION_DEPARTMENT:
             candidates = admission_round.candidates.all()
-            dashboard_paginator = Paginator(candidates, 10)
+            dashboard_paginator = Paginator(
+                dashboard_filters(request, candidates, False), 10)
         elif request.user.position not in [CustomUserModel.COMMITTEE_CHAIR,
                                            CustomUserModel.COMMITTEE_MEMBER]:
             evaluations = admission_round.evaluations.filter(
                 evaluator=request.user)
-            dashboard_paginator = Paginator(evaluations, 10)
+            dashboard_paginator = Paginator(
+                dashboard_filters(request, evaluations, True), 10)
         else:
             evaluations = admission_round.evaluations.all()
-            dashboard_paginator = Paginator(evaluations, 10)
+            dashboard_paginator = Paginator(
+                dashboard_filters(request, evaluations, True), 10)
     except (ObjectDoesNotExist, AttributeError):
         logger.warning(
             'Candidates or evaluations are not found in dashboard view')
