@@ -6,6 +6,7 @@ crispy-tailwind==0.3.0
 Django==3.1.6
 django-cleanup==5.1.0
 django-crispy-forms==1.11.1
+django-currentuser==0.5.2
 django-extensions==3.1.1
 django-filter==2.4.0
 django-phonenumber-field==5.0.0
@@ -18,11 +19,11 @@ graphviz==0.16
 iniconfig==1.1.1
 jdcal==1.4.1
 mccabe==0.6.1
+names==0.3.0
 openpyxl==3.0.6
 packaging==20.9
 phonenumbers==8.12.18
 Pillow==8.1.2
-pkg-resources==0.0.0
 pluggy==0.13.1
 py==1.10.0
 pycodestyle==2.6.0

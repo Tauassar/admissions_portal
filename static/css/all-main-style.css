@@ -149,7 +149,7 @@ form {
   background-size: 200%;
 }
 
-.button-create:hover, .button-add:hover,.button-move:hover{
+.button-create:hover, .button-add:hover,.button-move:hover, .btn-primary:hover{
   background-position: right;
 }
 
@@ -184,7 +184,7 @@ form {
   width: 30%;
 }
 
-.member-info-wrapper, .log-history, .member-password {
+.member-info-wrapper, .log-history, .member-password, .sorting-form {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   background: #f4f5f9;
   border-radius: 5px;
@@ -241,9 +241,6 @@ background-position: right;
 .log-wrapper {
   display: flex;
   justify-content: space-between;
-}
-
-.log-history {
 }
 
 /*main page*/
@@ -617,7 +614,7 @@ select:hover {
   background-size: 200%;
 }
 
-.button-move-up {
+.button-move-up, .btn-primary {
   border-radius: 25px;
   margin: 1rem 0;
   font-size: 15px;
@@ -677,4 +674,31 @@ select:hover {
 .btn.active {
   background-color: #666;
    color: white;
+}
+
+.wrap-dash {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.sorting-form {
+  display: flex;
+  flex-direction: row;
+  align-items: unset;
+  justify-content: space-between;
+  padding: 20px;
+  margin-bottom: 40px;
+}
+
+.refresh-button, .wrap-sort, .btn-primary {
+  align-self: center;
+}
+
+.form-control {
+  margin-bottom: 10px;
 }
