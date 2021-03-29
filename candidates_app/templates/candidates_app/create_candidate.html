@@ -3,103 +3,103 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
-      <main>
-          <div class="container creation-container">
-              <h2 class="title">Create New Candidate Profile</h2>
-              <form  id="myForm" enctype="multipart/form-data">
+    <main>
+        <div class="container creation-container">
+            <h2 class="title">Create New Candidate Profile</h2>
+            <form  id="myForm" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="candidate-general">
-                  <div class="wrap-candidate-creation">
-                    <div class="candidate-general-name">
-                      <h3>Candidate's Name</h3>
-                      <label for="first_name">Candidate Name:</label>
-                      <input type="text" name="first_name" id="first_name" class="create-cand-item">
-                      <label for="last_name">Candidate Surname:</label>
-                      <input type="text" name="last_name" id="last_name" class="create-cand-item" >
-                      <label for="app-degree">Applying Degree:</label>
-                      <select name="app-degree" id="app_degree" class="create-cand-item" >
-                      <option value="msc">MSc</option>
-                      <option value="phd">PhD</option>
-                    </select>
+                    <div class="wrap-candidate-creation">
+                        <div class="candidate-general-name">
+                            <h3>Candidate's Name</h3>
+                            <label for="first_name">Candidate Name:</label>
+                            <input type="text" name="first_name" id="first_name" class="create-cand-item">
+                            <label for="last_name">Candidate Surname:</label>
+                            <input type="text" name="last_name" id="last_name" class="create-cand-item" >
+                            <label for="app-degree">Applying Degree:</label>
+                            <select name="app-degree" id="app_degree" class="create-cand-item" >
+                                <option value="msc">MSc</option>
+                                <option value="phd">PhD</option>
+                            </select>
+                        </div>
+                        <div class="candidate-test">
+                            <h3>Candidate's Test Results</h3>
+                            <label for="ielts-score">IELTS Score:</label>
+                            <input type="number" name="ielts-score" id="ielts-score" class="create-cand-item">
+                            <label for="toefl-score">TOEFL Score:</label>
+                            <input type="number" name="toefl-score" id="toefl-score" class="create-cand-item">
+                            <label for="gre-gmat-score">GRE/GMAT Score:</label>
+                            <input type="number" name="gre-gmat-score" id="gre-gmat-score" class="create-cand-item">
+                        </div>
                     </div>
-                    <div class="candidate-test">
-                      <h3>Candidate's Test Results</h3>
-                      <label for="ielts-score">IELTS Score:</label>
-                      <input type="number" name="ielts-score" id="ielts-score" class="create-cand-item">
-                      <label for="toefl-score">TOEFL Score:</label>
-                      <input type="number" name="toefl-score" id="toefl-score" class="create-cand-item">
-                      <label for="gre-gmat-score">GRE/GMAT Score:</label>
-                      <input type="number" name="gre-gmat-score" id="gre-gmat-score" class="create-cand-item">
+                    <div class="candidate-general-docs">
+                        <h3>Candidate's Documents</h3>
+                        <label for="diploma">Diploma</label>
+                        <input type="file" name="diploma" id="diploma" class="create-cand-item" >
+                        <label for="ielts">IELTS Certificate</label>
+                        <input type="file" name="ielts" id="ielts" class="create-cand-item">
+                        <label for="toefl">TOEFL Certificate</label>
+                        <input type="file" name="toefl" id="toefl" class="create-cand-item">
+                        <label for="gmat-gre">GMAT/GRE</label>
+                        <input type="file" name="gmat-gre" id="gmat-gre" class="create-cand-item">
+                        <label for="purpose">Statement of Purpose</label>
+                        <input type="file" name="purpose" id="purpose" class="create-cand-item">
+                        <label for="cv">CV</label>
+                        <input type="file" name="cv" id="cv" class="create-cand-item">
+                        <label for="recom-1">Reccomendation #1</label>
+                        <input type="file" name="recom-1" id="recom-1" class="create-cand-item">
+                        <label for="recom-2">Reccomendation #2</label>
+                        <input type="file" name="recom-2" id="recom-2" class="create-cand-item">
                     </div>
-                  </div>
-                  <div class="candidate-general-docs">
-                    <h3>Candidate's Documents</h3>
-                    <label for="diploma">Diploma</label>
-                    <input type="file" name="diploma" id="diploma" class="create-cand-item" >
-                    <label for="ielts">IELTS Certificate</label>
-                    <input type="file" name="ielts" id="ielts" class="create-cand-item">
-                    <label for="toefl">TOEFL Certificate</label>
-                    <input type="file" name="toefl" id="toefl" class="create-cand-item">
-                    <label for="gmat-gre">GMAT/GRE</label>
-                    <input type="file" name="gmat-gre" id="gmat-gre" class="create-cand-item">
-                    <label for="purpose">Statement of Purpose</label>
-                    <input type="file" name="purpose" id="purpose" class="create-cand-item">
-                    <label for="cv">CV</label>
-                    <input type="file" name="cv" id="cv" class="create-cand-item">
-                    <label for="recom-1">Reccomendation #1</label>
-                    <input type="file" name="recom-1" id="recom-1" class="create-cand-item">
-                    <label for="recom-2">Reccomendation #2</label>
-                    <input type="file" name="recom-2" id="recom-2" class="create-cand-item"> 
-                  </div>
                 </div>
                 <div class="candidate-other">
-                        <h3>Candidate's Education</h3>
-                        <div class="edu-dates">
-                          <label for="start-date">Start Date:<input type="date" name="start-date" id="start-date" class="create-cand-item"></label>
-                          <label for="end-date">End Date:<input type="date" name="end-date" id="end-date" class="create-cand-item"></label>
-                          <label for="grad-date">Grad Date:<input type="date" name="grad-date" id="grad-date" class="create-cand-item"></label>
-                        </div>
-                        <div class="edu-info">
-                          <div class="edu-wrap">
-                            <label for="com-degree">Completed Degree:                      
-                              <select name="com-degree" id="com-degree" class="create-cand-item"> 
-                              <option value="bsc">BSc</option>
-                              <option value="msc">MSc</option>
-                            </select></label>
+                    <h3>Candidate's Education</h3>
+                    <div class="edu-dates">
+                        <label for="start-date">Start Date:<input type="date" name="start-date" id="start-date" class="create-cand-item"></label>
+                        <label for="end-date">End Date:<input type="date" name="end-date" id="end-date" class="create-cand-item"></label>
+                        <label for="grad-date">Grad Date:<input type="date" name="grad-date" id="grad-date" class="create-cand-item"></label>
+                    </div>
+                    <div class="edu-info">
+                        <div class="edu-wrap">
+                            <label for="com-degree">Completed Degree:
+                                <select name="com-degree" id="com-degree" class="create-cand-item">
+                                    <option value="bsc">BSc</option>
+                                    <option value="msc">MSc</option>
+                                </select></label>
                             <label for="institution">Institution:<input type="text" name="institution" id="institution" class="create-cand-item"></label>
-                          </div>
-                          <div class="edu-wrap">
+                        </div>
+                        <div class="edu-wrap">
                             <label for="study-field">Study Field:<input type="text" name="study-field" id="study-field" class="create-cand-item"></label>
                             <label for="gpa">GPA:<input type="text" name="gpa" id="gpa" class="create-cand-item"></label>
-                          </div>
                         </div>
+                    </div>
                 </div>
                 <div id="candidate-other-add" class="panel" hidden>
-                  <h3>Candidate's Education (additional)</h3>
-                  <div class="edu-dates">
-                    <label for="start-date-add">Start Date:<input type="date" name="start-date-add" id="start-date-add" class="create-cand-item-add " disabled></label>
-                    <label for="end-date-add">End Date:<input type="date" name="end-date-add" id="end-date-add" class="create-cand-item-add " disabled></label>
-                    <label for="grad-date-add">Grad Date:<input type="date" name="grad-date-add" id="grad-date-add" class="create-cand-item-add " disabled></label>
-                  </div>
-                  <div class="edu-info">
-                    <div class="edu-wrap">
-                      <label for="com-degree-add">Completed Degree:                      
-                        <select name="com-degree-add" id="com-degree-add" class="create-cand-item " disabled> 
-                        <option value="bsc">BSc</option>
-                        <option value="msc">MSc</option>
-                      </select></label>
-                      <label for="institution-add">Institution:<input type="text" name="institution-add" id="institution-add" class="create-cand-item " disabled></label>
+                    <h3>Candidate's Education (additional)</h3>
+                    <div class="edu-dates">
+                        <label for="start-date-add">Start Date:<input type="date" name="start-date-add" id="start-date-add" class="create-cand-item-add " disabled></label>
+                        <label for="end-date-add">End Date:<input type="date" name="end-date-add" id="end-date-add" class="create-cand-item-add " disabled></label>
+                        <label for="grad-date-add">Grad Date:<input type="date" name="grad-date-add" id="grad-date-add" class="create-cand-item-add " disabled></label>
                     </div>
-                    <div class="edu-wrap">
-                      <label for="study-field-add">Study Field:<input type="text" name="study-field-add" id="study-field-add" class="create-cand-item " disabled></label>
-                      <label for="gpa-add">GPA:<input type="text" name="gpa-add" id="gpa-add" class="create-cand-item " disabled></label>
+                    <div class="edu-info">
+                        <div class="edu-wrap">
+                            <label for="com-degree-add">Completed Degree:
+                                <select name="com-degree-add" id="com-degree-add" class="create-cand-item " disabled>
+                                    <option value="bsc">BSc</option>
+                                    <option value="msc">MSc</option>
+                                </select></label>
+                            <label for="institution-add">Institution:<input type="text" name="institution-add" id="institution-add" class="create-cand-item " disabled></label>
+                        </div>
+                        <div class="edu-wrap">
+                            <label for="study-field-add">Study Field:<input type="text" name="study-field-add" id="study-field-add" class="create-cand-item " disabled></label>
+                            <label for="gpa-add">GPA:<input type="text" name="gpa-add" id="gpa-add" class="create-cand-item " disabled></label>
+                        </div>
                     </div>
-                  </div>
                 </div>
                 <button type="button" class="button-add" id="button-add">Add Education</button>
                 <input type="submit" id="btn-upload" class="button-create" value="Create New Candidate">
-              </div>
-               <!-- {% csrf_token %}
+        </div>
+        <!-- {% csrf_token %}
                 <div class="candidate-general">
                   {{ form.as_p }} 
                 </div>
@@ -112,10 +112,10 @@
                   {{ education_formset.as_p }}
                 </div>
               <input type="submit" class="button-create" value="Create New Candidate">  -->
-              </form>
-          </div>
-      </main>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      <script src="{%static 'js/create_candidate_script.js'%}"></script>
-      <script src="{%static 'js/add-edu.js'%}"></script>
+        </form>
+        </div>
+    </main>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{%static 'js/create_candidate_script.js'%}"></script>
+    <script src="{%static 'js/add-edu.js'%}"></script>
 {% endblock %}

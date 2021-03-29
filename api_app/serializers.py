@@ -46,7 +46,8 @@ class CandidateSerializer(serializers.ModelSerializer):
                    'admission_round',
                    'gpa',
                    'school_rating',
-                   'research_experience']
+                   'research_experience',
+                   'last_updated_by']
 
     def to_internal_value(self, data):
         validated_data = super(CandidateSerializer, self)\

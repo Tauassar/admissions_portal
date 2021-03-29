@@ -14,7 +14,6 @@ from admission_periods_app.forms import AdmissionRoundForm
 from admission_periods_app.utils import (get_current_year_and_round,
                                          get_candidates)
 from auth_app.models import CustomUserModel
-from evaluations_app.models import CandidateEvaluationModel
 from mainapp.mixins import PositionMixin
 from mainapp.utils import compose_lists, dashboard_filters
 

@@ -1,7 +1,7 @@
 from django.urls import path
 
 from auth_app.views import ContactsView, PersonalView, ProfileView
-from candidates_app.views import createCandidateView
+from candidates_app.views import createCandidateView, observeCandidateView
 from evaluations_app.views import ApproveEvaluationView, CandidateEvaluateView
 from mainapp.views import SecretaryView, ChairView, dashboardView
 from help_information_app.views import InfoView
@@ -29,5 +29,5 @@ urlpatterns = [
     path('create_candidate/', createCandidateView,
          name='create_candidate'),
     path('observe_candidate/<str:candidate_id>/',
-         createCandidateView, name='observe_candidate'),
+         observeCandidateView, name='observe_candidate'),
 ]
