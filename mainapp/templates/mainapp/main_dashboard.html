@@ -19,11 +19,11 @@
                 {% endif %}
                 <div class="page-links">
                     {% if page.has_previous %}
-                        <button onclick="getURL({{ page.previous_page_number }})">Prev</button>
+                        <button onclick="getURL({{ page.previous_page_number }})" class="page-btn">Prev</button>
                     {% endif %}
                         {{ page.number }}
                     {% if page.has_next %}
-                        <button onclick="getURL({{ page.next_page_number }})">Next</button>
+                        <button onclick="getURL({{ page.next_page_number }})" class="page-btn">Next</button>
                     {% endif %}
                 </div>
             </div>

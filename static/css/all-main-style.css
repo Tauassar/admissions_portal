@@ -149,7 +149,7 @@ form {
   background-size: 200%;
 }
 
-.button-create:hover, .button-add:hover,.button-move:hover, .btn-primary:hover{
+.button-create:hover, .button-add:hover,.button-move:hover, .btn-primary:hover, .page-btn:hover{
   background-position: right;
 }
 
@@ -240,7 +240,7 @@ background-position: right;
 
 .log-wrapper {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 /*main page*/
@@ -267,6 +267,7 @@ background-position: right;
   background: #FFFFFF;
   box-shadow: 0px 0px 10px rgb(0 0 0 / 10%);
   border-radius: 5px;
+  height: fit-content;
 }
 
 
@@ -284,6 +285,7 @@ background-position: right;
   box-shadow: 0px 0px 10px rgb(0 0 0 / 10%);
   border-radius: 5px;
   padding: 10px;
+  margin: 10px;
 }
 
 h3 {
@@ -375,7 +377,8 @@ fieldset {
 }
 
 .info-summary {
-  font-size: xx-large;
+  font-size: x-large;
+  cursor: pointer;
 }
 
 
@@ -418,13 +421,12 @@ fieldset {
   border-radius: 5px;
 }
 
-.statistics-filtering-wrapper {
+.statistics-filtering-wrapper{
   display: flex;
   justify-content: space-around;
   margin-bottom: 40px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  background: #f4f5f9;
-  border-radius: 5px;
+
+  height: 500px;
 }
 
 .student-list {
@@ -433,6 +435,18 @@ fieldset {
   align-self: center;
   align-items: center;
   width: 100%;
+  height: 500px;
+  overflow-y: scroll;
+}
+
+.filter-students {
+  align-self: center;
+}
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /*evaluation page*/
@@ -588,14 +602,23 @@ select:hover {
   padding: 20px;
 }
 
-.list-secretary {
+/* .list-secretary {
   display: flex;
   flex-direction: column;
   align-items: center;
+} */
+
+.sec-list-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  max-height: 1000px;
+  overflow-y: scroll;
 }
 
 .button-move {
   width: 100px;
+  height: 40px;
 }
 
 .button-move-down {
@@ -614,7 +637,7 @@ select:hover {
   background-size: 200%;
 }
 
-.button-move-up, .btn-primary {
+.button-move-up, .btn-primary, .page-btn {
   border-radius: 25px;
   margin: 1rem 0;
   font-size: 15px;
@@ -679,6 +702,7 @@ select:hover {
 .wrap-dash {
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .input-group {
@@ -701,4 +725,16 @@ select:hover {
 
 .form-control {
   margin-bottom: 10px;
+}
+
+.page-links {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 200px;
+  align-self: center;
+}
+
+.page-btn {
+  width: 70px;
 }

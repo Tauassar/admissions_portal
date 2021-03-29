@@ -47,7 +47,7 @@ def dashboardView(request):
                                            CustomUserModel.COMMITTEE_MEMBER]:
             evaluations = admission_round.evaluations.filter(
                 evaluator=request.user)
-            logger.debug(evaluations[0].evaluation_status)
+            # logger.debug(evaluations[0].evaluation_status)
             dashboard_paginator = Paginator(
                 dashboard_filters(request, evaluations, True), 10)
         else:
