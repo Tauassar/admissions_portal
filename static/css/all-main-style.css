@@ -12,6 +12,48 @@ body {
   letter-spacing: 1px;
 }
 
+/*scroolbars*/
+
+.contact-info-container::-webkit-scrollbar, .sec-list-wrap::-webkit-scrollbar{
+  width: 10px;
+  height: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1); 
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.1); 
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+.student-list::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1); 
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.1); 
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+
+.contact-info-container::-webkit-scrollbar-track, .sec-list-wrap::-webkit-scrollbar-track, .student-list::-webkit-scrollbar-track{
+  -webkit-box-shadow: inset 0 0 0px rgba(0,0,0,0.1); 
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.1); 
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+.contact-info-container::-webkit-scrollbar-thumb, .sec-list-wrap::-webkit-scrollbar-thumb, .student-list::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: linear-gradient(to right, #6dbdb5, #6c63ff, #6dbdb5);
+  height: 3px;
+}
+
+.sec-list-wrap::-webkit-scrollbar-thumb, .student-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #6dbdb5, #6c63ff, #6dbdb5);
+}
+
+.contact-info-container::-webkit-scrollbar-corner, .sec-list-wrap::-webkit-scrollbar-corner, .student-list::-webkit-scrollbar-corner { 
+  display: none; height: 0px; width: 0px; 
+}
+
 main {
   padding-top: 30px;
 }
@@ -114,7 +156,7 @@ main {
 
 .contact-info-container {
   display: flex;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .contact-img {
@@ -442,8 +484,10 @@ fieldset {
   align-items: center;
   width: 100%;
   height: 500px;
-  overflow-y: scroll;
+  overflow: auto;
 }
+
+
 
 .filter-students {
   align-self: center;
@@ -471,6 +515,7 @@ fieldset {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   padding: 20px;
+  flex-direction: column;
 }
 
 .legend-wrap {
@@ -478,6 +523,25 @@ fieldset {
   flex-direction: column;
   align-items: center;
   width: 300px;
+}
+
+.results-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.approve-title {
+  display: inline;
+}
+
+.approve-doc {
+  margin: 20px 0;
+}
+
+.approve-res {
+  margin: 10px;
+  text-transform: capitalize;
 }
 
 .evaluation-legend {
@@ -646,18 +710,12 @@ select:hover {
   padding: 20px;
 }
 
-/* .list-secretary {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-} */
-
 .sec-list-wrap {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
   max-height: 1000px;
-  overflow-y: scroll;
+  overflow: auto;
 }
 
 .button-move {
@@ -832,38 +890,39 @@ select:hover {
 
 
 .modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  display: none; 
+  position: fixed; 
+  z-index: 1; 
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4); 
 }
 
-/* Modal Content/Box */
+
 .modal-content {
   background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
+  margin: 15% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
+  width: 80%; 
 }
 
-/* The Close Button */
+
 .close {
   color: #aaa;
   float: right;
-  font-size: 28px;
+  font-size: 40px;
   font-weight: bold;
+  align-self: flex-end;
 }
 
 .close:hover,
 .close:focus {
-  color: black;
+  color: #ec0a0a;
   text-decoration: none;
   cursor: pointer;
 }
