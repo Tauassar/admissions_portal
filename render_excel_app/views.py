@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 
 from auth_app.decorators import check_permissions
 from auth_app.models import CustomUserModel
@@ -24,9 +24,11 @@ def ApplicationEvalAsExcelView(request, evaluation_id):
     response['Content-Disposition'] = \
         'attachment; filename=' \
         '{0}'.format(name)
-    wb.save(response)
-    return response
-    # return HttpResponse("Here's the text of the Web page.")
+    if wb:
+        wb.save(response)
+        return response
+    else:
+        return HttpResponseNotFound('<h1>Evaluation not found</h1>')
 
 
 @login_required(login_url='login')
@@ -42,8 +44,11 @@ def InterviewEvalAsExcelView(request, evaluation_id):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = \
         'attachment; filename={0}' .format(name)
-    wb.save(response)
-    return response
+    if wb:
+        wb.save(response)
+        return response
+    else:
+        return HttpResponseNotFound('<h1>Evaluation not found</h1>')
 
 
 @login_required(login_url='login')

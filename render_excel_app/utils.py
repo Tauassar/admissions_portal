@@ -39,7 +39,10 @@ def get_evaluation_data(evaluation_id=None,
 def generate_application_xlsx(evaluation):
     candidate = evaluation.candidate
     evaluator = evaluation.evaluator
-    application_evaluation = evaluation.application_evaluation
+    try:
+        application_evaluation = evaluation.application_evaluation
+    except ObjectDoesNotExist:
+        return [None, None]
     name = "application_{0}_{1}({2}_{3}).xls".format(
         evaluation.candidate.first_name, evaluation.candidate.last_name,
         evaluator.first_name, evaluator.last_name)
@@ -80,7 +83,10 @@ def generate_application_xlsx(evaluation):
 def generate_interview_xlsx(evaluation):
     candidate = evaluation.candidate
     evaluator = evaluation.evaluator
-    interview_evaluation = evaluation.interview_evaluation
+    try:
+        interview_evaluation = evaluation.interview_evaluation
+    except ObjectDoesNotExist:
+        return [None, None]
     name = "interview_{0}_{1}({2}_{3}).xls".format(
         candidate.first_name, candidate.last_name,
         evaluator.first_name, evaluator.last_name)
@@ -113,7 +119,8 @@ def save_application_zip(candidate_id):
     with zipfile.ZipFile(buffer, 'w') as zipped_f:
         for evaluation in evaluations:
             [wb, name] = generate_application_xlsx(evaluation)
-            zipped_f.writestr(name, save_virtual_workbook(wb))
+            if wb is not None:
+                zipped_f.writestr(name, save_virtual_workbook(wb))
         zipped_f.close()
     return [buffer, file_name]
 
@@ -129,6 +136,7 @@ def save_interview_zip(candidate_id):
     with zipfile.ZipFile(buffer, 'w') as zipped_f:
         for evaluation in evaluations:
             [wb, name] = generate_interview_xlsx(evaluation)
-            zipped_f.writestr(name, save_virtual_workbook(wb))
+            if wb is not None:
+                zipped_f.writestr(name, save_virtual_workbook(wb))
         zipped_f.close()
     return [buffer, file_name]

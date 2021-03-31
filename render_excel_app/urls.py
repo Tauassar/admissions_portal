@@ -15,5 +15,5 @@ urlpatterns = [
     path('application_zip/<str:candidate_id>/',
          zip_application_evaluations, name='zip_applications'),
     path('interview_zip/<str:candidate_id>/',
-         zip_interview_evaluations, name='zip_applications')
+         zip_interview_evaluations, name='zip_interviews')
 ]
