@@ -1,6 +1,10 @@
+import logging
 import uuid
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django_currentuser.db.models import CurrentUserField
+from simple_history.models import HistoricalRecords
 
 from mainapp.fields import MinMaxInt
 from candidates_app.models import CandidateModel
@@ -8,12 +12,15 @@ from auth_app.models import CustomUserModel
 from admission_periods_app.models import AdmissionRoundModel
 from admission_periods_app.utils import get_current_admission_round
 
-
 # Class storing evaluation data
 from mainapp.models import CreateAndUpdateRoutine
 
 
+logger = logging.getLogger(__name__)
+
+
 class CandidateEvaluationModel(CreateAndUpdateRoutine):
+    history = HistoricalRecords(user_model=CustomUserModel)
     not_evaluated = 'Not evaluated'
     in_progress = 'In progress'
     approved = 'Approved'
@@ -46,11 +53,18 @@ class CandidateEvaluationModel(CreateAndUpdateRoutine):
                                          default=not_evaluated)
 
     def __str__(self):
-        return "{0} {1} ({2} {3})".format(
-            self.candidate.first_name,
-            self.candidate.last_name,
-            self.evaluator.first_name,
-            self.evaluator.last_name)
+        try:
+            return "{0} {1} ({2} {3})".format(
+                self.candidate.first_name,
+                self.candidate.last_name,
+                self.evaluator.first_name,
+                self.evaluator.last_name)
+        except ObjectDoesNotExist:
+            return "evaluation id: {0}({1} {2})".format(
+                self.evaluation_id,
+                self.evaluator.first_name,
+                self.evaluator.last_name
+            )
 
 
 class ApplicationEvaluationModel(CreateAndUpdateRoutine):

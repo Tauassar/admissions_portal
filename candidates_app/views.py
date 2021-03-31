@@ -1,7 +1,9 @@
 import logging
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import TemplateView
 
 from auth_app.decorators import check_permissions
 from auth_app.models import CustomUserModel
@@ -9,14 +11,19 @@ from candidates_app.forms import (CandidateTesting,
                                   EducationFormset,
                                   AddCandidateForm)
 from candidates_app.models import CandidateModel, CandidateEducationModel
+from mainapp.mixins import PositionMixin
 
 logger = logging.getLogger(__name__)
 
 
-@login_required(login_url='login')
-@check_permissions(allowed_pos=[CustomUserModel.ADMISSION_DEPARTMENT])
-def createCandidateView(request, candidate_id=None):
-    return render(request, 'candidates_app/create_candidate.html')
+class CreateCandidateView(LoginRequiredMixin, PositionMixin, TemplateView):
+    permission_groups = [CustomUserModel.ADMISSION_DEPARTMENT]
+    template_name = 'candidates_app/create_candidate.html'
+
+# @login_required(login_url='login')
+# @check_permissions(allowed_pos=[CustomUserModel.ADMISSION_DEPARTMENT])
+# def createCandidateView(request, candidate_id=None):
+#     return render(request, 'candidates_app/create_candidate.html')
 
 
 @login_required(login_url='login')
@@ -53,7 +60,8 @@ def observeCandidateView(request, candidate_id=None):
             for edu_formset in education_formset:
                 edu = edu_formset.save(commit=False)
                 edu.candidate = candidate
-                edu.save()
+                if edu.start_date:
+                    edu.save()
             logger.info(str(candidate) + ' updated by ' + str(request.user))
             return redirect('dashboard')
     context = {

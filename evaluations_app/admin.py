@@ -1,4 +1,5 @@
 from django.contrib import admin
+from simple_history.admin import SimpleHistoryAdmin
 
 from evaluations_app.models import (CandidateEvaluationModel,
                                     InterviewEvaluationModel,
@@ -19,3 +20,4 @@ class CandidateEvaluationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(CandidateEvaluationModel, CandidateEvaluationAdmin)
+# admin.site.register(CandidateEvaluationModel, SimpleHistoryAdmin)

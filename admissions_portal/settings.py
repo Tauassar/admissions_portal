@@ -45,9 +45,9 @@ INSTALLED_APPS = [
     'evaluations_app.apps.EvaluationsAppConfig',
     'help_information_app',
     'render_excel_app',
-    'actions_api.apps.ActionsApiConfig',
     # 3rd party
     'django_extensions',
+    'simple_history',
     'crispy_forms',
     "crispy_tailwind",
     'django_filters',
@@ -65,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_currentuser.middleware.ThreadLocalUserMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'admissions_portal.urls'

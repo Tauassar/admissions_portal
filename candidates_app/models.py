@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.fields.files import FieldFile
 from django_currentuser.db.models import CurrentUserField
+from simple_history.models import HistoricalRecords
 
 from admission_periods_app.models import (
     AdmissionRoundModel,
@@ -37,6 +38,7 @@ CANDIDATE_STATUS = [
 
 
 class CandidateModel(CreateAndUpdateRoutine):
+    history = HistoricalRecords(user_model=CustomUserModel)
     # information
     created_by = CurrentUserField(related_name='created_by')
     last_updated_by = CurrentUserField(

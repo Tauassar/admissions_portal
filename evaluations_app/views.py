@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import TemplateView
@@ -38,6 +39,7 @@ class CandidateEvaluateView(LoginRequiredMixin,
         context = super(CandidateEvaluateView, self).get_context_data(**kwargs)
         context['application_formset'] = application_formset
         context['interview_formset'] = interview_formset
+        context['candidate'] = candidate
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
@@ -72,31 +74,39 @@ class ApproveEvaluationView(LoginRequiredMixin,
         evaluation = get_object_or_404(
             CandidateEvaluationModel,
             evaluation_id=self.kwargs['uuid'])
-        application_evaluation = get_object_or_404(
-            ApplicationEvaluationModel, evaluation=evaluation)
-        interview_evaluation = get_object_or_404(
-            InterviewEvaluationModel, evaluation=evaluation)
+        try:
+            application_evaluation = ApplicationEvaluationModel.objects.get(
+                evaluation=evaluation)
+        except ObjectDoesNotExist:
+            application_evaluation = None
+        try:
+            interview_evaluation = InterviewEvaluationModel.objects.get(
+                evaluation=evaluation)
+        except ObjectDoesNotExist:
+            interview_evaluation = None
         return evaluation, application_evaluation, interview_evaluation
 
     def get(self, request, *args, **kwargs):
+        context = super(ApproveEvaluationView, self).get_context_data(**kwargs)
         evaluation, application_evaluation, interview_evaluation = \
             self.get_objects()
-        application_evaluation_dict = queryset_to_dict(
-            application_evaluation,
-            exclude=['evaluation', 'id'])
-        if not interview_evaluation.skip_evaluation:
-            interview_evaluation_dict = queryset_to_dict(
-                interview_evaluation,
-                exclude=['evaluation', 'id'])
-        else:
-            interview_evaluation_dict = None
+        if application_evaluation:
+            application_evaluation_dict = queryset_to_dict(
+                application_evaluation,
+                exclude=['evaluation', 'id', 'created_at', 'updated_at'])
+            context['application_evaluation_dict'] = application_evaluation_dict
+        if interview_evaluation:
+            if not interview_evaluation.skip_evaluation:
+                interview_evaluation_dict = queryset_to_dict(
+                    interview_evaluation,
+                    exclude=['evaluation', 'id', 'created_at', 'updated_at'])
+            else:
+                interview_evaluation_dict = None
+            context['interview_evaluation_dict'] = interview_evaluation_dict
         approve_form = ApprovementForm()
         evaluate_form = SecretaryEvaluationForm(instance=evaluation.candidate)
-        context = super(ApproveEvaluationView, self).get_context_data(**kwargs)
         context['evaluate_form'] = evaluate_form
         context['approve_form'] = approve_form
-        context['application_evaluation_dict'] = application_evaluation_dict
-        context['interview_evaluation_dict'] = interview_evaluation_dict
         context['evaluation'] = evaluation
         return self.render_to_response(context)
 
