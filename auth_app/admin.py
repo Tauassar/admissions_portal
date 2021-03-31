@@ -1,4 +1,6 @@
 from django.contrib import admin
+from simple_history.admin import SimpleHistoryAdmin
+
 from auth_app import models
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from django.contrib.auth.admin import UserAdmin
@@ -48,6 +50,12 @@ class CustomUserAdmin(UserAdmin):
 class AuditEntryAdmin(admin.ModelAdmin):
     list_display = ['action', 'email', 'ip']
     list_filter = ['action']
+
+
+class PollHistoryAdmin(SimpleHistoryAdmin):
+    list_display = ["id", "name", "status"]
+    history_list_display = ["status"]
+    search_fields = ['name', 'user__username']
 
 
 admin.site.register(models.CustomUserModel, CustomUserAdmin)

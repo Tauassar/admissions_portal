@@ -1,7 +1,7 @@
 from django.urls import path
 
 from auth_app.views import ContactsView, PersonalView, ProfileView
-from candidates_app.views import createCandidateView, observeCandidateView
+from candidates_app.views import observeCandidateView, CreateCandidateView
 from evaluations_app.views import ApproveEvaluationView, CandidateEvaluateView
 from mainapp.views import SecretaryView, ChairView, dashboardView
 from help_information_app.views import InfoView
@@ -26,7 +26,7 @@ urlpatterns = [
     path('approve_evaluation/<str:uuid>/', ApproveEvaluationView.as_view(),
          name='approve_evaluation'),
     # candidate_app
-    path('create_candidate/', createCandidateView,
+    path('create_candidate/', CreateCandidateView.as_view(),
          name='create_candidate'),
     path('observe_candidate/<str:candidate_id>/',
          observeCandidateView, name='observe_candidate'),

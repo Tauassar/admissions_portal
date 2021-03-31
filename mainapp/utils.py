@@ -26,10 +26,15 @@ def compose_lists(threshold, admission_year, admission_round):
         clear_list(accepted_list, admission_year)
         clear_list(rejected_list, admission_year)
     for candidate in candidates:
-        if candidate.total_score >= threshold:
-            candidate.student_list = admission_round.accepted_candidates_list
-        else:
-            continue
+        try:
+            if candidate.total_score >= threshold:
+                candidate.student_list = \
+                    admission_round.accepted_candidates_list
+            else:
+                continue
+        except TypeError:
+            logger.warning("Candidates evaluation is not finished")
+            logger.warning("Candidate: {0}".format(candidate.first_name))
         candidate.save()
 
 

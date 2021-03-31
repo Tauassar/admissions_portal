@@ -9,11 +9,12 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views.generic import ListView, UpdateView
 
-from actions_api.models import Action
 from admission_periods_app.forms import AdmissionRoundForm
 from admission_periods_app.utils import (get_current_year_and_round,
                                          get_candidates)
 from auth_app.models import CustomUserModel
+from candidates_app.models import CandidateModel
+from evaluations_app.models import CandidateEvaluationModel
 from mainapp.mixins import PositionMixin
 from mainapp.utils import compose_lists, dashboard_filters
 
@@ -36,21 +37,32 @@ logger = logging.getLogger(__name__)
 def dashboardView(request):
     admission_year, admission_round = get_current_year_and_round()
     try:
-        actions = Action.objects.filter(
-            user=request.user).order_by('created_at')[0:10]
         if request.user.position is CustomUserModel.ADMISSION_DEPARTMENT:
+            actions = CandidateModel.history.filter(
+                last_updated_by=request.user.staff_id
+            ).order_by('-history_date')[0:10]
             candidates = admission_round.candidates.all()
             dashboard_paginator = Paginator(
                 dashboard_filters(request, candidates, False), 10)
-        elif request.user.position not in [CustomUserModel.COMMITTEE_CHAIR,
-                                           CustomUserModel.COMMITTEE_MEMBER]:
+        elif request.user.position in [CustomUserModel.COMMITTEE_CHAIR,
+                                       CustomUserModel.COMMITTEE_MEMBER]:
+
             evaluations = admission_round.evaluations.filter(
-                evaluator=request.user)
+                evaluator=request.user).exclude(
+                evaluation_status=CandidateEvaluationModel.approved)\
+                .order_by('evaluation_status')
+            actions = CandidateEvaluationModel.history.filter(
+                last_updated_by=request.user.staff_id
+            ).order_by('-history_date')[0:10]
             # logger.debug(evaluations[0].evaluation_status)
             dashboard_paginator = Paginator(
                 dashboard_filters(request, evaluations, True), 10)
         else:
-            evaluations = admission_round.evaluations.all()
+            evaluations = admission_round.evaluations.exclude(
+                evaluation_status=CandidateEvaluationModel.not_evaluated)
+            actions = CandidateEvaluationModel.history.filter(
+                last_updated_by=request.user.staff_id
+            ).order_by('-history_date')[0:10]
             dashboard_paginator = Paginator(
                 dashboard_filters(request, evaluations, True), 10)
     except (ObjectDoesNotExist, AttributeError):
@@ -103,7 +115,7 @@ class ChairView(LoginRequiredMixin, PositionMixin, UpdateView):
         candidates, evaluated_count, non_evaluated_count = \
             get_candidates(self.admission_year, self.admission_round)
         self.non_evaluated_count = non_evaluated_count
-        context['candidates'] = candidates
+        context['candidates'] = candidates.order_by('-total_score')
         context['total'] = candidates.count()
         context['evaluated_count'] = evaluated_count
         context['non_evaluated_count'] = non_evaluated_count
@@ -119,11 +131,11 @@ class SecretaryView(LoginRequiredMixin, PositionMixin, ListView):
         admission_year, admission_round = get_current_year_and_round()
         try:
             waiting_list_candidates = admission_year. \
-                current_candidates.candidates.all()
-            recommended_list = \
-                admission_round.accepted_candidates_list.candidates.all()
-            rejected_list_candidates = admission_round. \
-                rejected_candidates_list.candidates.all()
+                current_candidates.candidates.all().order_by('-total_score')
+            recommended_list = admission_round.accepted_candidates_list \
+                .candidates.all().order_by('-total_score')
+            rejected_list_candidates = admission_round.rejected_candidates_list \
+                .candidates.all().order_by('-total_score')
             return {
                 'recommended_list': recommended_list,
                 'waiting_list': waiting_list_candidates,

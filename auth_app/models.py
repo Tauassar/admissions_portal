@@ -4,6 +4,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
+from simple_history.admin import SimpleHistoryAdmin
+from simple_history.models import HistoricalRecords
+
 from auth_app.managers import CustomUserManager
 
 
