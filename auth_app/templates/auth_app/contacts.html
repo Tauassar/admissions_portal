@@ -4,11 +4,11 @@
 <main id="contacts-page">
           <div class="contacts-container">
               <h1 class="contact-info-chair">Chair of Admission Committee</h1>
-
+              <div class="contact-info-container">
               {%for person in users.chairs%}
                 {% include "auth_app/contact_card.html" with person=person %}
               {% endfor %}
-
+            </div>
           </div>
           <div class="contacts-container" id="admission-dep">
               <h1>Admission Department</h1>

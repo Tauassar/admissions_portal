@@ -111,8 +111,10 @@ main {
   height: 120px;
 }
 
+
 .contact-info-container {
   display: flex;
+  overflow-x: scroll;
 }
 
 .contact-img {
@@ -130,7 +132,7 @@ form {
   flex-direction: column;
   align-items: center;
 }
-.button-create, .button-add {
+.button-create, .button-add, .btn-modal {
   display: block;
   width: 20%;
   height: 40px;
@@ -149,7 +151,7 @@ form {
   background-size: 200%;
 }
 
-.button-create:hover, .button-add:hover,.button-move:hover, .btn-primary:hover, .page-btn:hover{
+.button-create:hover, .button-add:hover,.button-move:hover, .btn-primary:hover, .page-btn:hover, .btn-modal:hover{
   background-position: right;
 }
 
@@ -467,6 +469,13 @@ fieldset {
   padding: 20px;
 }
 
+.legend-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 300px;
+}
+
 .evaluation-legend {
   font-size: xx-large;
 }
@@ -478,6 +487,38 @@ fieldset {
   border-radius: 5px;
   padding: 20px;
   width: 100%;
+}
+
+.doc-get {
+  text-decoration: none;
+  color: #000;
+  margin-left: 10px;
+}
+
+.doc-get:hover {
+  color: #6c63ff;
+  transition: .3s;
+}
+
+.fa-file:hover {
+  animation: bounce 1s;
+}
+
+@keyframes bounce {
+	0%, 20%, 60%, 100% {
+		transform: translateY(0);
+		transform: translateY(0);
+	}
+
+	40% {
+		transform: translateY(-20px);
+		transform: translateY(-20px);
+	}
+
+	80% {
+		transform: translateY(-10px);
+		transform: translateY(-10px);
+	}
 }
 
 /*create new candidate page*/
@@ -737,4 +778,53 @@ select:hover {
 
 .page-btn {
   width: 70px;
+}
+
+
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-modal {
+  width: 80%;
+  align-self: center;
+}
+
+.stud-list-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
