@@ -1,17 +1,18 @@
 {% extends 'mainapp/base.html' %}
 {% block content %}
     <main class="main-dashboard">
-          <div class="container main-container">
+        <div class="container main-container">
             <div class="candidates">
+                <h1 class="round-title">Admission Round #{{admission_round}}</h1>
                 {% if request.user.position == 0  %}
                     <a href = ' {%url "create_candidate" %} ' class="creation-link"><h3>Add candidate +</h3></a>
                 {% endif %}
                 {% include 'mainapp/filters_and_sortings.html'%}
-                
+
                 {%if request.user.position == 2 or request.user.position == 1 %}
                     {% include 'mainapp/eval_dashboard.html' %}
                 {%elif request.user.position == 0  %}
-                    {% include 'mainapp/create_dashboard.html' %}                    
+                    {% include 'mainapp/create_dashboard.html' %}
                 {%elif request.user.position == 3  %}
                     {% include 'mainapp/approve_dashboard.html' %}
                 {% endif %}
@@ -19,7 +20,7 @@
                     {% if page.has_previous %}
                         <button onclick="getURL({{ page.previous_page_number }})" class="page-btn">Prev</button>
                     {% endif %}
-                        {{ page.number }}
+                    {{ page.number }}
                     {% if page.has_next %}
                         <button onclick="getURL({{ page.next_page_number }})" class="page-btn">Next</button>
                     {% endif %}
@@ -28,7 +29,7 @@
 
             <script>
                 function getURL(page_num) {
-                    var url = window.location.href;
+                    let url = window.location.href;
                     if(url.includes('page=')){
                         url = url.slice(0, -1);
                         url=url.concat(String(page_num));
@@ -46,19 +47,18 @@
 
             <div class="events">
                 <h3>User actions history</h3>
-                
+
                 <div class="event-aside">
-                {% if actions %}
-                    {% for action in actions %}
-                        <p>{{ action }}</p>
-                        </hr>
-                    {% endfor %}
-                {% else %}
-                    <p>No actions</p>
-                {% endif %}
+                    {% if actions %}
+                        {% for action in actions %}
+                            <p>{{ action }}</p>
+                        {% endfor %}
+                    {% else %}
+                        <p>No actions</p>
+                    {% endif %}
                 </div>
-                
+
             </div>
-          </div>
-      </main>
+        </div>
+    </main>
 {% endblock %}

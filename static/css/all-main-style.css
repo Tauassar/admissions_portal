@@ -253,7 +253,6 @@ background-position: right;
 }
 
 .round-title {
-  align-self: center;
 }
 
 .candidates {
@@ -744,7 +743,7 @@ select:hover {
 }
 
 .list-card:hover {
-  transform: scale(1.1);
+  transform: scale(1.02);
   background: #f4f5f9;
 }
 
@@ -847,7 +846,7 @@ select:hover {
 /* Modal Content/Box */
 .modal-content {
   background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
+  margin: 1% auto; /* 1% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
   width: 80%; /* Could be more or less, depending on screen size */

@@ -1,3 +1,6 @@
+import logging
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import post_save
 
 from auth_app.models import CustomUserModel
@@ -6,6 +9,9 @@ from evaluations_app.models import (CandidateEvaluationModel,
                                     ApplicationEvaluationModel,
                                     InterviewEvaluationModel)
 from .utils import calculate_total_score
+
+
+logger = logging.getLogger(__name__)
 
 
 def create_candidate_evaluations(sender, instance, created, **kwargs):
@@ -27,10 +33,16 @@ def create_candidate_evaluations(sender, instance, created, **kwargs):
 
 def create_sub_evaluations(sender, instance, created, **kwargs):
     if created:
-        ApplicationEvaluationModel.objects.create(
-            evaluation=instance)
-        InterviewEvaluationModel.objects.create(
-            evaluation=instance)
+        if hasattr(instance, 'interview_evaluation'):
+            pass
+        else:
+            InterviewEvaluationModel.objects.create(
+                evaluation=instance)
+        if hasattr(instance, 'application_evaluation'):
+            pass
+        else:
+            ApplicationEvaluationModel.objects.create(
+                evaluation=instance)
 
 
 '''

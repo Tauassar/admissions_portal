@@ -1,8 +1,10 @@
 
 {% load static %}
-
-    {% for evaluation in page.object_list %}
-        {% include 'mainapp/candidate_card.html' %}
-    {% endfor %}
-
+    {% if page.object_list %}
+        {% for evaluation in page.object_list %}
+            {% include 'mainapp/candidate_card.html' %}
+        {% endfor %}
+    {% else %}
+        <p style="align-self: center;">There is no evaluations processed yet</p>
+    {% endif %}
 <script src="{%static 'js/filtering_script.js'%}"></script>
