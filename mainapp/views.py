@@ -3,6 +3,7 @@ import logging
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
+from django.http import Http404
 from django.shortcuts import render
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -17,7 +18,7 @@ from candidates_app.models import CandidateModel
 from evaluations_app.models import CandidateEvaluationModel
 from evaluations_app.utils import actions_to_list
 from mainapp.mixins import PositionMixin
-from mainapp.utils import compose_lists, dashboard_filters
+from mainapp.utils import compose_lists, dashboard_filters, secretary_filters
 
 """
     TODO: 
@@ -63,11 +64,6 @@ def dashboardView(request):
             actions = CandidateEvaluationModel.history.filter(
                 last_updated_by=request.user.staff_id
             ).order_by('-history_date')[0:10]
-
-
-            # actions_to_list(actions)
-
-
             dashboard_paginator = Paginator(
                 dashboard_filters(request, evaluations, True), 10)
     except (ObjectDoesNotExist, AttributeError):
@@ -134,16 +130,29 @@ class SecretaryView(LoginRequiredMixin, PositionMixin, ListView):
     permission_groups = [CustomUserModel.SECRETARY]
 
     def get_queryset(self):
-        admission_year, admission_round = get_current_year_and_round()
+        admission_year, current_admission_round = get_current_year_and_round()
+        try:
+            admission_round = secretary_filters(
+                self.request, admission_year.rounds.all())
+        except ObjectDoesNotExist:
+            return Http404('No existing rounds found')
+
         try:
             waiting_list_candidates = admission_year. \
                 current_candidates.candidates.all().order_by('-total_score')
             recommended_list = admission_round.accepted_candidates_list \
                 .candidates.all().order_by('-total_score')
-            rejected_list_candidates = admission_round.rejected_candidates_list \
-                .candidates.all().order_by('-total_score')
+            rejected_list_candidates = admission_round.\
+                rejected_candidates_list.candidates\
+                .all().order_by('-total_score')
+            allow_buttons = True if current_admission_round == admission_round\
+                else False
+            logger.debug(allow_buttons)
             return {
+                'admission_round': admission_round,
+                'rounds': admission_year.rounds.exclude(id=admission_round.id),
                 'recommended_list': recommended_list,
+                'allow_buttons': allow_buttons,
                 'waiting_list': waiting_list_candidates,
                 'rejected_list': rejected_list_candidates,
             }
