@@ -48,8 +48,12 @@
   <script>
     const checkboxAppEval = document.getElementById("checkFormApp");
     const checkboxIntEval = document.getElementById("checkFormInt");
-    let formelemsInit = document.getElementById("appl-eval").querySelectorAll('input,textarea');
-    formelemsInit.forEach((formelemsInit) => {
+    let formelemsInitApp = document.getElementById("appl-eval").querySelectorAll('input,textarea');
+    let formelemsInitInt = document.getElementById("int-eval").querySelectorAll('input,textarea');
+    formelemsInitApp.forEach((formelemsInit) => {
+      formelemsInit.disabled = true;
+        });
+        formelemsInitInt.forEach((formelemsInit) => {
       formelemsInit.disabled = true;
         });
     checkboxAppEval.addEventListener('change', function() {

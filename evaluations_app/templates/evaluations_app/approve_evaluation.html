@@ -14,7 +14,7 @@
     <div class="candidate-results">
       <form action = "" method = "POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <h3>Candidate evaluation</h3>
+        <h2>Candidate evaluation</h2>
         <h4>
           This evaluation fields to be evaluated by the School Secretary
         </h4>
@@ -26,44 +26,43 @@
           </tr>
         </table>
         {% comment %} {{evaluate_form.as_table}} {% endcomment %}
-        <div class="evaluation interview-eval">
-            <fieldset>
-              
-            <legend>Application Evaluation</legend>
-            {%for key, value in application_evaluation_dict.items%}
-            <p>
-                <label>{{key}}:</label>
-                  {{value}}
-            </p>
-            {%endfor%}
-  
-        </p>
-          </fieldset>
+        <div class="evaluation interview-eval">  
+            <a href="" target="_self" title="Download Excel File" class="doc-get approve-doc"><h2 class="approve-title">Application Evaluation  </h2><i class="fas fa-file-excel fa-2x"></i></a>
+            <div class="results-wrap">
+              {%for key, value in application_evaluation_dict.items%}
+              <span class="approve-res">
+                  <label>{{key}}:</label>
+                    {{value}}
+              </span>
+              {%endfor%}
+            </div>
+
   
         </div>
         <div class="evaluation application-eval">
-          <fieldset>
-            <legend>Interview Evaluation</legend>
-            {% if interview_evaluation_dict is not None%}
+            <a href="" target="_self" title="Download Excel File" class="doc-get approve-doc"><h2 class="approve-title">Interview Evaluation  </h2><i class="far fa-file-excel fa-2x"></i></a>
+            <div class="results-wrap">
+              {% if interview_evaluation_dict is not None%}
               {%for key, value in interview_evaluation_dict.items%}
-              <p>
+              <span class="approve-res">
                   <label>{{key}}:</label>
                     {{value}}
-              </p>
+              </span>
               {%endfor%}
             {%else%}
-              <p>
+              <span class="approve-res">
                   <label>Evaluation is skipped</label>
-              </p>
+              </span>
             {% endif %}
-          </fieldset>
+            </div>
         </div>
-      <p>
+      <span>
         {{approve_form.as_table}}
-        </p>
-        <input type="submit" class="button-profile" name="Submit">
+        </span>
+        <input type="submit" class="button-profile" name="Submit" value="Submit">
       </form>
     </div>
+
   </div>
 </main>
 
