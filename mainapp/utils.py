@@ -109,3 +109,10 @@ def dashboard_filters(request, qs, is_eval):
             elif sorting == "name":
                 qs = qs.order_by('candidate__first_name')
     return qs
+
+
+def secretary_filters(request, qs):
+    round_number = request.GET.get('period')
+    if check_valid_queryparameter(round_number):
+        return qs.get(round_number=int(round_number))
+    return qs.get(finished=False)

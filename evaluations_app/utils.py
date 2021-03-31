@@ -1,3 +1,27 @@
+from django.core.exceptions import ObjectDoesNotExist
+
+
+def actions_to_list(actions):
+    converted_actions = []
+    history_type = {
+        '~': 'Updated ',
+        '+': 'Added ',
+        '-': 'Deleted ',
+    }
+    for action in actions:
+        action_str = ''
+        action_str += history_type[action.history_type]
+        try:
+            action_str += str(action.candidate)
+        except AttributeError:
+            action_str += '{0} {1}'.format(action.first_name, action.last_name)
+        except (NameError, ObjectDoesNotExist):
+            action_str += 'candidate'
+            pass
+        action_str += action.history_date.strftime(" %d.%m at %H:%M")
+        converted_actions.append(action_str)
+    return converted_actions
+
 
 def get_total_interview_score(model):
     # calculate total score for given evaluation
@@ -41,15 +65,15 @@ def calculate_total_score(evaluations):
         for evaluation in evaluations:
             application_evaluation = evaluation.applicationevaluationmodel
             interview_evaluation = evaluation.interviewevaluationmodel
-            application_total =\
-                application_total +\
+            application_total = \
+                application_total + \
                 get_total_application_score(application_evaluation)
             if not interview_evaluation.skip_evaluation:
-                interview_total =\
-                    interview_total +\
+                interview_total = \
+                    interview_total + \
                     get_total_interview_score(interview_evaluation)
                 interview_count = interview_count + 1
-        return (application_total / len(evaluations)) * 0.4 +\
+        return (application_total / len(evaluations)) * 0.4 + \
                (interview_total / interview_count) * 0.6
     except Exception:
         pass

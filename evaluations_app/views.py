@@ -99,7 +99,7 @@ class ApproveEvaluationView(LoginRequiredMixin,
             if not interview_evaluation.skip_evaluation:
                 interview_evaluation_dict = queryset_to_dict(
                     interview_evaluation,
-                    exclude=['evaluation', 'id', 'created_at', 'updated_at'])
+                    exclude=['evaluation', 'id', 'created_at', 'updated_at', 'skip_evaluation'])
             else:
                 interview_evaluation_dict = None
             context['interview_evaluation_dict'] = interview_evaluation_dict
