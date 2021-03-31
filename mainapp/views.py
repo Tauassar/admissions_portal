@@ -15,6 +15,7 @@ from admission_periods_app.utils import (get_current_year_and_round,
 from auth_app.models import CustomUserModel
 from candidates_app.models import CandidateModel
 from evaluations_app.models import CandidateEvaluationModel
+from evaluations_app.utils import actions_to_list
 from mainapp.mixins import PositionMixin
 from mainapp.utils import compose_lists, dashboard_filters
 
@@ -25,7 +26,6 @@ from mainapp.utils import compose_lists, dashboard_filters
         forgot pass
         mail send
         different dashboards for different users
-        recent actions
         change image profile
 """
 
@@ -63,6 +63,11 @@ def dashboardView(request):
             actions = CandidateEvaluationModel.history.filter(
                 last_updated_by=request.user.staff_id
             ).order_by('-history_date')[0:10]
+
+
+            # actions_to_list(actions)
+
+
             dashboard_paginator = Paginator(
                 dashboard_filters(request, evaluations, True), 10)
     except (ObjectDoesNotExist, AttributeError):
@@ -75,7 +80,8 @@ def dashboardView(request):
 
     context = {
         'admission_round': admission_round.round_number,
-        'actions': actions,
+        # 'actions': actions,
+        'actions': actions_to_list(actions),
         'page': page,
         'count': dashboard_paginator.count
     }
