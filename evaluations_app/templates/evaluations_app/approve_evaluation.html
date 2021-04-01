@@ -19,10 +19,10 @@
           This evaluation fields to be evaluated by the School Secretary
         </h4>
         <table>
-          <tr>
-            <th>{{ evaluate_form.gpa.label }}{{ evaluate_form.gpa }}</th>
-            <th>{{ evaluate_form.school_rating.label }}{{ evaluate_form.school_rating }}</th>
-            <th>{{ evaluate_form.research_experience.label }}{{ evaluate_form.research_experience }}</th>
+          <tr class="secretary-row">
+            <th class="secretary_column">{{ evaluate_form.gpa.label }} {{ evaluate_form.gpa }}</th>
+            <th class="secretary_column">{{ evaluate_form.school_rating.label }} {{ evaluate_form.school_rating }}</th>
+            <th class="secretary_column">{{ evaluate_form.research_experience.label }}<a href="{{ evaluation.candidate.cv.url }}" target="_blank" title="Download CV" class="doc-get"><i class="fas fa-file"></i></a> {{ evaluate_form.research_experience }}</th>
           </tr>
         </table>
         {% comment %} {{evaluate_form.as_table}} {% endcomment %}
@@ -35,7 +35,7 @@
                       <span class="close">&times;</span>
                       <div class="student-list">
                         <h2>Educational Background</h2>
-                        <div>Placeholder Text</div>
+                        {% include "evaluations_app/candidate_education.html" %}
                     </div>
                     </div>
                   </div> 

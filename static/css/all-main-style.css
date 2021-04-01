@@ -338,7 +338,9 @@ h3 {
 }
 
 /*candidate profile*/
-
+.secretary_column{
+  padding: 0 20px 0 20px;
+}
 .candidate-info {
   display: flex;
   justify-content: space-evenly;
