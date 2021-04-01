@@ -23,7 +23,20 @@
 {#            {{application_formset.as_p}}#}
             {{ application_formset.management_form }}
             {% for p in application_formset %}
-                <p>{{p.relevancy.label}}:{{p.relevancy}} <a href="{{ candidate.diploma.url }}" target="_blank" title="Download Diploma" class="doc-get"><i class="fas fa-file"></i></a></p>
+            <button id="myBtn" class="modal-edu">View Background</button>
+                              <!-- The Modal -->
+                              <div id="myModal" class="modal">
+                  
+                                <!-- Modal content -->
+                                          <div class="modal-content">
+                                            <span class="close">&times;</span>
+                                            <div class="student-list">
+                                              <h2>Educational Background</h2>
+                                              <div>Placeholder Text</div>
+                                          </div>
+                                          </div>
+                                        </div> 
+                <p>{{p.relevancy.label}}:{{p.relevancy}}<a href="{{ candidate.diploma.url }}" target="_blank" title="Download Diploma" class="doc-get"><i class="fas fa-file"></i></a></p>
                 <p>{{p.statement_of_purpose.label}}:{{p.statement_of_purpose}}<a href="{{ candidate.statement_of_purpose.url }}" target="_blank" title="Download Statement of Purpose" class="doc-get"><i class="fas fa-file"></i></a></p>
                 <p>{{p.recommendation_1.label}}:{{p.recommendation_1}}<a href="{{ candidate.recomendation_1.url }}" target="_blank" title="Download Reccomendation #1" class="doc-get"><i class="fas fa-file"></i></a></p>
                 <p>{{p.recommendation_2.label}}:{{p.recommendation_2}}<a href="{{ candidate.recomendation_1.url }}" target="_blank" title="Download Reccomendation #2" class="doc-get"><i class="fas fa-file"></i></a></p>
@@ -92,6 +105,34 @@
     });
       
   </script>
+  <script>
+    // Get the modal
+    var modal = document.getElementById("myModal");
+    
+    // Get the button that opens the modal
+    var btn = document.getElementById("myBtn");
+    
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+    
+    // When the user clicks the button, open the modal 
+    btn.onclick = function(event) {
+      event.preventDefault();
+      modal.style.display = "block";
+    }
+    
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+    
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function() {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+    </script>
 </main>
 
 {% endblock %}
