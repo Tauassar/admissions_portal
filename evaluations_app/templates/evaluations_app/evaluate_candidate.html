@@ -23,7 +23,7 @@
 {#            {{application_formset.as_p}}#}
             {{ application_formset.management_form }}
                             {% for p in application_formset %}
-                                <!-- The Modal -->
+                                <!-- The Modal --> 
                                 <div id="myModal" class="modal">
                   
                                 <!-- Modal content -->
@@ -35,7 +35,7 @@
                                           </div>
                                           </div>
                                 </div>
-                                <p><a id="myBtn" href="" class="nav-link" style="text-transform: none">{{p.relevancy.label}}:</a>{{p.relevancy}}<a href="{{ candidate.diploma.url }}" target="_blank" title="Download Diploma" class="doc-get"><i class="fas fa-file"></i></a></p>
+                                <p><a id="myBtn" href="" class="nav-link back-link" title="View Educational Background">{{p.relevancy.label}}:</a>{{p.relevancy}}<a href="{{ candidate.diploma.url }}" target="_blank" title="Download Diploma" class="doc-get"><i class="fas fa-file"></i></a></p>
                                 <p>{{p.statement_of_purpose.label}}:{{p.statement_of_purpose}}<a href="{{ candidate.statement_of_purpose.url }}" target="_blank" title="Download Statement of Purpose" class="doc-get"><i class="fas fa-file"></i></a></p>
                                 <p>{{p.recommendation_1.label}}:{{p.recommendation_1}}<a href="{{ candidate.recomendation_1.url }}" target="_blank" title="Download Reccomendation #1" class="doc-get"><i class="fas fa-file"></i></a></p>
                                 <p>{{p.recommendation_2.label}}:{{p.recommendation_2}}<a href="{{ candidate.recomendation_1.url }}" target="_blank" title="Download Reccomendation #2" class="doc-get"><i class="fas fa-file"></i></a></p>

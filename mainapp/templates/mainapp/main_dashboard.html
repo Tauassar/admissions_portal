@@ -3,10 +3,12 @@
     <main class="main-dashboard">
         <div class="container main-container">
             <div class="candidates">
-                <h1 class="round-title">Admission Round #{{admission_round}}</h1>
-                {% if request.user.position == 0  %}
-                    <a href = ' {%url "create_candidate" %} ' class="creation-link"><h2>Add candidate +</h2></a>
-                {% endif %}
+                <div class="titles-wrap">
+                    <h1 class="round-title">Admission Round #{{admission_round}}</h1>
+                    {% if request.user.position == 0  %}
+                        <a href = ' {%url "create_candidate" %} ' class="creation-link"><h2>Add candidate +</h2></a>
+                    {% endif %}
+                </div>
                 {% include 'mainapp/filters_and_sortings.html'%}
 
                 {%if request.user.position == 2 or request.user.position == 1 %}
