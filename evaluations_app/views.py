@@ -37,7 +37,9 @@ class CandidateEvaluateView(LoginRequiredMixin,
         application_formset = ApplicationFormset(instance=evaluation)
         interview_formset = InterviewFormset(instance=evaluation)
         context = super(CandidateEvaluateView, self).get_context_data(**kwargs)
+        education = candidate.education_info.all()
         context['application_formset'] = application_formset
+        context['educations'] = education
         context['interview_formset'] = interview_formset
         context['candidate'] = candidate
         return self.render_to_response(context)
@@ -94,17 +96,25 @@ class ApproveEvaluationView(LoginRequiredMixin,
             application_evaluation_dict = queryset_to_dict(
                 application_evaluation,
                 exclude=['evaluation', 'id', 'created_at', 'updated_at'])
-            context['application_evaluation_dict'] = application_evaluation_dict
+            context['application_evaluation_dict'] =\
+                application_evaluation_dict
         if interview_evaluation:
             if not interview_evaluation.skip_evaluation:
                 interview_evaluation_dict = queryset_to_dict(
                     interview_evaluation,
-                    exclude=['evaluation', 'id', 'created_at', 'updated_at', 'skip_evaluation'])
+                    exclude=['evaluation',
+                             'id',
+                             'created_at',
+                             'updated_at',
+                             'skip_evaluation'])
             else:
                 interview_evaluation_dict = None
             context['interview_evaluation_dict'] = interview_evaluation_dict
         approve_form = ApprovementForm()
         evaluate_form = SecretaryEvaluationForm(instance=evaluation.candidate)
+
+        education = evaluation.candidate.education_info.all()
+        context['educations'] = education
         context['evaluate_form'] = evaluate_form
         context['approve_form'] = approve_form
         context['evaluation'] = evaluation

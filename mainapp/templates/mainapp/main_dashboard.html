@@ -5,7 +5,7 @@
             <div class="candidates">
                 <h1 class="round-title">Admission Round #{{admission_round}}</h1>
                 {% if request.user.position == 0  %}
-                    <a href = ' {%url "create_candidate" %} ' class="creation-link"><h3>Add candidate +</h3></a>
+                    <a href = ' {%url "create_candidate" %} ' class="creation-link"><h2>Add candidate +</h2></a>
                 {% endif %}
                 {% include 'mainapp/filters_and_sortings.html'%}
 
