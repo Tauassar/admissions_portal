@@ -20,11 +20,6 @@ class CreateCandidateView(LoginRequiredMixin, PositionMixin, TemplateView):
     permission_groups = [CustomUserModel.ADMISSION_DEPARTMENT]
     template_name = 'candidates_app/create_candidate.html'
 
-# @login_required(login_url='login')
-# @check_permissions(allowed_pos=[CustomUserModel.ADMISSION_DEPARTMENT])
-# def createCandidateView(request, candidate_id=None):
-#     return render(request, 'candidates_app/create_candidate.html')
-
 
 @login_required(login_url='login')
 @check_permissions(allowed_pos=[CustomUserModel.ADMISSION_DEPARTMENT])
@@ -36,13 +31,15 @@ def observeCandidateView(request, candidate_id=None):
         testing_form = CandidateTesting(
             instance=candidate.testing_info)
         education_formset = EducationFormset(
-            queryset=CandidateEducationModel.objects.filter(candidate=candidate))
+            queryset=CandidateEducationModel.objects.filter(
+                candidate=candidate))
     else:
         form = AddCandidateForm()
         testing_form = CandidateTesting()
         education_formset = EducationFormset()
     if request.method == "POST":
-        form = AddCandidateForm(request.POST, request.FILES, instance=candidate)
+        form = AddCandidateForm(
+            request.POST, request.FILES, instance=candidate)
         testing_form = CandidateTesting(
             request.POST, instance=candidate.testing_info)
         education_formset = EducationFormset(
