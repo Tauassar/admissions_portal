@@ -193,7 +193,7 @@ form {
   background-size: 200%;
 }
 
-.button-create:hover, .button-add:hover,.button-move:hover, .btn-primary:hover, .page-btn:hover, .btn-modal:hover, .button-excel:hover{
+.button-create:hover, .button-add:hover,.button-move:hover, .btn-primary:hover, .page-btn:hover, .btn-modal:hover, .button-excel:hover, .modal-edu:hover{
   background-position: right;
 }
 
@@ -294,8 +294,6 @@ background-position: right;
   justify-content: space-around;
 }
 
-.round-title {
-}
 
 .candidates {
   display: flex;
@@ -514,6 +512,10 @@ fieldset {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   padding: 20px;
+}
+
+.sec-evaluation {
+  display: flex;
   flex-direction: column;
 }
 
@@ -522,6 +524,21 @@ fieldset {
   flex-direction: column;
   align-items: center;
   width: 300px;
+}
+
+.modal-edu {
+  border-radius: 25px;
+  margin: 0;
+  font-size: 15px;
+  outline: none;
+  border: none;
+  background-image: linear-gradient(to right, #6dbdb5, #6c63ff, #6dbdb5);
+  cursor: pointer;
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  background-size: 200%;
+  transition: 0.5s;
+  text-transform: uppercase;
 }
 
 .results-wrap {
@@ -904,11 +921,7 @@ select:hover {
 
 .modal-content {
   background-color: #fefefe;
-<<<<<<< HEAD
-  margin: 1% auto; /* 1% from the top and centered */
-=======
   margin: 15% auto;
->>>>>>> 9f6192a966208da85b29652da1ee23a6bbd41d7b
   padding: 20px;
   border: 1px solid #888;
   width: 80%; 
@@ -939,4 +952,8 @@ select:hover {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+}
+
+.modal-edu-sec {
+  margin: 10px;
 }
