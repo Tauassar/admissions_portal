@@ -15,14 +15,6 @@
                             <legend class="evaluation-legend">Application <br> Evaluation</legend>
                         </div>
                         <span class="evaluation-fields" id="appl-eval">
-<<<<<<< HEAD
-                                <!-- The Modal -->
-=======
-{#            {{application_formset.as_p}}#}
-            {{ application_formset.management_form }}
-                            {% for p in application_formset %}
-                                <!-- The Modal --> 
->>>>>>> 26627222650ab3d30ba7ee093825223e452e18d5
                                 <div id="myModal" class="modal">
                                 <!-- Modal content -->
                                           <div class="modal-content">
@@ -33,7 +25,6 @@
                                           </div>
                                           </div>
                                 </div>
-<<<<<<< HEAD
                                 <form action = "" method = "POST" enctype="multipart/form-data" class="evaluation-form" id="evaluation-form">
                                     {% csrf_token %}
                                     <p><a id="myBtn" href="" class="nav-link" style="text-transform: none">{{application_form.relevancy.label}}:</a>{{application_form.relevancy}}<a href="{{ candidate.diploma.url }}" target="_blank" title="Download Diploma" class="doc-get"><i class="fas fa-file"></i></a></p>
@@ -45,16 +36,6 @@
                                     <input type="submit" class="button-profile" name="redirect" value="Save">
                                     <input type="submit" class="button-profile" name="stay" value="Save and continue editing">
                                 </form>
-
-=======
-                                <p><a id="myBtn" href="" class="nav-link back-link" title="View Educational Background">{{p.relevancy.label}}:</a>{{p.relevancy}}<a href="{{ candidate.diploma.url }}" target="_blank" title="Download Diploma" class="doc-get"><i class="fas fa-file"></i></a></p>
-                                <p>{{p.statement_of_purpose.label}}:{{p.statement_of_purpose}}<a href="{{ candidate.statement_of_purpose.url }}" target="_blank" title="Download Statement of Purpose" class="doc-get"><i class="fas fa-file"></i></a></p>
-                                <p>{{p.recommendation_1.label}}:{{p.recommendation_1}}<a href="{{ candidate.recomendation_1.url }}" target="_blank" title="Download Reccomendation #1" class="doc-get"><i class="fas fa-file"></i></a></p>
-                                <p>{{p.recommendation_2.label}}:{{p.recommendation_2}}<a href="{{ candidate.recomendation_1.url }}" target="_blank" title="Download Reccomendation #2" class="doc-get"><i class="fas fa-file"></i></a></p>
-                                <p>{{p.relevant_degrees.label}}:{{p.relevant_degrees}}<a href="{{ candidate.cv.url }}" target="_blank" title="Download CV" class="doc-get"><i class="fas fa-file"></i></a></p>
-                                <p>{{p.evaluation_comment.label}}:{{p.evaluation_comment}}</p>
-                            {% endfor %}
->>>>>>> 26627222650ab3d30ba7ee093825223e452e18d5
             </span>
                     </div>
                 <form action = "" method = "POST" enctype="multipart/form-data" class="evaluation-form" id="evaluation-form">

@@ -18,3 +18,9 @@ def get_current_candidates(*args, **kwargs):
     """
     year, c_round = get_current_year_and_round()
     return year.current_candidates
+
+
+def candidate_unfinish(candidate):
+    if candidate.evaluation_finished:
+        candidate.evaluation_finished = False
+        candidate.save()

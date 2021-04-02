@@ -2,14 +2,14 @@ import logging
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404, render
 from django.views.generic import TemplateView
 from rest_framework.reverse import reverse_lazy
 
 from auth_app.models import CustomUserModel
 from candidates_app.models import CandidateModel
-from evaluations_app.forms import InterviewFormset, ApplicationFormset, ApplicationForm, InterviewForm
+from candidates_app.utils import candidate_unfinish
+from evaluations_app.forms import ApplicationForm, InterviewForm
 from evaluations_app.models import (CandidateEvaluationModel,
                                     ApplicationEvaluationModel,
                                     InterviewEvaluationModel)
@@ -69,6 +69,7 @@ class CandidateEvaluateView(LoginRequiredMixin,
                     CandidateEvaluationModel.in_progress
                 application_form.save()
                 evaluation.save()
+                candidate_unfinish(candidate)
             if 'redirect' in request.POST:
                 return redirect(reverse_lazy('dashboard'))
         if 'work_experience_goals' in request.POST:
@@ -79,6 +80,7 @@ class CandidateEvaluateView(LoginRequiredMixin,
                     CandidateEvaluationModel.in_progress
                 interview_form.save()
                 evaluation.save()
+                candidate_unfinish(candidate)
             if 'redirect' in request.POST:
                 return redirect(reverse_lazy('dashboard'))
         education = candidate.education_info.all()
