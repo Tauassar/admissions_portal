@@ -27,7 +27,7 @@
                                 </div>
                                 <form action = "" method = "POST" enctype="multipart/form-data" class="evaluation-form" id="evaluation-form">
                                     {% csrf_token %}
-                                    <p><a id="myBtn" href="" class="nav-link" style="text-transform: none">{{application_form.relevancy.label}}:</a>{{application_form.relevancy}}<a href="{{ candidate.diploma.url }}" target="_blank" title="Download Diploma" class="doc-get"><i class="fas fa-file"></i></a></p>
+                                    <p><a id="myBtn" href="" class="nav-link" style="text-transform: none" title="View Educational Background">{{application_form.relevancy.label}}:</a>{{application_form.relevancy}}<a href="{{ candidate.diploma.url }}" target="_blank" title="Download Diploma" class="doc-get"><i class="fas fa-file"></i></a></p>
                                     <p>{{application_form.statement_of_purpose.label}}:{{application_form.statement_of_purpose}}<a href="{{ candidate.statement_of_purpose.url }}" target="_blank" title="Download Statement of Purpose" class="doc-get"><i class="fas fa-file"></i></a></p>
                                     <p>{{application_form.recommendation_1.label}}:{{application_form.recommendation_1}}<a href="{{ candidate.recomendation_1.url }}" target="_blank" title="Download Reccomendation #1" class="doc-get"><i class="fas fa-file"></i></a></p>
                                     <p>{{application_form.recommendation_2.label}}:{{application_form.recommendation_2}}<a href="{{ candidate.recomendation_1.url }}" target="_blank" title="Download Reccomendation #2" class="doc-get"><i class="fas fa-file"></i></a></p>
@@ -46,10 +46,10 @@
                         </div>
                         <span class="evaluation-fields" id="int-eval">
                             {{interview_form.as_p}}
+                            <input type="submit" class="button-profile" name="redirect" value="Save">
+                            <input type="submit" class="button-profile" name="stay" value="Save and continue editing">
                         </span>
                     </div>
-                    <input type="submit" class="button-profile" name="redirect" value="Save">
-                    <input type="submit" class="button-profile" name="stay" value="Save and continue editing">
                 </form>
             </div>
         </div>
