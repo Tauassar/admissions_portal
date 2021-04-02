@@ -1,19 +1,24 @@
+import logging
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django.views.generic import TemplateView
 from rest_framework.reverse import reverse_lazy
 
 from auth_app.models import CustomUserModel
 from candidates_app.models import CandidateModel
-from evaluations_app.forms import InterviewFormset, ApplicationFormset
+from evaluations_app.forms import InterviewFormset, ApplicationFormset, ApplicationForm, InterviewForm
 from evaluations_app.models import (CandidateEvaluationModel,
                                     ApplicationEvaluationModel,
                                     InterviewEvaluationModel)
 from evaluations_app.utils import queryset_to_dict
 from mainapp.forms import SecretaryEvaluationForm, ApprovementForm
 from mainapp.mixins import PositionMixin
+
+
+logger = logging.getLogger(__name__)
 
 
 class CandidateEvaluateView(LoginRequiredMixin,
@@ -34,13 +39,16 @@ class CandidateEvaluateView(LoginRequiredMixin,
             CandidateEvaluationModel,
             evaluator=self.request.user,
             candidate=candidate)
-        application_formset = ApplicationFormset(instance=evaluation)
-        interview_formset = InterviewFormset(instance=evaluation)
+        # application_formset = ApplicationFormset(instance=evaluation)
+        application_form = ApplicationForm(
+            instance=evaluation.application_evaluation)
+        interview_form = InterviewForm(
+            instance=evaluation.interview_evaluation)
         context = super(CandidateEvaluateView, self).get_context_data(**kwargs)
         education = candidate.education_info.all()
-        context['application_formset'] = application_formset
+        context['application_form'] = application_form
         context['educations'] = education
-        context['interview_formset'] = interview_formset
+        context['interview_form'] = interview_form
         context['candidate'] = candidate
         return self.render_to_response(context)
 
@@ -52,18 +60,38 @@ class CandidateEvaluateView(LoginRequiredMixin,
             CandidateEvaluationModel,
             evaluator=self.request.user,
             candidate=candidate)
-        application_formset = ApplicationFormset(request.POST,
-                                                 instance=evaluation)
-        interview_formset = InterviewFormset(request.POST,
-                                             instance=evaluation)
-        if application_formset.is_valid() and interview_formset.is_valid():
-            evaluation.evaluation_status = \
-                CandidateEvaluationModel.in_progress
-            application_formset.save()
-            interview_formset.save()
-            evaluation.save()
-            return redirect(reverse_lazy('dashboard'))
-        return HttpResponse('ERROR')
+        logger.debug(request.POST)
+        if 'relevancy' in request.POST:
+            application_form = ApplicationForm(
+                request.POST, instance=evaluation.application_evaluation)
+            if application_form.is_valid():
+                evaluation.evaluation_status = \
+                    CandidateEvaluationModel.in_progress
+                application_form.save()
+                evaluation.save()
+            if 'redirect' in request.POST:
+                return redirect(reverse_lazy('dashboard'))
+        if 'work_experience_goals' in request.POST:
+            interview_form = InterviewForm(
+                request.POST, instance=evaluation.interview_evaluation)
+            if interview_form.is_valid():
+                evaluation.evaluation_status = \
+                    CandidateEvaluationModel.in_progress
+                interview_form.save()
+                evaluation.save()
+            if 'redirect' in request.POST:
+                return redirect(reverse_lazy('dashboard'))
+        education = candidate.education_info.all()
+        application_form = ApplicationForm(
+            instance=evaluation.application_evaluation)
+        interview_form = InterviewForm(
+            instance=evaluation.interview_evaluation)
+        return render(request, self.template_name, {
+            "application_form": application_form,
+            "interview_form": interview_form,
+            "educations": education,
+            "candidate": candidate
+        })
 
 
 class ApproveEvaluationView(LoginRequiredMixin,

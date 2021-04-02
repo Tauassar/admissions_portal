@@ -1,4 +1,4 @@
-
+from django import forms
 from django.forms import inlineformset_factory
 
 from evaluations_app.models import (CandidateEvaluationModel,
@@ -15,3 +15,16 @@ InterviewFormset = inlineformset_factory(
     InterviewEvaluationModel,
     fields='__all__',
     can_delete=False)
+
+
+class InterviewForm(forms.ModelForm):
+
+    class Meta:
+        model = InterviewEvaluationModel
+        exclude = ['evaluation', ]
+
+
+class ApplicationForm(forms.ModelForm):
+    class Meta:
+        model = ApplicationEvaluationModel
+        exclude = ['evaluation', ]
