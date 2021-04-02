@@ -1008,3 +1008,9 @@ select:hover {
 .evaluation-form {
   align-items: baseline;
 }
+
+.submit-wrap {
+  display: flex;
+  justify-content: space-around;
+  width: 60%;
+}

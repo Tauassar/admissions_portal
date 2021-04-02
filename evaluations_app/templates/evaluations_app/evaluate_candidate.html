@@ -33,8 +33,10 @@
                                     <p>{{application_form.recommendation_2.label}}:{{application_form.recommendation_2}}<a href="{{ candidate.recomendation_1.url }}" target="_blank" title="Download Reccomendation #2" class="doc-get"><i class="fas fa-file"></i></a></p>
                                     <p>{{application_form.relevant_degrees.label}}:{{application_form.relevant_degrees}}<a href="{{ candidate.cv.url }}" target="_blank" title="Download CV" class="doc-get"><i class="fas fa-file"></i></a></p>
                                     <p>{{application_form.evaluation_comment.label}}:{{application_form.evaluation_comment}}</p>
-                                    <input type="submit" class="button-profile" name="redirect" value="Save">
-                                    <input type="submit" class="button-profile" name="stay" value="Save and continue editing">
+                                    <div class="submit-wrap">
+                                        <input type="submit" class="button-profile" name="redirect" value="Save">
+                                        <input type="submit" class="button-profile" name="stay" value="Save and continue editing">
+                                    </div>
                                 </form>
             </span>
                     </div>
@@ -44,10 +46,12 @@
                         <div class="legend-wrap">
                             <legend class="evaluation-legend">Interview <br> Evaluation</legend>
                         </div>
-                        <span class="evaluation-fields" id="int-eval">
+                        <span class="evaluation-fields fields-wrapper" id="int-eval">
                             {{interview_form.as_p}}
-                            <input type="submit" class="button-profile" name="redirect" value="Save">
-                            <input type="submit" class="button-profile" name="stay" value="Save and continue editing">
+                            <div class="submit-wrap">
+                                <input type="submit" class="button-profile" name="redirect" value="Save">
+                                <input type="submit" class="button-profile" name="stay" value="Save and continue editing">
+                            </div>
                         </span>
                     </div>
                 </form>
