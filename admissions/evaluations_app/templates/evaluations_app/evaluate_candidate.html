@@ -1,0 +1,92 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+{% block content %}
+    <main>
+        <div class="container evaluation-container">
+            <div class="candidate-info">
+                <h1>{{candidate.first_name}} {{candidate.last_name}} </h1>
+                <div>
+                    <img src="{% static 'img/default_user_avatar.png' %}" alt="candidate photo" class="candidate-profile-pic">
+                </div>
+            </div>
+            <div class="candidate-results">
+                    <div class="evaluation application-eval">
+                        <div class="legend-wrap">
+                            <legend class="evaluation-legend">Application <br> Evaluation</legend>
+                        </div>
+                        <span class="evaluation-fields" id="appl-eval">
+                                <div id="myModal" class="modal">
+                                <!-- Modal content -->
+                                          <div class="modal-content">
+                                              <span class="close">&times;</span>
+                                          <div class="student-list">
+                                              <h2>Educational Background</h2>
+                                              {% include 'evaluations_app/candidate_education.html' %}
+                                          </div>
+                                          </div>
+                                </div>
+                                <form action = "" method = "POST" enctype="multipart/form-data" class="evaluation-form" id="evaluation-form">
+                                    {% csrf_token %}
+                                    <p><a id="myBtn" href="" class="nav-link" style="text-transform: none" title="View Educational Background">{{application_form.relevancy.label}}:</a>{{application_form.relevancy}}<a href="{{ candidate.diploma.url }}" target="_blank" title="Download Diploma" class="doc-get"><i class="fas fa-file"></i></a></p>
+                                    <p>{{application_form.statement_of_purpose.label}}:{{application_form.statement_of_purpose}}<a href="{{ candidate.statement_of_purpose.url }}" target="_blank" title="Download Statement of Purpose" class="doc-get"><i class="fas fa-file"></i></a></p>
+                                    <p>{{application_form.recommendation_1.label}}:{{application_form.recommendation_1}}<a href="{{ candidate.recomendation_1.url }}" target="_blank" title="Download Reccomendation #1" class="doc-get"><i class="fas fa-file"></i></a></p>
+                                    <p>{{application_form.recommendation_2.label}}:{{application_form.recommendation_2}}<a href="{{ candidate.recomendation_1.url }}" target="_blank" title="Download Reccomendation #2" class="doc-get"><i class="fas fa-file"></i></a></p>
+                                    <p>{{application_form.relevant_degrees.label}}:{{application_form.relevant_degrees}}<a href="{{ candidate.cv.url }}" target="_blank" title="Download CV" class="doc-get"><i class="fas fa-file"></i></a></p>
+                                    <p>{{application_form.evaluation_comment.label}}:{{application_form.evaluation_comment}}</p>
+                                    <div class="submit-wrap">
+                                        <input type="submit" class="button-profile" name="redirect" value="Save">
+                                        <input type="submit" class="button-profile" name="stay" value="Save and continue editing">
+                                    </div>
+                                </form>
+            </span>
+                    </div>
+                <form action = "" method = "POST" enctype="multipart/form-data" class="evaluation-form" id="evaluation-form">
+                    {% csrf_token %}
+                    <div class="evaluation interview-eval">
+                        <div class="legend-wrap">
+                            <legend class="evaluation-legend">Interview <br> Evaluation</legend>
+                        </div>
+                        <span class="evaluation-fields fields-wrapper" id="int-eval">
+                            {{interview_form.as_p}}
+                            <div class="submit-wrap">
+                                <input type="submit" class="button-profile" name="redirect" value="Save">
+                                <input type="submit" class="button-profile" name="stay" value="Save and continue editing">
+                            </div>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <script>
+            // Get the modal
+            var modal = document.getElementById("myModal");
+
+            // Get the button that opens the modal
+            var btn = document.getElementById("myBtn");
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+
+            // When the user clicks the button, open the modal
+            btn.onclick = function(event) {
+                event.preventDefault();
+                modal.style.display = "block";
+            }
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function() {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        </script>
+    </main>
+
+{% endblock %}

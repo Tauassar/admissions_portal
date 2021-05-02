@@ -1,0 +1,6 @@
+
+{% load static %}
+
+{% for candidate in page.object_list %}
+    {% include 'mainapp/candidate_card.html' %}
+{% endfor %}

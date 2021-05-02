@@ -1,0 +1,110 @@
+{% extends 'mainapp/base.html' %}
+{% block content %}
+<main>
+    <div class="container chair-container">
+        <div class="statistics-filtering-wrapper">
+            <div class="stats">
+                <h2>Total statistics</h2>
+                <canvas id="myChart" width="400" height="400"></canvas>
+{#                <div class="total-candidates">#}
+{#                    <p>Total candidates: {{total}}</p>#}
+{#                </div>#}
+{#                <div class="evaluated-candidates">#}
+{#                    <p>Evaluated candidates: {{evaluated_count}} </p>#}
+{#                </div>#}
+{#                <div class="inprocess-candidates">#}
+{#                    <p>Evaluation in progress: {{non_evaluated_count}} </p>#}
+{#                </div>#}
+            </div>
+            <div class="stud-list-wrap">
+              <form class="filter-students" action='' method="POST" onsubmit="return confirm('Do you really want to submit the form?');">
+                {% csrf_token %}
+                    <h2>Candidates' filtering</h2>
+                  <label class="label-filter">Enter critical number of points to pass: {{form.threshold}} </label>
+                {% for message in messages %}
+                    <h5 class="error_message" style="color:red">
+                        {{ message }}
+                    </h5>
+                {% endfor %}
+                  <input type="submit" class="button-create" value="Set">
+                </form>
+                <!-- Trigger/Open The Modal -->
+                <button id="myBtn" class="btn-modal">View Candidate List</button>
+    
+    <!-- The Modal -->
+                <div id="myModal" class="modal">
+    
+      <!-- Modal content -->
+                <div class="modal-content">
+                  <span class="close">&times;</span>
+                  <div class="student-list">
+                    <h2>Candidates' list</h2>
+                    {%for candidate in candidates%}
+                         <div class="candidate">{{candidate.first_name}} {{candidate.last_name}}: {{candidate.get_score}}</div>
+                    {%endfor%}
+                </div>
+                </div>
+    
+                </div>
+            </div>
+        </div>
+      </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script>
+var ctx = document.getElementById("myChart");
+var myChart = new Chart(ctx, {
+  type: 'pie',
+  data: {
+    labels: ['Total', 'Evaluated', 'In progress'],
+    datasets: [{
+      label: '# candidates',
+      data: [{{total}}, {{evaluated_count}} , {{non_evaluated_count}}],
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.5)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)'
+      ],
+      borderColor: [
+        'rgba(255,99,132,1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)'
+      ],
+      borderWidth: 1
+    }]
+  },
+  options: {
+   	//cutoutPercentage: 40,
+    responsive: true,
+
+  }
+});
+</script>
+<script>
+  // Get the modal
+  var modal = document.getElementById("myModal");
+  
+  // Get the button that opens the modal
+  var btn = document.getElementById("myBtn");
+  
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+  
+  // When the user clicks the button, open the modal 
+  btn.onclick = function() {
+    modal.style.display = "block";
+  }
+  
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+  
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+  </script>
+{% endblock %}

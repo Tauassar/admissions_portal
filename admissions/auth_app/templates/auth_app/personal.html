@@ -1,0 +1,54 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+{% block content %}
+      <main>
+        <div class="container profile-container">
+            <div class="member-info-wrapper">
+                <div class="member-info">
+                    <div>
+                        <h1>{{user.first_name}} {{user.last_name}}</h1>
+                        <h4>{{ position }}</h4>
+                    </div>
+                    <div class="member-pic-container">
+                      <img src=" {{user.profile_pic.url}} " alt="member photo" class="member-pic">
+                    </div>
+                </div>
+                <div class="member-container">
+                    <p class="general-member">Department: {{user.department}}</p>
+                    <p class="general-member">School: {{user.school}}</p>
+                    <p class="general-member">Telephone number: <a href="tel:{{user.phone_number}}" class="contact-info-member">{{user.phone_number}}</a></p>
+                    <p class="general-member">Email: <a href="mailto:{{user.email}}" class="contact-info-member">{{user.email}}</a></p>
+                </div>
+            </div>
+            <div class="log-wrapper">
+                {%if form %}
+                <div class="member-password">
+                    <h2>Change Password</h2>
+                        <div>
+                            <form id="password-form" action="" method="POST">
+                            {% csrf_token %}
+
+                            {{form.as_p}}
+
+                            {%for message in messages%}
+                                <p> {{message}}<p>
+                            {% endfor %}
+
+                            <input type="submit" class="button-password" value="Change password">
+                            </form>
+                        </div>
+                </div>
+            {%endif%}
+
+        {% if login_actions %}
+            <div class="log-history"> 
+            <h2>Login history:</h2>
+                {% for action in  login_actions%}
+                    <p>{{ action }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+            </div>
+        </div>
+      </main>
+{% endblock %}

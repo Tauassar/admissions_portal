@@ -1,0 +1,110 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+{% block content %}
+
+
+<main>
+  <div class="container secretary-container">
+    <div class="candidate-info">
+      <h2>{{ evaluation.candidate.first_name }} {{ evaluation.candidate.last_name }}</h2>
+      <div>
+        <img src="{% static 'img/default_user_avatar.png' %}" alt="user photo">
+      </div>
+    </div>
+    <div class="candidate-results">
+      <form action = "" method = "POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2>Candidate evaluation</h2>
+        <h4>
+          This evaluation fields to be evaluated by the School Secretary
+        </h4>
+        <table>
+          <tr class="secretary-row">
+            <th class="secretary_column">{{ evaluate_form.gpa.label }} {{ evaluate_form.gpa }}</th>
+            <th class="secretary_column">{{ evaluate_form.school_rating.label }} {{ evaluate_form.school_rating }}</th>
+            <th class="secretary_column">{{ evaluate_form.research_experience.label }}<a href="{{ evaluation.candidate.cv.url }}" target="_blank" title="Download CV" class="doc-get"><i class="fas fa-file"></i></a> {{ evaluate_form.research_experience }}</th>
+          </tr>
+        </table>
+        {% comment %} {{evaluate_form.as_table}} {% endcomment %}
+        <button id="myBtn" class="modal-edu modal-edu-sec">View Background</button>
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+          <!-- Modal content -->
+                    <div class="modal-content">
+                      <span class="close">&times;</span>
+                      <div class="student-list">
+                        <h2>Educational Background</h2>
+                        {% include "evaluations_app/candidate_education.html" %}
+                    </div>
+                    </div>
+                  </div> 
+        <div class="evaluation interview-eval sec-evaluation">  
+            <a href="{% url 'excel_application' evaluation.evaluation_id %}" target="_self" title="Download Excel File" class="doc-get approve-doc"><h2 class="approve-title">Application Evaluation  </h2><i class="fas fa-file-excel fa-2x"></i></a>
+            <div class="results-wrap">
+              {%for key, value in application_evaluation_dict.items%}
+              <span class="approve-res">
+                  <label>{{key}}:</label>
+                    {{value}}
+              </span>
+              {%endfor%}
+            </div>
+
+  
+        </div>
+        <div class="evaluation application-eval sec-evaluation">
+            <a href="{% url 'excel_interview' evaluation.evaluation_id %}" target="_self" title="Download Excel File" class="doc-get approve-doc"><h2 class="approve-title">Interview Evaluation  </h2><i class="far fa-file-excel fa-2x"></i></a>
+            <div class="results-wrap">
+              {% if interview_evaluation_dict is not None%}
+              {%for key, value in interview_evaluation_dict.items%}
+              <span class="approve-res">
+                  <label>{{key}}:</label>
+                    {{value}}
+              </span>
+              {%endfor%}
+            {%else%}
+              <span class="approve-res">
+                  <label>Evaluation is skipped</label>
+              </span>
+            {% endif %}
+            </div>
+        </div>
+      <span>
+        {{approve_form.as_table}}
+        </span>
+        <input type="submit" class="button-profile" name="Submit" value="Submit">
+      </form>
+    </div>
+
+  </div>
+  <script>
+    // Get the modal
+    var modal = document.getElementById("myModal");
+    
+    // Get the button that opens the modal
+    var btn = document.getElementById("myBtn");
+    
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+    
+    // When the user clicks the button, open the modal 
+    btn.onclick = function(event) {
+      event.preventDefault();
+      modal.style.display = "block";
+    }
+    
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+    
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function() {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+    </script>
+</main>
+
+{% endblock %}

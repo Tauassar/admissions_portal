@@ -1,0 +1,6 @@
+
+{% load static %}
+    {% for evaluation in page.object_list %}
+        {% include 'mainapp/candidate_card.html' %}
+    {% endfor %}
+<script src="{%static 'js/filtering_script.js'%}"></script>

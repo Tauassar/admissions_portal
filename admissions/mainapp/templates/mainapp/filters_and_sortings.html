@@ -1,0 +1,50 @@
+
+<form method="GET" action="." class="sorting-form">
+    <div class="wrap-name wrap-dash">
+      <div class="input-group">
+        <label for="firstname">Name</label>
+        <input class="create-cand-item" type="text" name="firstname" name="firstname" placeholder="Name..." />
+        <!-- <i class="fa fa-search"></i> -->
+    </div>
+    <div class="input-group">
+      <label for="surname">Surname</label>
+        <input class="create-cand-item" type="text" name="surname" id="surname" placeholder="Surname..." />
+        <!-- <i class="fa fa-search"></i> -->
+    </div>
+    </div>
+    <div class="wrap-filter wrap-dash">
+      {#degree#}
+      <label for="degree">Degree</label>
+      <select id="degree" class="form-control" name="degree">
+        <option selected>Choose...</option>
+        <option value="MSc">MSc</option>
+        <option value="PhD">PhD</option>
+      </select>
+      {% if request.user.position != 0 %}
+          {#status#}
+          <label for="status">Status</label>
+          <select id="status" class="form-control" name="status">
+            <option selected>Choose...</option>
+            <option value="Not evaluated">Not evaluated</option>
+            <option value="In progress">In progress</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+      {% endif %}
+    </div>
+    <div class="wrap-sort wrap-dash">
+      {#SORTINGS#}
+      <label for="sorting">Sort by</label>
+      <select id="sorting" class="form-control" name="sorting">
+        <option selected>Choose...</option>
+        <option value="-major">Major: MSc</option>
+        <option value="major">Major: PhD</option>
+        <option value="-name">Name: A-Z</option>
+        <option value="name">Name: Z-A</option>
+      </select>
+    </div>
+
+    <a href="{% url 'dashboard' %}" class="refresh-button"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+
+<button type="submit" class="btn btn-primary">Search</button>
+</form>

@@ -1,0 +1,66 @@
+{% extends 'mainapp/base.html' %}
+{% block content %}
+    <main class="main-dashboard">
+        <div class="container main-container">
+            <div class="candidates">
+                <div class="titles-wrap">
+                    <h1 class="round-title">Admission Round #{{admission_round}}</h1>
+                    {% if request.user.position == 0  %}
+                        <a href = ' {%url "create_candidate" %} ' class="creation-link"><h2>Add candidate +</h2></a>
+                    {% endif %}
+                </div>
+                {% include 'mainapp/filters_and_sortings.html'%}
+
+                {%if request.user.position == 2 or request.user.position == 1 %}
+                    {% include 'mainapp/eval_dashboard.html' %}
+                {%elif request.user.position == 0  %}
+                    {% include 'mainapp/create_dashboard.html' %}
+                {%elif request.user.position == 3  %}
+                    {% include 'mainapp/approve_dashboard.html' %}
+                {% endif %}
+                <div class="page-links">
+                    {% if page.has_previous %}
+                        <button onclick="getURL({{ page.previous_page_number }})" class="page-btn">Prev</button>
+                    {% endif %}
+                    {{ page.number }}
+                    {% if page.has_next %}
+                        <button onclick="getURL({{ page.next_page_number }})" class="page-btn">Next</button>
+                    {% endif %}
+                </div>
+            </div>
+
+            <script>
+                function getURL(page_num) {
+                    let url = window.location.href;
+                    if(url.includes('page=')){
+                        url = url.slice(0, -1);
+                        url=url.concat(String(page_num));
+                    }else{
+                        if(url.includes('?')) {
+                            url=url.concat("&page=", String(page_num));
+                        }else{
+                            url=url.concat("?page=", String(page_num));
+                        }
+                    }
+                    console.log(url)
+                    window.location.assign(url);
+                }
+            </script>
+
+            <div class="events">
+                <h3>User actions history</h3>
+
+                <div class="event-aside">
+                    {% if actions %}
+                        {% for action in actions %}
+                            <p>{{ action }}</p>
+                        {% endfor %}
+                    {% else %}
+                        <p>No actions</p>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+    </main>
+{% endblock %}

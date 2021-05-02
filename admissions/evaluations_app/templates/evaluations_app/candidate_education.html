@@ -1,0 +1,23 @@
+{% for education in educations %}
+    <div class="candidate-other-modal">
+        <div class="edu-dates-modal">
+            <h3>Education Dates</h3>
+            <label for="start-date">Start Date: {{ education.start_date }}</label>
+            <label for="end-date">End Date: {{ education.end_date }}</label>
+            <label for="grad-date">Grad Date: {{ education.grad_date }}</label>
+        </div>
+            <div class="edu-wrap-modal">
+                <h3>Education Details</h3>    
+            <label for="com-degree">Completed Degree:
+                {% if education.degree_type == 0 %}
+                    BSc
+                {% elif education.degree_type == 1 %}
+                    MSc
+                {% endif %}
+            </label>
+                <label for="institution">Institution: {{ education.institution }}</label>
+                <label for="study-field">Study Field: {{ education.study_field }}</label>
+                <label for="gpa">GPA: {{ education.gpa }}</label>
+            </div>
+    </div>
+{% endfor %}
