@@ -116,8 +116,8 @@ media/
 !**/migrations/__init__.py
 
 # Ignore media files uploaded by user
-media/*
-assets/*
-.vscode/
-.idea/
-logs/ 
+admissions/media/*
+admissions/assets/*
+admissions/.vscode/
+admissions/.idea/
+admissions/logs/ 
