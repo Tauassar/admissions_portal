@@ -39,7 +39,7 @@ pytest-cov==2.11.1
 pytz==2021.1
 six==1.15.0
 soupsieve==2.2
-sqlparse==0.4.1
+sqlparse==0.4.2
 toml==0.10.2
 waitress==2.1.2
 WebOb==1.8.6
